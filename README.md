@@ -1,99 +1,161 @@
 # ClaimSem
 
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Google Colab](https://img.shields.io/badge/Google-Colab-orange.svg)](https://colab.research.google.com/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-GPU-red.svg)](https://pytorch.org/)
+
 **Structure-aware claim aggregation for patent clustering**
 
-ClaimSem is a lightweight method for constructing patent-level representations from individual patent claims. It encodes each claim separately with a frozen patent language model, emphasizes independent claims, attenuates dependent claims according to their dependency depth, reduces the resulting patent representations with PCA, and clusters them using spherical \(K\)-means.
+ClaimSem is a lightweight method for constructing patent-level representations from individual patent claims. It encodes each claim separately with a frozen patent language model, emphasizes independent claims, attenuates dependent claims according to their dependency depth, reduces the resulting patent representations with PCA, and clusters them using spherical $K$-means.
 
-The repository provides a reproducible Google Colab pipeline for:
+Repository:
 
-- validating patent claim-dependency graphs
-- calculating claim dependency depths
-- encoding claims individually with a frozen PatentSBERTa-V2 encoder
-- constructing root- and depth-aware patent representations
-- fitting PCA only on development representations
-- running spherical \(K\)-means with fixed random seeds
-- evaluating clusters against CPC labels
-- conducting controlled ablations and robustness analyses
-- generating LaTeX tables for the paper
+https://github.com/Yongmin-Yoo/claimsem
 
-ClaimSem does not require a trained Depth-OT model, topic distributions, optimal transport plans, or neural topic-model checkpoints.
+Author:
+
+**Yongmin Yoo**
 
 ---
 
-## Method Overview
+## Overview
 
-A patent \(P_n\) contains claims
+Patent claims have different legal and structural roles. Independent claims define the basic scope of an invention, while dependent claims add further limitations to preceding claims. Treating all claims as interchangeable text units can therefore discard useful structural information.
+
+ClaimSem addresses two limitations of conventional patent representation:
+
+1. **Document-level truncation:** Concatenating all claims can exceed the maximum input length of a language model and remove later claims.
+2. **Structure-agnostic aggregation:** Uniformly averaging separately encoded claims ignores the distinction between independent and dependent claims.
+
+ClaimSem uses the following pipeline:
+
+```text
+Patent claims
+→ claim-dependency validation
+→ claim-depth calculation
+→ individual frozen claim encoding
+→ root- and depth-aware pooling
+→ development-fitted PCA
+→ L2 normalization
+→ spherical K-means
+→ patent clusters
+```
+
+ClaimSem does not require:
+
+- a trained Depth-OT checkpoint
+- patent-topic distributions
+- topic-word distributions
+- optimal transport plans
+- a neural dependency encoder
+- additional neural fine-tuning
+
+---
+
+## Method
+
+### Patent claim-dependency graph
+
+Let a patent $P_n$ contain claims
 
 
-\[
+$$
 \mathcal{C}_n
 =
-\{c_{n,1},\ldots,c_{n,M_n}\}
-\]
+\{c_{n,1},\ldots,c_{n,M_n}\}.
 
-and a directed claim-dependency graph
+$$
 
-
-\[
-G_n=(\mathcal{C}_n,E_n).
-\]
-
-An edge \((c_i,c_j)\in E_n\) indicates that claim \(c_j\) depends on claim \(c_i\). Claims without valid antecedents are treated as root claims.
-
-### Claim depth
-
-The dependency depth of claim \(c\) is defined as
+The claims form a directed dependency graph
 
 
-\[
-d(c)=
+$$
+G_n
+=
+(\mathcal{C}_n,E_n).
+
+$$
+
+An edge $(c_i,c_j)\in E_n$ indicates that claim $c_j$ refers to and depends on claim $c_i$. Claims without valid antecedents are treated as root claims. A patent may contain multiple root claims when it has more than one independent claim.
+
+### Claim dependency depth
+
+The depth of claim $c$ is defined recursively as
+
+
+$$
+d(c)
+=
 \begin{cases}
 0, & \operatorname{Pa}(c)=\varnothing,\\
-1+\max_{c'\in\operatorname{Pa}(c)}d(c'), & \text{otherwise}.
+1+\max\limits_{c'\in\operatorname{Pa}(c)}d(c'),
+& \text{otherwise},
 \end{cases}
-\]
 
-Root claims have depth zero. A dependent claim receives a depth determined by the longest valid path from a root claim.
+$$
+
+where $\operatorname{Pa}(c)$ is the set of valid parent claims referenced by claim $c$.
+
+A root claim has depth zero. A dependent claim receives a depth determined by the longest valid path from a root claim.
 
 ### Individual claim encoding
 
-Each claim is encoded independently with a frozen PatentSBERTa-V2 encoder. Masked mean pooling produces a claim-level representation
+Each claim is encoded independently with a frozen PatentSBERTa-V2 encoder.
+
+Let
 
 
-\[
+$$
+H_c
+=
+[\mathbf{h}_{c1},\ldots,\mathbf{h}_{cL_c}]
+
+$$
+
+denote the contextual token representations of claim $c$, and let $m_{c\ell}$ denote its attention mask.
+
+Masked mean pooling produces the claim representation
+
+
+$$
 \mathbf{e}_c
 =
 \frac{
 \sum_{\ell=1}^{L_c}
 m_{c\ell}\mathbf{h}_{c\ell}
 }{
-\sum_{\ell=1}^{L_c}m_{c\ell}
+\sum_{\ell=1}^{L_c}
+m_{c\ell}
 }.
-\]
 
-Encoding claims separately avoids the loss of later claims caused by document-level input truncation.
+$$
+
+Encoding claims separately prevents later claims from being removed because earlier claims consume the document-level input budget.
+
+The pretrained encoder remains frozen throughout feature construction and clustering.
 
 ### Root- and depth-aware pooling
 
-ClaimSem assigns each claim the following weight:
+ClaimSem assigns each claim a weight based on its root status and dependency depth:
 
 
-\[
+$$
 w_c(\alpha,\lambda)
 =
 \alpha^{\mathbb{I}[d(c)=0]}
-\exp(-\lambda d(c)),
-\]
+\exp\left(-\lambda d(c)\right),
+
+$$
 
 where:
 
-- \(\alpha\) controls independent-claim emphasis
-- \(\lambda\) controls dependency-depth decay
+- $\alpha$ controls the emphasis placed on root claims
+- $\lambda$ controls the attenuation applied to deeper dependent claims
 
-The patent representation is
+The patent-level representation is
 
 
-\[
+$$
 \mathbf{v}_n
 =
 \frac{
@@ -103,35 +165,92 @@ w_c(\alpha,\lambda)\mathbf{e}_c
 \sum_{c\in\mathcal{C}_n}
 w_c(\alpha,\lambda)
 }.
-\]
 
-The final configuration uses:
+$$
+
+Uniform claim pooling is recovered when $\alpha=1$ and $\lambda=0$.
+
+### Dimensionality reduction
+
+The pooled representation $\mathbf{v}_n$ has 768 dimensions. A PCA transform fitted on development representations projects it to 128 dimensions:
+
+
+$$
+\widetilde{\mathbf{r}}_n
+=
+W_{\mathrm{PCA}}
+\left(
+\mathbf{v}_n
+-
+\boldsymbol{\mu}_{\mathrm{PCA}}
+\right).
+
+$$
+
+The reduced representation is normalized to unit length:
+
+
+$$
+\mathbf{r}_n
+=
+\frac{
+\widetilde{\mathbf{r}}_n
+}{
+\left\lVert
+\widetilde{\mathbf{r}}_n
+\right\rVert_2
+}.
+
+$$
+
+The PCA transform is fitted only on development representations. The same fixed transform is applied to test representations without refitting.
+
+### Spherical clustering
+
+The normalized patent representations are partitioned using spherical $K$-means.
+
+The cluster assignment of patent $P_n$ is
+
+
+$$
+z_n
+=
+\underset{k\in\{1,\ldots,K\}}{\arg\max}
+\;
+\mathbf{r}_n^{\top}\boldsymbol{\nu}_k,
+
+$$
+
+where $\boldsymbol{\nu}_k$ is the unit-normalized centroid of cluster $k$.
+
+The final configuration uses $K=30$ clusters.
+
+---
+
+## Final Configuration
 
 | Component | Value |
 |---|---:|
-| Root weight \(\alpha\) | 12.0 |
-| Depth decay \(\lambda\) | 0.1 |
-| Claim embedding dimension | 768 |
+| Method | ClaimSem |
+| Claim encoder | Frozen PatentSBERTa-V2 |
+| Claim encoding | Individual claim encoding |
+| Root weight $\alpha$ | 12.0 |
+| Depth decay $\lambda$ | 0.1 |
+| Original embedding dimension | 768 |
 | PCA output dimension | 128 |
 | Number of clusters | 30 |
+| Clustering method | Spherical $K$-means |
 | Clustering seeds | 17, 42, 73 |
-| Neural encoder training | None |
+| Clustering protocol | Transductive |
+| Encoder fine-tuning | None |
 | CPC labels used as encoder targets | No |
 | Test CPC labels used for tuning | No |
 
-After pooling, the patent representations are projected to 128 dimensions using a PCA transform fitted on the development set. The reduced vectors are normalized to unit length and clustered with spherical \(K\)-means.
+The final configuration was selected on development data and frozen before test evaluation.
 
 ---
 
 ## Final Test Results
-
-The final configuration was selected on the development data and frozen before test evaluation. The PCA transform was fitted on development representations and applied to the test representations without refitting.
-
-The reported evaluation uses three spherical \(K\)-means seeds:
-
-```text
-17, 42, 73
-```
 
 ### Dataset statistics
 
@@ -140,39 +259,53 @@ The reported evaluation uses three spherical \(K\)-means seeds:
 | Development | 9,855 | 160,048 | 9 | 123 | 484 |
 | Test | 9,881 | 161,661 | 9 | 121 | 466 |
 
-### CPC alignment
+### CPC alignment results
 
-| CPC level | Purity \( \mathrm{Pur}_{\mathrm{p}} \) | Inverse purity \( \mathrm{Pur}_{\mathrm{a}} \) | NMI |
+The results are averaged over spherical $K$-means seeds 17, 42, and 73.
+
+| CPC level | Predicted-cluster purity | Label-wise inverse purity | NMI |
 |---|---:|---:|---:|
-| Section | \(0.617009 \pm 0.010069\) | \(0.188442 \pm 0.005584\) | \(0.273401 \pm 0.004359\) |
-| Class | \(0.411328 \pm 0.006142\) | \(0.366124 \pm 0.004701\) | \(0.398139 \pm 0.003565\) |
-| Subclass | \(0.249030 \pm 0.008411\) | \(0.512870 \pm 0.007868\) | \(0.454984 \pm 0.004101\) |
-| Mean | \(0.425789 \pm 0.008153\) | \(0.355812 \pm 0.004877\) | \(0.375508 \pm 0.003952\) |
+| Section | $0.617009 \pm 0.010069$ | $0.188442 \pm 0.005584$ | $0.273401 \pm 0.004359$ |
+| Class | $0.411328 \pm 0.006142$ | $0.366124 \pm 0.004701$ | $0.398139 \pm 0.003565$ |
+| Subclass | $0.249030 \pm 0.008411$ | $0.512870 \pm 0.007868$ | $0.454984 \pm 0.004101$ |
+| Mean | $0.425789 \pm 0.008153$ | $0.355812 \pm 0.004877$ | $0.375508 \pm 0.003952$ |
 
-All 30 clusters remain active. The maximum topic share is
+All 30 clusters remain active.
+
+The maximum cluster share is
 
 
-\[
+$$
 0.055662 \pm 0.001145.
-\]
 
-These numbers are regression targets for the legacy-compatible reproduction pipeline. Small numerical differences can occur across CUDA, PyTorch, PCA, or clustering implementations.
+$$
+
+### Seed-level results
+
+| Seed | Mean NMI | Mean predicted-cluster purity | Mean label-wise inverse purity |
+|---:|---:|---:|---:|
+| 17 | 0.379336 | 0.430152 | 0.359444 |
+| 42 | 0.370068 | 0.414364 | 0.348919 |
+| 73 | 0.377121 | 0.432851 | 0.359073 |
 
 ---
 
-## Evaluation Setting
+## Evaluation Protocol
 
 ClaimSem uses a transductive clustering protocol.
 
 For each evaluation split:
 
-1. claim embeddings are pooled into patent representations
-2. the fixed development-fitted PCA transform is applied
-3. spherical \(K\)-means is fitted to the unlabeled representations of that split
-4. CPC labels are accessed only after cluster assignments are produced
-5. CPC labels are used only to compute evaluation metrics
+1. Claim embeddings are pooled into patent representations.
+2. The fixed development-fitted PCA transform is applied.
+3. Spherical $K$-means is fitted to the unlabeled representations of the evaluation split.
+4. Cluster assignments are generated without CPC labels.
+5. CPC labels are accessed only after clustering.
+6. NMI, predicted-cluster purity, and label-wise inverse purity are computed.
 
-This protocol differs from inductive classification or centroid transfer. In inductive mode, centroids learned on development data would be applied directly to test data. The paper results reported above use transductive clustering.
+This setting should not be interpreted as inductive CPC classification. The method produces unsupervised patent clusters rather than CPC predictions.
+
+Development CPC labels are used only for configuration selection. Test CPC labels are reserved for final evaluation.
 
 ---
 
@@ -238,24 +371,24 @@ claimsem/
 
 | Module | Responsibility |
 |---|---|
-| `config.py` | Configuration loading, validation, and path resolution |
-| `reproducibility.py` | Random seeds, environment logging, and deterministic settings |
-| `data.py` | Patent records, CPC labels, claim metadata, and feature-shard loading |
-| `dependency.py` | Dependency-graph validation and claim-depth calculation |
-| `encoder.py` | Frozen PatentSBERTa-V2 inference and masked mean pooling |
-| `pooling.py` | Root- and depth-aware patent representation construction |
-| `reduction.py` | Development-only PCA fitting and fixed transformation |
-| `clustering.py` | Spherical \(K\)-means and cluster-balance diagnostics |
-| `metrics.py` | NMI, predicted-cluster purity, and label-wise inverse purity |
-| `artifacts.py` | Saving models, features, predictions, summaries, and manifests |
-| `dev_search.py` | Development search, held-out validation, and ablations |
+| `config.py` | Configuration loading and validation |
+| `reproducibility.py` | Random seeds and environment logging |
+| `data.py` | Patent records, CPC labels, and feature loading |
+| `dependency.py` | Dependency validation and depth calculation |
+| `encoder.py` | Frozen claim encoding and masked mean pooling |
+| `pooling.py` | Root- and depth-aware patent representation |
+| `reduction.py` | Development-only PCA fitting and transformation |
+| `clustering.py` | Spherical $K$-means clustering |
+| `metrics.py` | NMI, purity, inverse purity, and cluster balance |
+| `artifacts.py` | Artifact, result, and manifest management |
+| `dev_search.py` | Development search and ablation experiments |
 | `test_evaluation.py` | Frozen final test evaluation |
 
 ---
 
-## Google Colab Setup
+## Google Colab
 
-### 1. Select a GPU runtime
+### Select a GPU runtime
 
 In Google Colab, select:
 
@@ -266,42 +399,40 @@ Runtime
 → T4 GPU
 ```
 
-### 2. Mount Google Drive
+### Clone the repository
 
 ```python
-from google.colab import drive
-
-drive.mount("/content/drive")
-```
-
-### 3. Clone the repository
-
-Replace `<GITHUB_OWNER>` with the GitHub account or organization name.
-
-```bash
-!git clone https://github.com/<GITHUB_OWNER>/claimsem.git
+!git clone https://github.com/Yongmin-Yoo/claimsem.git
 %cd claimsem
 ```
 
-### 4. Install dependencies
+### Install dependencies
 
-```bash
+```python
 !pip install -q -r requirements-colab.txt
 !pip install -q -e .
 ```
 
-### 5. Verify the installation
+### Verify the environment
 
 ```python
 import torch
 import claimsem
 
 print("ClaimSem import successful")
-print("PyTorch:", torch.__version__)
+print("PyTorch version:", torch.__version__)
 print("CUDA available:", torch.cuda.is_available())
 
 if torch.cuda.is_available():
     print("GPU:", torch.cuda.get_device_name(0))
+```
+
+### Mount Google Drive
+
+```python
+from google.colab import drive
+
+drive.mount("/content/drive")
 ```
 
 ---
@@ -310,87 +441,86 @@ if torch.cuda.is_available():
 
 ### 1. Prepare and encode
 
+File:
+
 ```text
 notebooks/01_prepare_and_encode.ipynb
 ```
 
+Open in Colab:
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yongmin-Yoo/claimsem/blob/main/notebooks/01_prepare_and_encode.ipynb)
+
 This notebook:
 
-- mounts Google Drive
 - loads patent records
 - validates dependency graphs
 - calculates claim depths
-- encodes each claim independently
+- encodes claims individually
 - saves resumable feature shards
-- verifies patent and claim alignment
-
-Open in Colab:
-
-```text
-https://colab.research.google.com/github/<GITHUB_OWNER>/claimsem/blob/main/notebooks/01_prepare_and_encode.ipynb
-```
+- verifies record and feature alignment
 
 ### 2. Development selection and ablation
+
+File:
 
 ```text
 notebooks/02_dev_selection_and_ablation.ipynb
 ```
 
-This notebook:
-
-- creates or loads the fixed development partition
-- evaluates candidate root and depth weights
-- fits PCA on development representations
-- runs controlled ClaimSem ablations
-- conducts hyperparameter sensitivity analysis
-- saves the selected configuration
-
 Open in Colab:
 
-```text
-https://colab.research.google.com/github/<GITHUB_OWNER>/claimsem/blob/main/notebooks/02_dev_selection_and_ablation.ipynb
-```
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yongmin-Yoo/claimsem/blob/main/notebooks/02_dev_selection_and_ablation.ipynb)
+
+This notebook:
+
+- creates the fixed development partition
+- evaluates candidate pooling settings
+- fits development PCA models
+- runs controlled ablations
+- conducts sensitivity analysis
+- saves the selected configuration
 
 ### 3. Final test evaluation
+
+File:
 
 ```text
 notebooks/03_final_test_evaluation.ipynb
 ```
 
+Open in Colab:
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yongmin-Yoo/claimsem/blob/main/notebooks/03_final_test_evaluation.ipynb)
+
 This notebook:
 
 - loads the frozen final configuration
 - applies root- and depth-aware pooling
-- applies the saved development-fitted PCA model
-- performs spherical \(K\)-means with seeds 17, 42, and 73
+- applies the development-fitted PCA transform
+- performs spherical $K$-means with three fixed seeds
 - evaluates CPC alignment
-- saves predictions, assignments, metrics, and manifests
-
-Open in Colab:
-
-```text
-https://colab.research.google.com/github/<GITHUB_OWNER>/claimsem/blob/main/notebooks/03_final_test_evaluation.ipynb
-```
+- saves predictions, assignments, and metrics
 
 ### 4. Generate paper tables
+
+File:
 
 ```text
 notebooks/04_generate_paper_tables.ipynb
 ```
 
-This notebook reads saved result files and produces:
-
-- the CPC baseline table
-- the ClaimSem ablation table
-- the hyperparameter sensitivity table
-- seed-level result tables
-- LaTeX-ready mean and standard-deviation values
-
 Open in Colab:
 
-```text
-https://colab.research.google.com/github/<GITHUB_OWNER>/claimsem/blob/main/notebooks/04_generate_paper_tables.ipynb
-```
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Yongmin-Yoo/claimsem/blob/main/notebooks/04_generate_paper_tables.ipynb)
+
+This notebook generates:
+
+- CPC result tables
+- ClaimSem ablation tables
+- sensitivity tables
+- seed-level result tables
+- LaTeX-ready values
 
 ---
 
@@ -399,7 +529,7 @@ https://colab.research.google.com/github/<GITHUB_OWNER>/claimsem/blob/main/noteb
 Python 3.10 or later is recommended.
 
 ```bash
-git clone https://github.com/<GITHUB_OWNER>/claimsem.git
+git clone https://github.com/Yongmin-Yoo/claimsem.git
 cd claimsem
 
 python -m venv .venv
@@ -419,9 +549,7 @@ pytest -q
 
 ## Data Format
 
-The public demo uses JSON records. Private or licensed datasets may also be loaded from pickle files through the data adapter.
-
-A patent record should contain the following fields:
+A patent record should follow this structure:
 
 ```json
 {
@@ -450,21 +578,21 @@ A patent record should contain the following fields:
 
 | Field | Type | Description |
 |---|---|---|
-| `patent_id` | string | Unique patent identifier |
-| `claims` | list | Claims belonging to the patent |
-| `claim_id` | string or integer | Claim identifier within the patent |
-| `text` | string | Claim text |
-| `parent_ids` | list | Referenced antecedent claim identifiers |
+| `patent_id` | String | Unique patent identifier |
+| `claims` | List | Claims belonging to the patent |
+| `claim_id` | String or integer | Claim identifier within the patent |
+| `text` | String | Claim text |
+| `parent_ids` | List | Referenced antecedent claim identifiers |
 
 ### Optional evaluation fields
 
 | Field | Type | Description |
 |---|---|---|
-| `cpc.section` | string | CPC section label |
-| `cpc.class` | string | CPC class label |
-| `cpc.subclass` | string | CPC subclass label |
+| `cpc.section` | String | CPC section label |
+| `cpc.class` | String | CPC class label |
+| `cpc.subclass` | String | CPC subclass label |
 
-CPC labels are not required for representation construction or clustering. They are used only for development configuration selection and final evaluation.
+CPC labels are not required for representation construction or clustering.
 
 ---
 
@@ -474,36 +602,37 @@ Before encoding, ClaimSem checks:
 
 - duplicate patent identifiers
 - duplicate claim identifiers
-- missing claim text
-- empty claim text
+- missing or empty claim text
 - self-referencing claims
 - references to nonexistent claims
 - cyclic dependency graphs
 - patents without a valid root claim
-- consistency between claim metadata and cached embeddings
-- consistency between patent order and representation order
+- record-to-feature alignment
+- patent order
+- claim order
+- embedding dimensions
 
-Validation results are saved as:
+Validation results are saved to:
 
 ```text
 dependency_validation.json
 ```
 
-Invalid or unresolved references are reported explicitly. The public pipeline does not silently modify dependency graphs without recording the change.
+The pipeline does not silently modify invalid dependency graphs without recording the modification.
 
 ---
 
 ## Encoder Configuration
 
-ClaimSem requires the exact pretrained encoder identifier and model revision to be specified in the configuration file.
+The exact pretrained encoder identifier and revision must be specified in the configuration file.
 
 Example:
 
 ```json
 {
   "encoder": {
-    "model_id": "<EXACT_PATENTSBERTA_V2_MODEL_ID>",
-    "revision": "<MODEL_REVISION>",
+    "model_id": "MODEL_ID",
+    "revision": "MODEL_REVISION",
     "frozen": true,
     "max_length": 512,
     "batch_size": 64,
@@ -512,18 +641,17 @@ Example:
 }
 ```
 
-The repository does not silently substitute a different encoder. Using another model may change the reported results.
+The repository does not silently substitute a different encoder. Changing the encoder may change the reported results.
 
-For efficient T4 inference, the encoder pipeline uses:
+For efficient T4 inference, the encoder pipeline supports:
 
-- `torch.inference_mode()`
+- PyTorch inference mode
 - automatic mixed precision
 - dynamic padding
 - length-aware batching
-- masked mean pooling on GPU
-- shard-level caching
-- resumable execution
-- FP32 output storage
+- GPU masked mean pooling
+- resumable shard processing
+- FP32 feature storage
 
 ---
 
@@ -531,7 +659,7 @@ For efficient T4 inference, the encoder pipeline uses:
 
 ClaimSem supports two feature modes.
 
-### Encode mode
+### Raw encoding mode
 
 ```json
 {
@@ -539,9 +667,9 @@ ClaimSem supports two feature modes.
 }
 ```
 
-Raw claim text is passed through the configured frozen encoder. This is the complete reproduction path.
+Raw claim text is passed through the configured frozen encoder.
 
-### Cached-shard mode
+### Cached feature mode
 
 ```json
 {
@@ -549,31 +677,31 @@ Raw claim text is passed through the configured frozen encoder. This is the comp
 }
 ```
 
-Previously generated frozen claim representations are loaded from disk. This mode is faster and is intended for development searches, ablations, and repeated clustering experiments.
+Previously generated frozen claim representations are loaded from disk.
 
-Cached shards must include enough metadata to verify:
+Cached representations should include metadata for:
 
-- patent identifier
-- claim identifier
+- patent identifiers
+- claim identifiers
 - claim order
 - embedding dimension
-- encoder model identifier
+- encoder identifier
 - encoder revision
 - preprocessing configuration
 
-A cache should not be used if its provenance cannot be verified.
+A cache should not be used when its provenance cannot be verified.
 
 ---
 
 ## Configuration Files
 
-### Final ClaimSem configuration
+### Final configuration
 
 ```text
 configs/final_claimsem.json
 ```
 
-This file stores the frozen paper configuration:
+The final configuration contains:
 
 ```json
 {
@@ -594,15 +722,15 @@ This file stores the frozen paper configuration:
 configs/dev_search.json
 ```
 
-This file defines:
+This configuration defines:
 
-- the development tuning and holdout partition
+- development tuning and holdout partitions
 - candidate root weights
 - candidate depth-decay coefficients
 - candidate PCA dimensions
 - candidate cluster counts
-- selection metrics
-- fixed random seeds
+- evaluation metrics
+- random seeds
 
 ### Smoke test
 
@@ -610,19 +738,21 @@ This file defines:
 configs/smoke_test.json
 ```
 
-This file runs a small end-to-end check using the records in `demo/`.
+This configuration runs a small end-to-end test using the records in `demo/`.
 
 ---
 
 ## Command-Line Usage
 
-### Prepare features
+### Prepare development features
 
 ```bash
 python scripts/prepare_features.py \
     --config configs/final_claimsem.json \
     --split dev
 ```
+
+### Prepare test features
 
 ```bash
 python scripts/prepare_features.py \
@@ -644,14 +774,14 @@ python scripts/run_ablation.py \
     --config configs/dev_search.json
 ```
 
-### Run the frozen final test evaluation
+### Run final test evaluation
 
 ```bash
 python scripts/run_final_test.py \
     --config configs/final_claimsem.json
 ```
 
-### Generate LaTeX tables
+### Generate paper tables
 
 ```bash
 python scripts/make_tables.py \
@@ -673,30 +803,30 @@ The development ablation includes the following variants.
 | No depth decay | Root weight 12, depth decay 0 |
 | Root claims only | Uses only independent claims |
 | First claim only | Uses only the first claim |
-| Shuffled dependent depths | Preserves roots but permutes positive depths within each patent |
+| Shuffled dependent depths | Permutes positive depths within each patent |
 | Document-level encoding | Concatenates claims before encoding |
-| No PCA reduction | Clusters the original 768-dimensional pooled representations |
+| No PCA reduction | Clusters the original 768-dimensional representations |
 
-The repository also supports sensitivity analysis over:
+Sensitivity analysis supports the following values:
 
 ```text
-root weight:
+Root weights:
 1, 2, 4, 8, 12, 16
 
-depth decay:
+Depth-decay coefficients:
 0.00, 0.05, 0.10, 0.20
 
-number of clusters:
+Cluster counts:
 20, 25, 30, 35, 40
 ```
 
-Ablations and sensitivity analyses are performed on development data. They are not used to redefine the final model after test evaluation.
+Ablations and sensitivity analyses are conducted on development data.
 
 ---
 
 ## Output Artifacts
 
-A complete run produces the following structure:
+A complete run produces:
 
 ```text
 artifacts/
@@ -736,7 +866,7 @@ artifacts/
     └── test_run_manifest.json
 ```
 
-Large artifacts should not be committed to GitHub. Store them in Google Drive, an institutional repository, or a release archive.
+Large artifacts should not be committed to GitHub.
 
 ---
 
@@ -745,22 +875,21 @@ Large artifacts should not be committed to GitHub. Store them in Google Drive, a
 Each run records:
 
 - Git commit hash
-- configuration file
+- configuration
 - Python version
 - PyTorch version
 - CUDA version
 - GPU model
-- encoder model identifier
+- encoder identifier
 - encoder revision
 - random seeds
 - patent count
 - claim count
 - CPC cardinalities
-- input-file checksums
-- output-file checksums
+- input checksums
+- output checksums
 - PCA metadata
 - clustering backend
-- clustering convergence information
 
 The final test pipeline checks the following expected statistics:
 
@@ -774,13 +903,7 @@ Clusters:           30
 Seeds:              17, 42, 73
 ```
 
-If these values differ, the script emits a warning and records the discrepancy in the run manifest.
-
----
-
-## Regression Target
-
-For the frozen paper configuration, the expected three-seed test result is:
+The expected regression target is:
 
 ```text
 Mean NMI:
@@ -793,7 +916,7 @@ Mean label-wise inverse purity:
 0.355812 ± 0.004877
 ```
 
-Exact bitwise reproduction is not guaranteed across different CUDA, BLAS, PCA, or clustering implementations. The test suite therefore uses configurable numerical tolerances.
+Small numerical differences may occur across CUDA, PyTorch, PCA, or clustering implementations.
 
 ---
 
@@ -805,56 +928,33 @@ Run all tests:
 pytest -q
 ```
 
-Run an individual test module:
+Run an individual test:
 
 ```bash
 pytest -q tests/test_dependency.py
 ```
 
-The tests cover:
+The test suite covers:
 
-### Dependency tests
-
-- single-root chains
-- multiple independent claims
+- dependency-depth calculation
+- multiple root claims
 - multiple-parent claims
 - invalid references
-- self-references
 - dependency cycles
-- longest-path depth calculation
-
-### Pooling tests
-
 - uniform pooling
 - root emphasis
 - depth decay
-- multiple root claims
-- single-claim patents
-- vectorized pooling consistency
-- numerical stability
-
-### Metric tests
-
+- vectorized pooling
 - NMI
 - predicted-cluster purity
 - label-wise inverse purity
-- inactive clusters
-- degenerate assignments
-
-### Alignment tests
-
-- patent order
-- claim order
 - record-to-feature alignment
-- missing embeddings
-- duplicate identifiers
-- expected CPC cardinalities
 
 ---
 
 ## Demo
 
-A small synthetic dataset is provided in:
+The repository includes a small synthetic dataset:
 
 ```text
 demo/demo_records.json
@@ -872,7 +972,7 @@ python scripts/run_final_test.py \
     --config configs/smoke_test.json
 ```
 
-The demo verifies the pipeline but does not reproduce the paper results.
+The demo verifies the execution pipeline. It does not reproduce the paper results.
 
 ---
 
@@ -882,63 +982,62 @@ Patent text and CPC labels may be subject to the terms of the original data prov
 
 The repository provides:
 
-- the expected record schema
+- an expected data schema
 - preprocessing utilities
 - a synthetic demonstration dataset
-- claim-dependency validation
-- feature-cache support
-- evaluation scripts
-- table-generation scripts
+- dependency validation
+- cached feature support
+- clustering evaluation
+- LaTeX table generation
 
-Users are responsible for obtaining and using patent data in accordance with the applicable license and terms.
+Users are responsible for obtaining and using patent data in accordance with the applicable licenses and terms.
 
 ---
 
-## Model Scope
+## Scope
 
-ClaimSem is a patent representation and clustering method. It does not:
+ClaimSem is a patent representation and clustering method.
+
+It does not:
 
 - generate natural-language topic labels
 - learn topic-word distributions
 - induce a topic hierarchy
 - use Depth-OT topic distributions
-- require an optimal transport solver
+- require optimal transport
 - fine-tune PatentSBERTa-V2
 - use CPC labels as encoder training targets
 
-The produced clusters can be evaluated against CPC categories, but they should not be described as supervised CPC predictions.
+The generated clusters should not be described as supervised CPC predictions.
 
 ---
 
 ## Limitations
 
-ClaimSem has several limitations.
-
-1. The root weight and depth-decay coefficient are selected using development labels and may not transfer unchanged to every patent corpus.
-2. The method assumes that valid claim-dependency references are available or can be extracted reliably.
-3. The exponential weighting rule is intentionally simple and may not capture every legal or semantic relation among claims.
-4. The reported evaluation uses one patent collection and CPC-based external metrics.
-5. Spherical \(K\)-means requires the number of clusters to be specified in advance.
-6. The final results use transductive clustering, so they should not be interpreted as inductive CPC classification performance.
-7. PatentSBERTa-V2 may inherit biases or coverage limitations from its pretraining data.
+1. Root weight and depth decay are selected using development labels and may not transfer unchanged to every patent collection.
+2. The method assumes that claim-dependency references are available or can be extracted reliably.
+3. The weighting rule is intentionally simple and may not capture every legal or semantic relation among claims.
+4. The current evaluation uses one patent collection and CPC-based external metrics.
+5. Spherical $K$-means requires the number of clusters to be specified.
+6. The reported results use transductive clustering and should not be interpreted as inductive CPC classification.
+7. The frozen patent encoder may inherit limitations from its pretraining data.
 
 ---
 
 ## Citation
 
-If you use ClaimSem, please cite:
+If you use ClaimSem, please cite the software repository:
 
 ```bibtex
-@inproceedings{<CITATION_KEY>,
-  title     = {<PAPER_TITLE>},
-  author    = {<AUTHOR_NAMES>},
-  booktitle = {<VENUE>},
-  year      = {<YEAR>},
-  url       = {<PAPER_URL>}
+@software{yoo2026claimsem,
+  author = {Yongmin Yoo},
+  title  = {ClaimSem: Structure-Aware Claim Aggregation for Patent Clustering},
+  year   = {2026},
+  url    = {https://github.com/Yongmin-Yoo/claimsem}
 }
 ```
 
-A machine-readable citation file is available in:
+A machine-readable citation file will be provided in:
 
 ```text
 CITATION.cff
@@ -950,35 +1049,18 @@ CITATION.cff
 
 See the `LICENSE` file for the software license.
 
-The license of this repository does not override the licenses or terms associated with:
-
-- PatentSBERTa-V2
-- Hugging Face models
-- patent datasets
-- CPC data
-- third-party preprocessing resources
+Third-party models and datasets remain subject to their original licenses and terms.
 
 ---
 
-## Acknowledgments
+## Author
 
-This project uses pretrained patent-language representations and open-source scientific Python libraries. Please cite the original model, dataset, and software papers where applicable.
+**Yongmin Yoo**
 
----
+Repository:
 
-## Contact
+https://github.com/Yongmin-Yoo/claimsem
 
-For questions or reproducibility issues, open a GitHub issue:
+Issues:
 
-```text
 https://github.com/Yongmin-Yoo/claimsem/issues
-```
-
-Please include:
-
-- the configuration file
-- the run manifest
-- the relevant log
-- the Python and CUDA versions
-- the GPU model
-- the smallest example that reproduces the problem
