@@ -51,30 +51,25 @@ ClaimSem does not require:
 - additional neural fine-tuning
 
 ---
-
 ## Method
 
 ### Patent claim-dependency graph
 
 Let a patent $P_n$ contain claims
 
-
-$$
+```math
 \mathcal{C}_n
 =
-\{c_{n,1},\ldots,c_{n,M_n}\}.
-
-$$
+\{c_{n,1},\ldots,c_{n,M_n}\}
+```
 
 The claims form a directed dependency graph
 
-
-$$
+```math
 G_n
 =
-(\mathcal{C}_n,E_n).
-
-$$
+(\mathcal{C}_n,E_n)
+```
 
 An edge $(c_i,c_j)\in E_n$ indicates that claim $c_j$ refers to and depends on claim $c_i$. Claims without valid antecedents are treated as root claims. A patent may contain multiple root claims when it has more than one independent claim.
 
@@ -82,42 +77,25 @@ An edge $(c_i,c_j)\in E_n$ indicates that claim $c_j$ refers to and depends on c
 
 The depth of claim $c$ is defined recursively as
 
-
-$$
+```math
 d(c)
 =
 \begin{cases}
 0, & \operatorname{Pa}(c)=\varnothing,\\
 1+\max\limits_{c'\in\operatorname{Pa}(c)}d(c'),
-& \text{otherwise},
+& \text{otherwise}.
 \end{cases}
+```
 
-$$
-
-where $\operatorname{Pa}(c)$ is the set of valid parent claims referenced by claim $c$.
-
-A root claim has depth zero. A dependent claim receives a depth determined by the longest valid path from a root claim.
+Here, $\operatorname{Pa}(c)$ is the set of valid parent claims referenced by claim $c$. A root claim has depth zero. A dependent claim receives a depth determined by the longest valid path from a root claim.
 
 ### Individual claim encoding
 
-Each claim is encoded independently with a frozen PatentSBERTa-V2 encoder.
-
-Let
-
-
-$$
-H_c
-=
-[\mathbf{h}_{c1},\ldots,\mathbf{h}_{cL_c}]
-
-$$
-
-denote the contextual token representations of claim $c$, and let $m_{c\ell}$ denote its attention mask.
+Each claim is encoded independently with a frozen PatentSBERTa-V2 encoder. Let $H_c=[\mathbf{h}_{c1},\ldots,\mathbf{h}_{cL_c}]$ denote the contextual token representations of claim $c$, and let $m_{c\ell}$ denote its attention mask.
 
 Masked mean pooling produces the claim representation
 
-
-$$
+```math
 \mathbf{e}_c
 =
 \frac{
@@ -126,36 +104,30 @@ m_{c\ell}\mathbf{h}_{c\ell}
 }{
 \sum_{\ell=1}^{L_c}
 m_{c\ell}
-}.
+}
+```
 
-$$
-
-Encoding claims separately prevents later claims from being removed because earlier claims consume the document-level input budget.
-
-The pretrained encoder remains frozen throughout feature construction and clustering.
+Encoding claims separately prevents later claims from being removed because earlier claims consume the document-level input budget. The pretrained encoder remains frozen throughout feature construction and clustering.
 
 ### Root- and depth-aware pooling
 
 ClaimSem assigns each claim a weight based on its root status and dependency depth:
 
-
-$$
+```math
 w_c(\alpha,\lambda)
 =
 \alpha^{\mathbb{I}[d(c)=0]}
-\exp\left(-\lambda d(c)\right),
+\exp\left(-\lambda d(c)\right)
+```
 
-$$
-
-where:
+Here:
 
 - $\alpha$ controls the emphasis placed on root claims
 - $\lambda$ controls the attenuation applied to deeper dependent claims
 
 The patent-level representation is
 
-
-$$
+```math
 \mathbf{v}_n
 =
 \frac{
@@ -164,9 +136,8 @@ w_c(\alpha,\lambda)\mathbf{e}_c
 }{
 \sum_{c\in\mathcal{C}_n}
 w_c(\alpha,\lambda)
-}.
-
-$$
+}
+```
 
 Uniform claim pooling is recovered when $\alpha=1$ and $\lambda=0$.
 
@@ -174,56 +145,42 @@ Uniform claim pooling is recovered when $\alpha=1$ and $\lambda=0$.
 
 The pooled representation $\mathbf{v}_n$ has 768 dimensions. A PCA transform fitted on development representations projects it to 128 dimensions:
 
-
-$$
+```math
 \widetilde{\mathbf{r}}_n
 =
 W_{\mathrm{PCA}}
 \left(
-\mathbf{v}_n
--
-\boldsymbol{\mu}_{\mathrm{PCA}}
-\right).
-
-$$
+\mathbf{v}_n-\boldsymbol{\mu}_{\mathrm{PCA}}
+\right)
+```
 
 The reduced representation is normalized to unit length:
 
-
-$$
+```math
 \mathbf{r}_n
 =
 \frac{
 \widetilde{\mathbf{r}}_n
 }{
-\left\lVert
-\widetilde{\mathbf{r}}_n
-\right\rVert_2
-}.
-
-$$
+\left\lVert\widetilde{\mathbf{r}}_n\right\rVert_2
+}
+```
 
 The PCA transform is fitted only on development representations. The same fixed transform is applied to test representations without refitting.
 
 ### Spherical clustering
 
-The normalized patent representations are partitioned using spherical $K$-means.
+The normalized patent representations are partitioned using spherical $K$-means. The cluster assignment of patent $P_n$ is
 
-The cluster assignment of patent $P_n$ is
-
-
-$$
+```math
 z_n
 =
 \underset{k\in\{1,\ldots,K\}}{\arg\max}
 \;
-\mathbf{r}_n^{\top}\boldsymbol{\nu}_k,
+\mathbf{r}_n^{\top}\boldsymbol{\nu}_k
+```
 
-$$
-
-where $\boldsymbol{\nu}_k$ is the unit-normalized centroid of cluster $k$.
-
-The final configuration uses $K=30$ clusters.
+Here, $\boldsymbol{\nu}_k$ is the unit-normalized centroid of cluster $k$. The final configuration uses $K=30$ clusters.
 
 ---
 
