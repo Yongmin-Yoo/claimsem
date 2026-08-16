@@ -78,16 +78,15 @@ An edge $(c_i,c_j)\in E_n$ indicates that claim $c_j$ refers to and depends on c
 The depth of claim $c$ is defined recursively as
 
 ```math
-d(c)
-=
+d(c)=
 \begin{cases}
-0, & \operatorname{Pa}(c)=\varnothing,\\
-1+\max\limits_{c'\in\operatorname{Pa}(c)}d(c'),
-& \text{otherwise}.
+0, & \mathrm{Pa}(c)=\varnothing, \\
+1+\max\limits_{c' \in \mathrm{Pa}(c)} d(c'), & \mathrm{otherwise}.
 \end{cases}
 ```
 
-Here, $\operatorname{Pa}(c)$ is the set of valid parent claims referenced by claim $c$. A root claim has depth zero. A dependent claim receives a depth determined by the longest valid path from a root claim.
+Here, $\mathrm{Pa}(c)$ denotes the set of valid parent claims referenced by claim $c$. A root claim has depth zero. A dependent claim receives a depth determined by the longest valid path from a root claim.
+
 
 ### Individual claim encoding
 
