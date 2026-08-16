@@ -231,10 +231,9 @@ All 30 clusters remain active.
 The maximum cluster share is
 
 
-$$
-0.055662 \pm 0.001145.
-
-$$
+```math
+0.055662 \pm 0.001145
+```
 
 ### Seed-level results
 
