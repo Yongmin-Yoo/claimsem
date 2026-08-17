@@ -1,0 +1,212 @@
+# ============================================================
+# Python
+# ============================================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.dll
+
+# ============================================================
+# Packaging
+# ============================================================
+
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================================
+# Virtual environments
+# ============================================================
+
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ============================================================
+# Test and coverage outputs
+# ============================================================
+
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.tox/
+.nox/
+
+# ============================================================
+# Linters and type checkers
+# ============================================================
+
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.pyright/
+
+# ============================================================
+# Jupyter and Colab
+# ============================================================
+
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# ============================================================
+# IDE and editor files
+# ============================================================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================================
+# Environment variables and secrets
+# ============================================================
+
+.env
+.env.*
+!.env.example
+
+*.pem
+*.key
+credentials.json
+service-account.json
+secrets.json
+
+# ============================================================
+# Logs and temporary files
+# ============================================================
+
+*.log
+logs/
+tmp/
+temp/
+.cache/
+.cache-*/
+*.tmp
+*.temp
+
+# ============================================================
+# Google Drive and Colab local mounts
+# ============================================================
+
+drive/
+MyDrive/
+content/
+
+# ============================================================
+# ClaimSem generated artifacts
+# ============================================================
+
+artifacts/
+outputs/
+results/
+runs/
+checkpoints/
+models/
+predictions/
+assignments/
+manifests/
+tables/generated/
+
+# ============================================================
+# Feature caches
+# ============================================================
+
+cache/
+caches/
+features/
+embeddings/
+partials/
+shards/
+
+# ============================================================
+# Large scientific data files
+# ============================================================
+
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.joblib
+*.pkl
+*.pickle
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.zarr
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+
+# ============================================================
+# Generated result files
+# ============================================================
+
+*.csv
+*.tsv
+*.jsonl
+
+# ============================================================
+# Local configuration files
+# ============================================================
+
+configs/local.json
+configs/local_*.json
+configs/private.json
+configs/paths.json
+
+# ============================================================
+# Temporary paper outputs
+# ============================================================
+
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# ============================================================
+# Keep required public files
+# ============================================================
+
+!demo/demo_records.json
+!configs/final_claimsem.json
+!configs/dev_search.json
+!configs/smoke_test.json
+!CITATION.cff
