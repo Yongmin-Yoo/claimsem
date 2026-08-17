@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "claimsem_smoke_test",
+  "description": "Small synthetic test for validating the ClaimSem pipeline",
+  "global_seed": 42,
+  "paths": {
+    "records": "demo/demo_records.json",
+    "output_root": "artifacts/smoke_test"
+  },
+  "data": {
+    "format": "json",
+    "patent_id_field": "patent_id",
+    "claims_field": "claims",
+    "claim_id_field": "claim_id",
+    "claim_text_field": "text",
+    "parent_ids_field": "parent_ids",
+    "cpc_field": "cpc",
+    "strict_alignment": true,
+    "validate_dependencies": true,
+    "remove_invalid_references": false,
+    "require_acyclic_graph": true
+  },
+  "features": {
+    "mode": "synthetic",
+    "embedding_dim": 16,
+    "dtype": "float32",
+    "synthetic_seed": 42
+  },
+  "pooling": {
+    "method": "root_depth_aware",
+    "root_weight": 12.0,
+    "depth_decay": 0.1
+  },
+  "pca": {
+    "enabled": true,
+    "output_dim": 4,
+    "fit_split": "smoke_test",
+    "whiten": false,
+    "random_state": 42
+  },
+  "clustering": {
+    "method": "spherical_kmeans",
+    "mode": "transductive",
+    "n_clusters": 3,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "max_iter": 50,
+    "tolerance": 0.000001,
+    "n_init": 1,
+    "backend": "torch",
+    "device": "auto"
+  },
+  "evaluation": {
+    "label_levels": [
+      "section",
+      "class",
+      "subclass"
+    ],
+    "metrics": [
+      "nmi",
+      "predicted_cluster_purity",
+      "label_wise_inverse_purity"
+    ],
+    "report_mean_std": true
+  },
+  "runtime": {
+    "resume": false,
+    "overwrite": true,
+    "save_manifest": true,
+    "save_predictions": true,
+    "fail_on_data_mismatch": true
+  }
+}
