@@ -20,9 +20,7 @@ def make_vectors(
     """Create deterministic nonzero synthetic vectors."""
     rng = np.random.default_rng(42)
 
-    vectors = rng.normal(
-        size=(n_samples, n_features)
-    ).astype(np.float32)
+    vectors = rng.normal(size=(n_samples, n_features)).astype(np.float32)
 
     norms = np.linalg.norm(
         vectors,
@@ -30,10 +28,7 @@ def make_vectors(
         keepdims=True,
     )
 
-    return (
-        vectors
-        / np.maximum(norms, 1e-12)
-    ).astype(np.float32)
+    return (vectors / np.maximum(norms, 1e-12)).astype(np.float32)
 
 
 def test_legacy_backend_requires_cuda() -> None:
@@ -95,17 +90,13 @@ def test_legacy_backend_is_seed_reproducible() -> None:
     assert first.objective == second.objective
     assert first.n_iterations == second.n_iterations
 
-    assert first.labels.shape == (
-        vectors.shape[0],
-    )
+    assert first.labels.shape == (vectors.shape[0],)
     assert first.centroids.shape == (
         4,
         vectors.shape[1],
     )
     assert first.cluster_counts.shape == (4,)
-    assert int(first.cluster_counts.sum()) == (
-        vectors.shape[0]
-    )
+    assert int(first.cluster_counts.sum()) == (vectors.shape[0])
     assert first.n_active_clusters == 4
     assert np.isfinite(first.objective)
 
@@ -139,22 +130,15 @@ def test_legacy_multiple_seed_runner() -> None:
     )
 
     assert len(results) == 3
-    assert [
-        result.seed
-        for result in results
-    ] == [17, 42, 73]
+    assert [result.seed for result in results] == [17, 42, 73]
 
     for result in results:
-        assert result.labels.shape == (
-            vectors.shape[0],
-        )
+        assert result.labels.shape == (vectors.shape[0],)
         assert result.centroids.shape == (
             4,
             vectors.shape[1],
         )
-        assert result.cluster_counts.sum() == (
-            vectors.shape[0]
-        )
+        assert result.cluster_counts.sum() == (vectors.shape[0])
         assert result.n_active_clusters == 4
 
 

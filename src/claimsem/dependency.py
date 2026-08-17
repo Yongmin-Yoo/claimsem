@@ -31,9 +31,7 @@ class DependencyValidationResult:
 
         result = asdict(self)
         result["roots"] = list(self.roots)
-        result["invalid_references"] = [
-            list(item) for item in self.invalid_references
-        ]
+        result["invalid_references"] = [list(item) for item in self.invalid_references]
         result["self_references"] = list(self.self_references)
         return result
 
@@ -45,16 +43,12 @@ def normalize_identifier(value: Any, *, field_name: str) -> str:
         raise DependencyError(f"'{field_name}' cannot be null.")
 
     if isinstance(value, bool):
-        raise DependencyError(
-            f"'{field_name}' cannot be Boolean."
-        )
+        raise DependencyError(f"'{field_name}' cannot be Boolean.")
 
     normalized = str(value).strip()
 
     if not normalized:
-        raise DependencyError(
-            f"'{field_name}' cannot be empty."
-        )
+        raise DependencyError(f"'{field_name}' cannot be empty.")
 
     return normalized
 
@@ -103,14 +97,11 @@ def _normalize_claims(
 
     for index, claim in enumerate(claims):
         if not isinstance(claim, Mapping):
-            raise DependencyError(
-                f"Claim at index {index} must be an object."
-            )
+            raise DependencyError(f"Claim at index {index} must be an object.")
 
         if claim_id_field not in claim:
             raise DependencyError(
-                f"Claim at index {index} is missing "
-                f"'{claim_id_field}'."
+                f"Claim at index {index} is missing '{claim_id_field}'."
             )
 
         claim_id = normalize_identifier(
@@ -119,21 +110,15 @@ def _normalize_claims(
         )
 
         if claim_id in parent_map:
-            raise DependencyError(
-                f"Duplicate claim identifier: {claim_id}"
-            )
+            raise DependencyError(f"Duplicate claim identifier: {claim_id}")
 
-        parent_ids = normalize_parent_ids(
-            claim.get(parent_ids_field, [])
-        )
+        parent_ids = normalize_parent_ids(claim.get(parent_ids_field, []))
 
         claim_ids.append(claim_id)
         parent_map[claim_id] = parent_ids
 
     if not claim_ids:
-        raise DependencyError(
-            "A patent must contain at least one claim."
-        )
+        raise DependencyError("A patent must contain at least one claim.")
 
     return claim_ids, parent_map
 
@@ -161,11 +146,7 @@ def _find_self_references(
 ) -> list[str]:
     """Find claims that reference themselves."""
 
-    return [
-        claim_id
-        for claim_id in claim_ids
-        if claim_id in parent_map[claim_id]
-    ]
+    return [claim_id for claim_id in claim_ids if claim_id in parent_map[claim_id]]
 
 
 def _build_adjacency(
@@ -175,19 +156,12 @@ def _build_adjacency(
     """Build parent-to-child adjacency and indegree."""
 
     claim_set = set(claim_ids)
-    children: dict[str, list[str]] = {
-        claim_id: [] for claim_id in claim_ids
-    }
-    indegree: dict[str, int] = {
-        claim_id: 0 for claim_id in claim_ids
-    }
+    children: dict[str, list[str]] = {claim_id: [] for claim_id in claim_ids}
+    indegree: dict[str, int] = {claim_id: 0 for claim_id in claim_ids}
 
     for child_id in claim_ids:
         for parent_id in parent_map[child_id]:
-            if (
-                parent_id in claim_set
-                and parent_id != child_id
-            ):
+            if parent_id in claim_set and parent_id != child_id:
                 children[parent_id].append(child_id)
                 indegree[child_id] += 1
 
@@ -205,16 +179,9 @@ def _topological_order_and_depths(
         parent_map,
     )
 
-    queue = deque(
-        claim_id
-        for claim_id in claim_ids
-        if indegree[claim_id] == 0
-    )
+    queue = deque(claim_id for claim_id in claim_ids if indegree[claim_id] == 0)
 
-    depths = {
-        claim_id: 0
-        for claim_id in queue
-    }
+    depths = {claim_id: 0 for claim_id in queue}
     order: list[str] = []
 
     while queue:
@@ -235,9 +202,7 @@ def _topological_order_and_depths(
                 queue.append(child_id)
 
     if len(order) != len(claim_ids):
-        raise DependencyError(
-            "The claim-dependency graph contains a cycle."
-        )
+        raise DependencyError("The claim-dependency graph contains a cycle.")
 
     return order, depths
 
@@ -268,27 +233,18 @@ def compute_claim_depths(
 
     if self_references:
         joined = ", ".join(self_references)
-        raise DependencyError(
-            f"Self-referencing claims detected: {joined}"
-        )
+        raise DependencyError(f"Self-referencing claims detected: {joined}")
 
     if invalid_references and not remove_invalid_references:
         formatted = ", ".join(
-            f"{child}->{parent}"
-            for child, parent in invalid_references
+            f"{child}->{parent}" for child, parent in invalid_references
         )
-        raise DependencyError(
-            f"Invalid parent references detected: {formatted}"
-        )
+        raise DependencyError(f"Invalid parent references detected: {formatted}")
 
     if invalid_references:
         known_claims = set(claim_ids)
         parent_map = {
-            child_id: [
-                parent_id
-                for parent_id in parents
-                if parent_id in known_claims
-            ]
+            child_id: [parent_id for parent_id in parents if parent_id in known_claims]
             for child_id, parents in parent_map.items()
         }
 
@@ -297,10 +253,7 @@ def compute_claim_depths(
         parent_map,
     )
 
-    return {
-        claim_id: int(depths[claim_id])
-        for claim_id in claim_ids
-    }
+    return {claim_id: int(depths[claim_id]) for claim_id in claim_ids}
 
 
 def validate_dependency_graph(
@@ -340,10 +293,7 @@ def validate_dependency_graph(
         child_id: [
             parent_id
             for parent_id in parents
-            if (
-                parent_id in known_claims
-                and parent_id != child_id
-            )
+            if (parent_id in known_claims and parent_id != child_id)
         ]
         for child_id, parents in parent_map.items()
     }
@@ -360,26 +310,15 @@ def validate_dependency_graph(
         has_cycle = True
 
     roots = tuple(
-        claim_id
-        for claim_id in claim_ids
-        if not cleaned_parent_map[claim_id]
+        claim_id for claim_id in claim_ids if not cleaned_parent_map[claim_id]
     )
 
-    n_edges = sum(
-        len(parents)
-        for parents in cleaned_parent_map.values()
-    )
+    n_edges = sum(len(parents) for parents in cleaned_parent_map.values())
 
     is_valid = (
         not self_references
-        and (
-            remove_invalid_references
-            or not invalid_references
-        )
-        and (
-            not require_acyclic_graph
-            or not has_cycle
-        )
+        and (remove_invalid_references or not invalid_references)
+        and (not require_acyclic_graph or not has_cycle)
         and bool(roots)
     )
 

@@ -9,7 +9,6 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Mapping
 
-
 _ENV_PATTERN = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
@@ -41,8 +40,7 @@ def _expand_environment_string(
     if strict and missing_variables:
         missing = ", ".join(sorted(missing_variables))
         raise ConfigError(
-            "The following environment variables are not defined: "
-            f"{missing}"
+            f"The following environment variables are not defined: {missing}"
         )
 
     return os.path.expanduser(expanded)
@@ -59,16 +57,10 @@ def _expand_environment_values(
         return _expand_environment_string(value, strict=strict)
 
     if isinstance(value, list):
-        return [
-            _expand_environment_values(item, strict=strict)
-            for item in value
-        ]
+        return [_expand_environment_values(item, strict=strict) for item in value]
 
     if isinstance(value, tuple):
-        return tuple(
-            _expand_environment_values(item, strict=strict)
-            for item in value
-        )
+        return tuple(_expand_environment_values(item, strict=strict) for item in value)
 
     if isinstance(value, dict):
         return {
@@ -151,9 +143,7 @@ def _require_positive_number(
     value = mapping.get(key)
 
     if isinstance(value, bool) or not isinstance(value, (int, float)):
-        raise ConfigError(
-            f"Configuration value '{key}' must be numeric."
-        )
+        raise ConfigError(f"Configuration value '{key}' must be numeric.")
 
     number = float(value)
 
@@ -164,9 +154,7 @@ def _require_positive_number(
 
     if not valid:
         comparison = "non-negative" if allow_zero else "positive"
-        raise ConfigError(
-            f"Configuration value '{key}' must be {comparison}."
-        )
+        raise ConfigError(f"Configuration value '{key}' must be {comparison}.")
 
     return number
 
@@ -187,16 +175,12 @@ def validate_config(
     schema_version = config.get("schema_version")
 
     if not isinstance(schema_version, str) or not schema_version.strip():
-        raise ConfigError(
-            "'schema_version' must be a non-empty string."
-        )
+        raise ConfigError("'schema_version' must be a non-empty string.")
 
     experiment_name = config.get("experiment_name")
 
     if not isinstance(experiment_name, str) or not experiment_name.strip():
-        raise ConfigError(
-            "'experiment_name' must be a non-empty string."
-        )
+        raise ConfigError("'experiment_name' must be a non-empty string.")
 
     global_seed = config.get("global_seed")
 
@@ -221,17 +205,13 @@ def validate_config(
         or not isinstance(embedding_dim, int)
         or embedding_dim <= 0
     ):
-        raise ConfigError(
-            "'features.embedding_dim' must be a positive integer."
-        )
+        raise ConfigError("'features.embedding_dim' must be a positive integer.")
 
     if not isinstance(
         data.get("validate_dependencies"),
         bool,
     ):
-        raise ConfigError(
-            "'data.validate_dependencies' must be Boolean."
-        )
+        raise ConfigError("'data.validate_dependencies' must be Boolean.")
 
     pca_enabled = pca.get("enabled")
 
@@ -246,22 +226,17 @@ def validate_config(
             or not isinstance(output_dim, int)
             or output_dim <= 0
         ):
-            raise ConfigError(
-                "'pca.output_dim' must be a positive integer."
-            )
+            raise ConfigError("'pca.output_dim' must be a positive integer.")
 
         if output_dim > embedding_dim:
             raise ConfigError(
-                "'pca.output_dim' cannot exceed "
-                "'features.embedding_dim'."
+                "'pca.output_dim' cannot exceed 'features.embedding_dim'."
             )
 
     method = clustering.get("method")
 
     if method != "spherical_kmeans":
-        raise ConfigError(
-            "'clustering.method' must be 'spherical_kmeans'."
-        )
+        raise ConfigError("'clustering.method' must be 'spherical_kmeans'.")
 
     seeds = clustering.get("seeds")
 
@@ -269,15 +244,12 @@ def validate_config(
         not isinstance(seeds, list)
         or not seeds
         or any(
-            isinstance(seed, bool)
-            or not isinstance(seed, int)
-            or seed < 0
+            isinstance(seed, bool) or not isinstance(seed, int) or seed < 0
             for seed in seeds
         )
     ):
         raise ConfigError(
-            "'clustering.seeds' must be a non-empty list "
-            "of non-negative integers."
+            "'clustering.seeds' must be a non-empty list of non-negative integers."
         )
 
     n_clusters = clustering.get("n_clusters")
@@ -294,14 +266,8 @@ def validate_config(
 
     max_iter = clustering.get("max_iter")
 
-    if (
-        isinstance(max_iter, bool)
-        or not isinstance(max_iter, int)
-        or max_iter <= 0
-    ):
-        raise ConfigError(
-            "'clustering.max_iter' must be a positive integer."
-        )
+    if isinstance(max_iter, bool) or not isinstance(max_iter, int) or max_iter <= 0:
+        raise ConfigError("'clustering.max_iter' must be a positive integer.")
 
     _require_positive_number(
         clustering,
@@ -312,26 +278,20 @@ def validate_config(
     label_levels = evaluation.get("label_levels")
 
     if not isinstance(label_levels, list) or not label_levels:
-        raise ConfigError(
-            "'evaluation.label_levels' must be a non-empty list."
-        )
+        raise ConfigError("'evaluation.label_levels' must be a non-empty list.")
 
     valid_levels = {"section", "class", "subclass"}
     unknown_levels = set(label_levels) - valid_levels
 
     if unknown_levels:
         unknown = ", ".join(sorted(unknown_levels))
-        raise ConfigError(
-            f"Unsupported CPC label levels: {unknown}"
-        )
+        raise ConfigError(f"Unsupported CPC label levels: {unknown}")
 
     pooling = config.get("pooling")
 
     if pooling is not None:
         if not isinstance(pooling, Mapping):
-            raise ConfigError(
-                "'pooling' must be a JSON object."
-            )
+            raise ConfigError("'pooling' must be a JSON object.")
 
         _require_positive_number(
             pooling,
@@ -375,27 +335,19 @@ def load_config(
     config_path = Path(path).expanduser().resolve()
 
     if not config_path.exists():
-        raise FileNotFoundError(
-            f"Configuration file not found: {config_path}"
-        )
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
     if not config_path.is_file():
-        raise ConfigError(
-            f"Configuration path is not a file: {config_path}"
-        )
+        raise ConfigError(f"Configuration path is not a file: {config_path}")
 
     try:
         with config_path.open("r", encoding="utf-8") as file:
             loaded = json.load(file)
     except json.JSONDecodeError as error:
-        raise ConfigError(
-            f"Invalid JSON in {config_path}: {error}"
-        ) from error
+        raise ConfigError(f"Invalid JSON in {config_path}: {error}") from error
 
     if not isinstance(loaded, dict):
-        raise ConfigError(
-            "The top-level configuration value must be a JSON object."
-        )
+        raise ConfigError("The top-level configuration value must be a JSON object.")
 
     config = deepcopy(loaded)
     config = _expand_environment_values(

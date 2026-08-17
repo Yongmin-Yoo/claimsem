@@ -77,8 +77,7 @@ def _validate_vectors(vectors: np.ndarray) -> np.ndarray:
 
     if matrix.ndim != 2:
         raise ClusteringError(
-            "vectors must have shape (n_samples, n_features), "
-            f"got {matrix.shape}."
+            f"vectors must have shape (n_samples, n_features), got {matrix.shape}."
         )
 
     if matrix.shape[0] == 0:
@@ -117,10 +116,7 @@ def _resolve_device(requested: str | torch.device = "auto") -> torch.device:
         if value == "auto":
             if torch.cuda.is_available():
                 device = torch.device("cuda")
-            elif (
-                hasattr(torch.backends, "mps")
-                and torch.backends.mps.is_available()
-            ):
+            elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
                 device = torch.device("mps")
             else:
                 device = torch.device("cpu")
@@ -131,10 +127,7 @@ def _resolve_device(requested: str | torch.device = "auto") -> torch.device:
         raise ClusteringError("CUDA was requested but is not available.")
 
     if device.type == "mps":
-        available = (
-            hasattr(torch.backends, "mps")
-            and torch.backends.mps.is_available()
-        )
+        available = hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
         if not available:
             raise ClusteringError("MPS was requested but is not available.")
 
@@ -234,17 +227,13 @@ def spherical_kmeans(
         raise ClusteringError("n_clusters must be greater than one.")
 
     if n_clusters > n_samples:
-        raise ClusteringError(
-            f"n_clusters={n_clusters} exceeds n_samples={n_samples}."
-        )
+        raise ClusteringError(f"n_clusters={n_clusters} exceeds n_samples={n_samples}.")
 
     if not isinstance(max_iter, int) or max_iter <= 0:
         raise ClusteringError("max_iter must be a positive integer.")
 
     if not np.isfinite(tolerance) or tolerance < 0:
-        raise ClusteringError(
-            "tolerance must be a non-negative finite number."
-        )
+        raise ClusteringError("tolerance must be a non-negative finite number.")
 
     resolved_device = _resolve_device(device)
 
@@ -291,10 +280,9 @@ def spherical_kmeans(
         nonempty_mask = counts > 0
 
         if torch.any(nonempty_mask):
-            new_centroids[nonempty_mask] = (
-                sums[nonempty_mask]
-                / counts[nonempty_mask].unsqueeze(1)
-            )
+            new_centroids[nonempty_mask] = sums[nonempty_mask] / counts[
+                nonempty_mask
+            ].unsqueeze(1)
 
         empty_indices = torch.nonzero(
             ~nonempty_mask,
@@ -317,18 +305,14 @@ def spherical_kmeans(
 
             for empty_cluster in empty_indices.tolist():
                 while candidate_position < candidate_order.numel():
-                    candidate_index = int(
-                        candidate_order[candidate_position].item()
-                    )
+                    candidate_index = int(candidate_order[candidate_position].item())
                     candidate_position += 1
 
                     if candidate_index not in used_candidates:
                         used_candidates.add(candidate_index)
                         break
                 else:
-                    candidate_index = int(
-                        empty_cluster % n_samples
-                    )
+                    candidate_index = int(empty_cluster % n_samples)
 
                 new_centroids[empty_cluster] = tensor[candidate_index]
 
@@ -345,9 +329,8 @@ def spherical_kmeans(
             )
         ).item()
 
-        labels_unchanged = (
-            previous_labels is not None
-            and torch.equal(labels, previous_labels)
+        labels_unchanged = previous_labels is not None and torch.equal(
+            labels, previous_labels
         )
 
         centroids = new_centroids
@@ -365,9 +348,7 @@ def spherical_kmeans(
         final_labels.unsqueeze(1),
     ).squeeze(1)
 
-    objective = torch.mean(
-        1.0 - assigned_similarities
-    ).item()
+    objective = torch.mean(1.0 - assigned_similarities).item()
 
     cluster_counts = torch.bincount(
         final_labels,
@@ -377,9 +358,7 @@ def spherical_kmeans(
     return SphericalKMeansResult(
         labels=final_labels.detach().cpu().numpy().astype(np.int64),
         centroids=centroids.detach().cpu().numpy().astype(np.float32),
-        cluster_counts=cluster_counts.detach().cpu().numpy().astype(
-            np.int64
-        ),
+        cluster_counts=cluster_counts.detach().cpu().numpy().astype(np.int64),
         objective=float(objective),
         n_iterations=int(n_iterations),
         converged=bool(converged),
@@ -450,6 +429,7 @@ def assign_to_centroids(
 
     return labels.detach().cpu().numpy().astype(np.int64)
 
+
 # BEGIN LEGACY DEPTH-OT GPU SPHERICAL K-MEANS
 
 
@@ -466,29 +446,20 @@ def _validate_legacy_vectors(
 
     if matrix.ndim != 2:
         raise ClusteringError(
-            "vectors must have shape (n_samples, n_features), "
-            f"got {matrix.shape}."
+            f"vectors must have shape (n_samples, n_features), got {matrix.shape}."
         )
 
     if matrix.shape[0] == 0:
-        raise ClusteringError(
-            "At least one patent vector is required."
-        )
+        raise ClusteringError("At least one patent vector is required.")
 
     if matrix.shape[1] == 0:
-        raise ClusteringError(
-            "Patent vectors must have at least one feature."
-        )
+        raise ClusteringError("Patent vectors must have at least one feature.")
 
     if not np.issubdtype(matrix.dtype, np.number):
-        raise ClusteringError(
-            "Patent vectors must contain numeric values."
-        )
+        raise ClusteringError("Patent vectors must contain numeric values.")
 
     if not np.all(np.isfinite(matrix)):
-        raise ClusteringError(
-            "Patent vectors contain non-finite values."
-        )
+        raise ClusteringError("Patent vectors contain non-finite values.")
 
     row_norms = np.linalg.norm(
         matrix.astype(np.float64, copy=False),
@@ -496,9 +467,7 @@ def _validate_legacy_vectors(
     )
 
     if np.any(row_norms <= 1e-12):
-        indices = np.flatnonzero(
-            row_norms <= 1e-12
-        ).tolist()
+        indices = np.flatnonzero(row_norms <= 1e-12).tolist()
 
         raise ClusteringError(
             "Zero or near-zero patent vectors cannot be clustered. "
@@ -536,56 +505,29 @@ def legacy_gpu_spherical_kmeans(
     ClaimSem API and stores mean cosine distance, i.e.
     ``1 - mean_cosine_similarity``.
     """
-    matrix = _validate_legacy_vectors(
-        vectors
-    )
+    matrix = _validate_legacy_vectors(vectors)
     n_samples, n_features = matrix.shape
 
-    if (
-        not isinstance(n_clusters, int)
-        or isinstance(n_clusters, bool)
-    ):
-        raise ClusteringError(
-            "n_clusters must be an integer."
-        )
+    if not isinstance(n_clusters, int) or isinstance(n_clusters, bool):
+        raise ClusteringError("n_clusters must be an integer.")
 
     if n_clusters <= 1:
-        raise ClusteringError(
-            "n_clusters must be greater than one."
-        )
+        raise ClusteringError("n_clusters must be greater than one.")
 
     if n_clusters > n_samples:
-        raise ClusteringError(
-            f"n_clusters={n_clusters} exceeds "
-            f"n_samples={n_samples}."
-        )
+        raise ClusteringError(f"n_clusters={n_clusters} exceeds n_samples={n_samples}.")
 
-    if (
-        not isinstance(max_iter, int)
-        or isinstance(max_iter, bool)
-        or max_iter <= 0
-    ):
-        raise ClusteringError(
-            "max_iter must be a positive integer."
-        )
+    if not isinstance(max_iter, int) or isinstance(max_iter, bool) or max_iter <= 0:
+        raise ClusteringError("max_iter must be a positive integer.")
 
-    if (
-        not np.isfinite(tolerance)
-        or tolerance < 0
-    ):
-        raise ClusteringError(
-            "tolerance must be a non-negative "
-            "finite number."
-        )
+    if not np.isfinite(tolerance) or tolerance < 0:
+        raise ClusteringError("tolerance must be a non-negative finite number.")
 
-    resolved_device = _resolve_device(
-        device
-    )
+    resolved_device = _resolve_device(device)
 
     if resolved_device.type != "cuda":
         raise ClusteringError(
-            "legacy_gpu_spherical_kmeans requires CUDA "
-            "for exact Depth-OT reproduction."
+            "legacy_gpu_spherical_kmeans requires CUDA for exact Depth-OT reproduction."
         )
 
     # Match the original Colab/T4 execution configuration.
@@ -607,9 +549,7 @@ def legacy_gpu_spherical_kmeans(
     generator = torch.Generator(
         device=resolved_device,
     )
-    generator.manual_seed(
-        int(seed)
-    )
+    generator.manual_seed(int(seed))
 
     first_index = int(
         torch.randint(
@@ -621,17 +561,12 @@ def legacy_gpu_spherical_kmeans(
         ).item()
     )
 
-    centroid_indices = [
-        first_index
-    ]
+    centroid_indices = [first_index]
 
-    closest_distance = (
-        1.0
-        - torch.matmul(
-            x,
-            x[first_index].unsqueeze(1),
-        ).squeeze(1)
-    )
+    closest_distance = 1.0 - torch.matmul(
+        x,
+        x[first_index].unsqueeze(1),
+    ).squeeze(1)
 
     # Preserve the original GPU K-means++ procedure exactly.
     for _ in range(1, n_clusters):
@@ -640,10 +575,7 @@ def legacy_gpu_spherical_kmeans(
             min=1e-8,
         )
 
-        probabilities = (
-            probabilities
-            / probabilities.sum()
-        )
+        probabilities = probabilities / probabilities.sum()
 
         next_index = int(
             torch.multinomial(
@@ -653,17 +585,12 @@ def legacy_gpu_spherical_kmeans(
             ).item()
         )
 
-        centroid_indices.append(
-            next_index
-        )
+        centroid_indices.append(next_index)
 
-        new_distance = (
-            1.0
-            - torch.matmul(
-                x,
-                x[next_index].unsqueeze(1),
-            ).squeeze(1)
-        )
+        new_distance = 1.0 - torch.matmul(
+            x,
+            x[next_index].unsqueeze(1),
+        ).squeeze(1)
 
         closest_distance = torch.minimum(
             closest_distance,
@@ -694,9 +621,7 @@ def legacy_gpu_spherical_kmeans(
             centroids.T,
         )
 
-        best_similarity, labels = (
-            similarities.max(dim=1)
-        )
+        best_similarity, labels = similarities.max(dim=1)
 
         new_centroids = torch.zeros(
             (n_clusters, n_features),
@@ -715,27 +640,16 @@ def legacy_gpu_spherical_kmeans(
             minlength=n_clusters,
         ).float()
 
-        empty_clusters = torch.where(
-            counts == 0
-        )[0]
+        empty_clusters = torch.where(counts == 0)[0]
 
         if len(empty_clusters) > 0:
-            difficult_points = torch.argsort(
-                best_similarity
-            )[:len(empty_clusters)]
+            difficult_points = torch.argsort(best_similarity)[: len(empty_clusters)]
 
-            new_centroids[
-                empty_clusters
-            ] = x[difficult_points]
+            new_centroids[empty_clusters] = x[difficult_points]
 
-            counts[
-                empty_clusters
-            ] = 1.0
+            counts[empty_clusters] = 1.0
 
-        new_centroids = (
-            new_centroids
-            / counts.unsqueeze(1)
-        )
+        new_centroids = new_centroids / counts.unsqueeze(1)
 
         new_centroids = F.normalize(
             new_centroids,
@@ -743,45 +657,29 @@ def legacy_gpu_spherical_kmeans(
             dim=1,
         )
 
-        current_similarity = float(
-            best_similarity.mean().item()
-        )
+        current_similarity = float(best_similarity.mean().item())
 
         centroids = new_centroids
         n_iterations = iteration + 1
 
         if previous_similarity is not None:
-            if (
-                abs(
-                    current_similarity
-                    - previous_similarity
-                )
-                < tolerance
-            ):
+            if abs(current_similarity - previous_similarity) < tolerance:
                 converged = True
                 break
 
-        previous_similarity = (
-            current_similarity
-        )
+        previous_similarity = current_similarity
 
     final_similarities = torch.matmul(
         x,
         centroids.T,
     )
 
-    final_values, final_labels = (
-        final_similarities.max(dim=1)
-    )
+    final_values, final_labels = final_similarities.max(dim=1)
 
-    mean_similarity = float(
-        final_values.mean().item()
-    )
+    mean_similarity = float(final_values.mean().item())
 
     # Public ClaimSem objective: lower cosine distance is better.
-    objective = float(
-        1.0 - mean_similarity
-    )
+    objective = float(1.0 - mean_similarity)
 
     cluster_counts = torch.bincount(
         final_labels,
@@ -789,24 +687,9 @@ def legacy_gpu_spherical_kmeans(
     )
 
     return SphericalKMeansResult(
-        labels=(
-            final_labels.detach()
-            .cpu()
-            .numpy()
-            .astype(np.int64)
-        ),
-        centroids=(
-            centroids.detach()
-            .cpu()
-            .numpy()
-            .astype(np.float32)
-        ),
-        cluster_counts=(
-            cluster_counts.detach()
-            .cpu()
-            .numpy()
-            .astype(np.int64)
-        ),
+        labels=(final_labels.detach().cpu().numpy().astype(np.int64)),
+        centroids=(centroids.detach().cpu().numpy().astype(np.float32)),
+        cluster_counts=(cluster_counts.detach().cpu().numpy().astype(np.int64)),
         objective=objective,
         n_iterations=int(n_iterations),
         converged=bool(converged),
@@ -824,22 +707,12 @@ def run_multiple_seeds_legacy(
 ) -> list[SphericalKMeansResult]:
     """Run the legacy GPU backend for multiple independent seeds."""
     if not seeds:
-        raise ClusteringError(
-            "At least one clustering seed is required."
-        )
+        raise ClusteringError("At least one clustering seed is required.")
 
-    normalized_seeds = [
-        int(seed)
-        for seed in seeds
-    ]
+    normalized_seeds = [int(seed) for seed in seeds]
 
-    if (
-        len(set(normalized_seeds))
-        != len(normalized_seeds)
-    ):
-        raise ClusteringError(
-            "Clustering seeds must be unique."
-        )
+    if len(set(normalized_seeds)) != len(normalized_seeds):
+        raise ClusteringError("Clustering seeds must be unique.")
 
     return [
         legacy_gpu_spherical_kmeans(

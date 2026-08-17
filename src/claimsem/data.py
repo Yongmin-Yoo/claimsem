@@ -52,14 +52,10 @@ def load_raw_records(
     input_path = Path(path).expanduser().resolve()
 
     if not input_path.exists():
-        raise FileNotFoundError(
-            f"Patent record file not found: {input_path}"
-        )
+        raise FileNotFoundError(f"Patent record file not found: {input_path}")
 
     if not input_path.is_file():
-        raise DataError(
-            f"Patent record path is not a file: {input_path}"
-        )
+        raise DataError(f"Patent record path is not a file: {input_path}")
 
     normalized_format = (
         data_format.strip().lower()
@@ -74,9 +70,7 @@ def load_raw_records(
         with input_path.open("rb") as file:
             records = pickle.load(file)
     else:
-        raise DataError(
-            "Unsupported record format. Use JSON or pickle."
-        )
+        raise DataError("Unsupported record format. Use JSON or pickle.")
 
     if isinstance(records, Mapping):
         for candidate_key in ("records", "data", "patents"):
@@ -93,17 +87,13 @@ def load_raw_records(
         records,
         (str, bytes, bytearray),
     ):
-        raise DataError(
-            "The record file must contain a list of patent records."
-        )
+        raise DataError("The record file must contain a list of patent records.")
 
     normalized_records = list(records)
 
     for index, record in enumerate(normalized_records):
         if not isinstance(record, Mapping):
-            raise DataError(
-                f"Patent record at index {index} must be an object."
-            )
+            raise DataError(f"Patent record at index {index} must be an object.")
 
     return normalized_records
 
@@ -145,19 +135,13 @@ def _normalize_cpc(
 
     if isinstance(value, Sequence):
         first_label = next(
-            (
-                item
-                for item in value
-                if item is not None and str(item).strip()
-            ),
+            (item for item in value if item is not None and str(item).strip()),
             None,
         )
 
         return _normalize_cpc(first_label)
 
-    raise DataError(
-        "CPC information must be an object, string, sequence, or null."
-    )
+    raise DataError("CPC information must be an object, string, sequence, or null.")
 
 
 def _normalize_claim(
@@ -170,9 +154,7 @@ def _normalize_claim(
     """Normalize one claim record."""
 
     if claim_id_field not in claim:
-        raise DataError(
-            f"A claim is missing '{claim_id_field}'."
-        )
+        raise DataError(f"A claim is missing '{claim_id_field}'.")
 
     claim_id = normalize_identifier(
         claim[claim_id_field],
@@ -187,13 +169,9 @@ def _normalize_claim(
     text = str(raw_text).strip()
 
     if not text:
-        raise DataError(
-            f"Claim '{claim_id}' has empty text."
-        )
+        raise DataError(f"Claim '{claim_id}' has empty text.")
 
-    parent_ids = normalize_parent_ids(
-        claim.get(parent_ids_field, [])
-    )
+    parent_ids = normalize_parent_ids(claim.get(parent_ids_field, []))
 
     return {
         "claim_id": claim_id,
@@ -217,9 +195,7 @@ def normalize_record(
     """Normalize one patent record and calculate claim depths."""
 
     if patent_id_field not in record:
-        raise DataError(
-            f"A patent record is missing '{patent_id_field}'."
-        )
+        raise DataError(f"A patent record is missing '{patent_id_field}'.")
 
     patent_id = normalize_identifier(
         record[patent_id_field],
@@ -232,9 +208,7 @@ def normalize_record(
         raw_claims,
         (str, bytes, bytearray),
     ):
-        raise DataError(
-            f"Patent '{patent_id}' must contain a claim list."
-        )
+        raise DataError(f"Patent '{patent_id}' must contain a claim list.")
 
     claims = [
         _normalize_claim(
@@ -255,14 +229,11 @@ def normalize_record(
 
     if not validation.is_valid:
         raise DataError(
-            f"Invalid dependency graph for patent '{patent_id}': "
-            f"{validation.to_dict()}"
+            f"Invalid dependency graph for patent '{patent_id}': {validation.to_dict()}"
         )
 
     if remove_invalid_references:
-        known_claims = {
-            claim["claim_id"] for claim in claims
-        }
+        known_claims = {claim["claim_id"] for claim in claims}
 
         for claim in claims:
             claim["parent_ids"] = [
@@ -278,8 +249,7 @@ def normalize_record(
         )
     except DependencyError as error:
         raise DataError(
-            f"Could not calculate depths for patent "
-            f"'{patent_id}': {error}"
+            f"Could not calculate depths for patent '{patent_id}': {error}"
         ) from error
 
     for claim in claims:
@@ -313,24 +283,19 @@ def normalize_records(
             )
         except (DataError, DependencyError) as error:
             raise DataError(
-                f"Failed to normalize patent record at index "
-                f"{index}: {error}"
+                f"Failed to normalize patent record at index {index}: {error}"
             ) from error
 
         patent_id = normalized_record["patent_id"]
 
         if patent_id in seen_patent_ids:
-            raise DataError(
-                f"Duplicate patent identifier: {patent_id}"
-            )
+            raise DataError(f"Duplicate patent identifier: {patent_id}")
 
         seen_patent_ids.add(patent_id)
         normalized.append(normalized_record)
 
     if not normalized:
-        raise DataError(
-            "The patent collection cannot be empty."
-        )
+        raise DataError("The patent collection cannot be empty.")
 
     return normalized
 
@@ -415,26 +380,16 @@ def extract_cpc_labels(
     valid_levels = {"section", "class", "subclass"}
 
     if normalized_level not in valid_levels:
-        raise DataError(
-            f"Unsupported CPC level: {level}"
-        )
+        raise DataError(f"Unsupported CPC level: {level}")
 
     output: list[str | None] = []
 
     for record in records:
         cpc = record.get("cpc", {})
 
-        label = (
-            cpc.get(normalized_level)
-            if isinstance(cpc, Mapping)
-            else None
-        )
+        label = cpc.get(normalized_level) if isinstance(cpc, Mapping) else None
 
-        normalized_label = (
-            str(label).strip()
-            if label is not None
-            else None
-        )
+        normalized_label = str(label).strip() if label is not None else None
 
         if normalized_label == "":
             normalized_label = None
@@ -442,19 +397,12 @@ def extract_cpc_labels(
         output.append(normalized_label)
 
     if require_complete:
-        missing = [
-            index
-            for index, label in enumerate(output)
-            if label is None
-        ]
+        missing = [index for index, label in enumerate(output) if label is None]
 
         if missing:
-            preview = ", ".join(
-                str(index) for index in missing[:10]
-            )
+            preview = ", ".join(str(index) for index in missing[:10])
             raise DataError(
-                f"Missing CPC '{normalized_level}' labels "
-                f"at record indices: {preview}"
+                f"Missing CPC '{normalized_level}' labels at record indices: {preview}"
             )
 
     return output
@@ -465,10 +413,7 @@ def claim_count_distribution(
 ) -> dict[int, int]:
     """Return patent counts grouped by number of claims."""
 
-    distribution = Counter(
-        len(record.get("claims", []))
-        for record in records
-    )
+    distribution = Counter(len(record.get("claims", [])) for record in records)
 
     return dict(sorted(distribution.items()))
 

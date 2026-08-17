@@ -8,11 +8,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "scripts"
-    / "run_cached_dev.py"
-)
+SCRIPT_PATH = Path(__file__).resolve().parents[1] / "scripts" / "run_cached_dev.py"
 
 SPEC = importlib.util.spec_from_file_location(
     "run_cached_dev",
@@ -20,9 +16,7 @@ SPEC = importlib.util.spec_from_file_location(
 )
 
 if SPEC is None or SPEC.loader is None:
-    raise RuntimeError(
-        f"Could not load {SCRIPT_PATH}."
-    )
+    raise RuntimeError(f"Could not load {SCRIPT_PATH}.")
 
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)

@@ -42,10 +42,7 @@ def _json_compatible(value: Any) -> Any:
         return value.item()
 
     if isinstance(value, Mapping):
-        return {
-            str(key): _json_compatible(item)
-            for key, item in value.items()
-        }
+        return {str(key): _json_compatible(item) for key, item in value.items()}
 
     if isinstance(value, (list, tuple, set)):
         return [_json_compatible(item) for item in value]
@@ -98,9 +95,7 @@ def save_json(
         if temporary_path is not None and temporary_path.exists():
             temporary_path.unlink()
 
-        raise ArtifactError(
-            f"Failed to save JSON artifact to {destination}."
-        ) from exc
+        raise ArtifactError(f"Failed to save JSON artifact to {destination}.") from exc
 
     return destination
 
@@ -116,9 +111,7 @@ def load_json(path: str | Path) -> Any:
         with source.open("r", encoding="utf-8") as handle:
             return json.load(handle)
     except json.JSONDecodeError as exc:
-        raise ArtifactError(
-            f"Invalid JSON artifact: {source}"
-        ) from exc
+        raise ArtifactError(f"Invalid JSON artifact: {source}") from exc
 
 
 def save_numpy_array(
@@ -132,16 +125,12 @@ def save_numpy_array(
     matrix = np.asarray(array)
 
     if not np.all(np.isfinite(matrix)):
-        raise ArtifactError(
-            f"Cannot save non-finite values to {destination}."
-        )
+        raise ArtifactError(f"Cannot save non-finite values to {destination}.")
 
     np.save(destination, matrix)
 
     if destination.suffix != ".npy":
-        destination = destination.with_suffix(
-            destination.suffix + ".npy"
-        )
+        destination = destination.with_suffix(destination.suffix + ".npy")
 
     return destination
 
@@ -164,9 +153,7 @@ def save_numpy_archive(
         normalized_array = np.asarray(array)
 
         if not np.all(np.isfinite(normalized_array)):
-            raise ArtifactError(
-                f"Array {name!r} contains non-finite values."
-            )
+            raise ArtifactError(f"Array {name!r} contains non-finite values.")
 
         normalized[name] = normalized_array
 
@@ -183,9 +170,7 @@ def sha256_file(
     source = Path(path).expanduser().resolve()
 
     if not source.exists():
-        raise FileNotFoundError(
-            f"Cannot checksum missing file: {source}"
-        )
+        raise FileNotFoundError(f"Cannot checksum missing file: {source}")
 
     digest = hashlib.sha256()
 
@@ -225,37 +210,28 @@ def save_predictions_csv(
         raise ArtifactError("At least one patent record is required.")
 
     if not clustering_results:
-        raise ArtifactError(
-            "At least one clustering result is required."
-        )
+        raise ArtifactError("At least one clustering result is required.")
 
     destination = Path(path).expanduser().resolve()
     destination.parent.mkdir(parents=True, exist_ok=True)
 
     patent_ids = [
-        str(record.get("patent_id", index))
-        for index, record in enumerate(records)
+        str(record.get("patent_id", index)) for index, record in enumerate(records)
     ]
 
     result_columns: list[tuple[str, np.ndarray]] = []
 
     for result in clustering_results:
         if not hasattr(result, "labels"):
-            raise ArtifactError(
-                "Each clustering result must provide labels."
-            )
+            raise ArtifactError("Each clustering result must provide labels.")
 
         labels = np.asarray(result.labels)
 
         if labels.ndim != 1 or labels.shape[0] != len(records):
-            raise ArtifactError(
-                "A clustering result contains an invalid label array."
-            )
+            raise ArtifactError("A clustering result contains an invalid label array.")
 
         seed = getattr(result, "seed", len(result_columns))
-        result_columns.append(
-            (f"cluster_seed_{seed}", labels)
-        )
+        result_columns.append((f"cluster_seed_{seed}", labels))
 
     fieldnames = [
         "patent_id",
@@ -307,13 +283,9 @@ def save_clustering_archives(
         )
 
         if not all(hasattr(result, name) for name in required):
-            raise ArtifactError(
-                "Clustering result is missing required attributes."
-            )
+            raise ArtifactError("Clustering result is missing required attributes.")
 
-        path = output_dir / (
-            f"clustering_seed_{int(result.seed)}.npz"
-        )
+        path = output_dir / (f"clustering_seed_{int(result.seed)}.npz")
 
         saved_path = save_numpy_archive(
             path,
@@ -350,9 +322,7 @@ def create_manifest(
     """Create a reproducibility manifest."""
     manifest: dict[str, Any] = {
         "experiment_name": str(experiment_name),
-        "created_at_utc": datetime.now(
-            timezone.utc
-        ).isoformat(),
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "config": _json_compatible(config),
         "inputs": [],
         "outputs": [],

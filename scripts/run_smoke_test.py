@@ -141,9 +141,7 @@ def generate_synthetic_claim_embeddings(
 ) -> list[np.ndarray]:
     """Generate deterministic synthetic claim embeddings."""
     if embedding_dim <= 0:
-        raise SmokeTestError(
-            "Synthetic embedding dimension must be positive."
-        )
+        raise SmokeTestError("Synthetic embedding dimension must be positive.")
 
     supported_dtypes = {
         "float32": np.float32,
@@ -151,9 +149,7 @@ def generate_synthetic_claim_embeddings(
     }
 
     if dtype not in supported_dtypes:
-        raise SmokeTestError(
-            f"Unsupported synthetic feature dtype: {dtype}"
-        )
+        raise SmokeTestError(f"Unsupported synthetic feature dtype: {dtype}")
 
     rng = np.random.default_rng(seed)
     numpy_dtype = supported_dtypes[dtype]
@@ -164,9 +160,7 @@ def generate_synthetic_claim_embeddings(
         n_claims = len(record["claims"])
 
         if n_claims == 0:
-            raise SmokeTestError(
-                f"Patent {record['patent_id']!r} has no claims."
-            )
+            raise SmokeTestError(f"Patent {record['patent_id']!r} has no claims.")
 
         matrix = rng.normal(
             loc=0.0,
@@ -194,20 +188,16 @@ def verify_pipeline_outputs(
 
     if patent_vectors.shape != (n_patents, embedding_dim):
         raise SmokeTestError(
-            "Unexpected pooled representation shape: "
-            f"{patent_vectors.shape}"
+            f"Unexpected pooled representation shape: {patent_vectors.shape}"
         )
 
     if reduced_vectors.shape != (n_patents, pca_dim):
         raise SmokeTestError(
-            "Unexpected reduced representation shape: "
-            f"{reduced_vectors.shape}"
+            f"Unexpected reduced representation shape: {reduced_vectors.shape}"
         )
 
     if not np.all(np.isfinite(patent_vectors)):
-        raise SmokeTestError(
-            "Pooled patent representations contain non-finite values."
-        )
+        raise SmokeTestError("Pooled patent representations contain non-finite values.")
 
     if not np.all(np.isfinite(reduced_vectors)):
         raise SmokeTestError(
@@ -217,15 +207,12 @@ def verify_pipeline_outputs(
     norms = np.linalg.norm(reduced_vectors, axis=1)
 
     if not np.allclose(norms, 1.0, atol=1e-5):
-        raise SmokeTestError(
-            "Reduced patent representations are not L2-normalized."
-        )
+        raise SmokeTestError("Reduced patent representations are not L2-normalized.")
 
     for result in clustering_results:
         if result.labels.shape != (n_patents,):
             raise SmokeTestError(
-                f"Invalid label shape for seed {result.seed}: "
-                f"{result.labels.shape}"
+                f"Invalid label shape for seed {result.seed}: {result.labels.shape}"
             )
 
         if result.centroids.shape != (n_clusters, pca_dim):
@@ -236,8 +223,7 @@ def verify_pipeline_outputs(
 
         if result.cluster_counts.sum() != n_patents:
             raise SmokeTestError(
-                f"Cluster counts do not sum to {n_patents} "
-                f"for seed {result.seed}."
+                f"Cluster counts do not sum to {n_patents} for seed {result.seed}."
             )
 
         if result.n_active_clusters != n_clusters:
@@ -253,9 +239,7 @@ def run_smoke_test(config_path: str | Path) -> dict[str, Any]:
     config = load_config(config_path)
 
     if config["features"].get("mode") != "synthetic":
-        raise SmokeTestError(
-            "run_smoke_test.py requires features.mode='synthetic'."
-        )
+        raise SmokeTestError("run_smoke_test.py requires features.mode='synthetic'.")
 
     set_global_seed(
         int(config["global_seed"]),
@@ -305,14 +289,10 @@ def run_smoke_test(config_path: str | Path) -> dict[str, Any]:
         dtype=str(feature_config.get("dtype", "float32")),
     )
 
-    total_embedding_rows = sum(
-        matrix.shape[0] for matrix in claim_embeddings
-    )
+    total_embedding_rows = sum(matrix.shape[0] for matrix in claim_embeddings)
 
     if total_embedding_rows != dataset_summary.n_claims:
-        raise SmokeTestError(
-            "Synthetic embedding count does not match claim count."
-        )
+        raise SmokeTestError("Synthetic embedding count does not match claim count.")
 
     print("Claim embeddings:", total_embedding_rows)
     print("Embedding dimension:", embedding_dim)
@@ -336,9 +316,7 @@ def run_smoke_test(config_path: str | Path) -> dict[str, Any]:
     pca_config = config["pca"]
 
     if not pca_config.get("enabled", True):
-        raise SmokeTestError(
-            "The current smoke test requires PCA to be enabled."
-        )
+        raise SmokeTestError("The current smoke test requires PCA to be enabled.")
 
     pca_dim = int(pca_config["output_dim"])
 
@@ -465,9 +443,7 @@ def run_smoke_test(config_path: str | Path) -> dict[str, Any]:
             ),
             "input_dim": embedding_dim,
             "output_dim": pca_dim,
-            "random_state": int(
-                pca_config.get("random_state", 42)
-            ),
+            "random_state": int(pca_config.get("random_state", 42)),
         },
     )
     saved_files.append(pca_path)
@@ -519,9 +495,7 @@ def run_smoke_test(config_path: str | Path) -> dict[str, Any]:
 
     print("\n[8/8] Creating reproducibility manifest")
 
-    environment = collect_environment_info(
-        project_root=PROJECT_ROOT
-    )
+    environment = collect_environment_info(project_root=PROJECT_ROOT)
 
     manifest = create_manifest(
         experiment_name=config["experiment_name"],
@@ -547,8 +521,7 @@ def run_smoke_test(config_path: str | Path) -> dict[str, Any]:
     print("Manifest:", manifest_path)
     print("Output directory:", output_dir)
     print(
-        "Important: synthetic smoke-test metrics are not "
-        "scientific experiment results."
+        "Important: synthetic smoke-test metrics are not scientific experiment results."
     )
 
     return {

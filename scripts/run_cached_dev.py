@@ -50,16 +50,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--project-root",
         type=Path,
-        default=Path(
-            "/content/drive/MyDrive/depth_ot_patent"
-        ),
+        default=Path("/content/drive/MyDrive/depth_ot_patent"),
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=Path(
-            "artifacts/cached_dev_reproduction"
-        ),
+        default=Path("artifacts/cached_dev_reproduction"),
     )
     parser.add_argument(
         "--require-exact-seed42",
@@ -73,10 +69,7 @@ def parse_args() -> argparse.Namespace:
         "--metric-atol",
         type=float,
         default=1e-9,
-        help=(
-            "Absolute tolerance for comparing metrics "
-            "across scikit-learn versions."
-        ),
+        help=("Absolute tolerance for comparing metrics across scikit-learn versions."),
     )
 
     return parser.parse_args()
@@ -90,8 +83,7 @@ def find_candidates(
 
     candidates.sort(
         key=lambda path: (
-            "epoch016_gpu_claimwise_semantic_fusion_dev_search"
-            in str(path),
+            "epoch016_gpu_claimwise_semantic_fusion_dev_search" in str(path),
             path.stat().st_mtime,
         ),
         reverse=True,
@@ -110,9 +102,7 @@ def find_artifact(
     )
 
     if not candidates:
-        raise FileNotFoundError(
-            f"{filename} was not found under {root}."
-        )
+        raise FileNotFoundError(f"{filename} was not found under {root}.")
 
     if len(candidates) > 1:
         print(f"\nCandidates for {filename}:")
@@ -204,18 +194,8 @@ def compare_labels(
                 candidate_array,
             )
         ),
-        "direct_label_match_rate": float(
-            np.mean(
-                reference_array
-                == candidate_array
-            )
-        ),
-        "mismatch_count": int(
-            np.count_nonzero(
-                reference_array
-                != candidate_array
-            )
-        ),
+        "direct_label_match_rate": float(np.mean(reference_array == candidate_array)),
+        "mismatch_count": int(np.count_nonzero(reference_array != candidate_array)),
         "adjusted_rand_index": float(
             adjusted_rand_score(
                 reference_array,
@@ -260,22 +240,14 @@ def load_saved_seed42(
 def main() -> None:
     args = parse_args()
 
-    project_root = (
-        args.project_root.expanduser().resolve()
-    )
-    output_dir = (
-        args.output_dir.expanduser().resolve()
-    )
+    project_root = args.project_root.expanduser().resolve()
+    output_dir = args.output_dir.expanduser().resolve()
 
     if not project_root.exists():
-        raise FileNotFoundError(
-            f"Project root not found: {project_root}"
-        )
+        raise FileNotFoundError(f"Project root not found: {project_root}")
 
     if not torch.cuda.is_available():
-        raise RuntimeError(
-            "CUDA is required for exact legacy DEV reproduction."
-        )
+        raise RuntimeError("CUDA is required for exact legacy DEV reproduction.")
 
     records_path = find_artifact(
         project_root,
@@ -307,14 +279,11 @@ def main() -> None:
     print("Saved seed 42:", saved_seed42_path)
     print("Output:", output_dir)
 
-    available_keys = list_npz_keys(
-        pca_cache_path
-    )
+    available_keys = list_npz_keys(pca_cache_path)
 
     if CACHE_KEY not in available_keys:
         raise KeyError(
-            f"Cache key {CACHE_KEY!r} was not found. "
-            f"Available keys: {available_keys}"
+            f"Cache key {CACHE_KEY!r} was not found. Available keys: {available_keys}"
         )
 
     records = load_legacy_records(
@@ -322,9 +291,7 @@ def main() -> None:
         expected_count=EXPECTED_ROWS,
     )
 
-    evaluation_records = make_evaluation_records(
-        records
-    )
+    evaluation_records = make_evaluation_records(records)
 
     features = load_npz_matrix(
         pca_cache_path,
@@ -364,9 +331,7 @@ def main() -> None:
         1.0,
         atol=1e-5,
     ):
-        raise RuntimeError(
-            "DEV cached PCA vectors are not L2-normalized."
-        )
+        raise RuntimeError("DEV cached PCA vectors are not L2-normalized.")
 
     results = run_multiple_seeds_legacy(
         vectors=features,
@@ -388,38 +353,28 @@ def main() -> None:
         label_levels=LABEL_LEVELS,
     )
 
-    result_by_seed = {
-        result.seed: result
-        for result in results
-    }
+    result_by_seed = {result.seed: result for result in results}
 
     evaluation_by_seed = {
-        int(evaluation["seed"]): evaluation
-        for evaluation in evaluations
+        int(evaluation["seed"]): evaluation for evaluation in evaluations
     }
 
     seed42_evaluation = evaluation_by_seed[42]
     seed42_metric_comparison: dict[str, Any] = {}
 
     for metric, expected in EXPECTED_SEED42_MEAN.items():
-        actual = float(
-            seed42_evaluation["mean"][metric]
-        )
+        actual = float(seed42_evaluation["mean"][metric])
         difference = actual - expected
 
         seed42_metric_comparison[metric] = {
             "expected": expected,
             "actual": actual,
             "difference": difference,
-            "matches": bool(
-                abs(difference)
-                <= args.metric_atol
-            ),
+            "matches": bool(abs(difference) <= args.metric_atol),
         }
 
     seed42_metrics_match = all(
-        item["matches"]
-        for item in seed42_metric_comparison.values()
+        item["matches"] for item in seed42_metric_comparison.values()
     )
 
     seed42_prediction_comparison = None
@@ -448,8 +403,7 @@ def main() -> None:
 
     for result in results:
         np.savez_compressed(
-            cluster_dir
-            / f"clustering_seed_{result.seed}.npz",
+            cluster_dir / f"clustering_seed_{result.seed}.npz",
             labels=result.labels,
             centroids=result.centroids,
             cluster_counts=result.cluster_counts,
@@ -477,10 +431,7 @@ def main() -> None:
 
     np.savez_compressed(
         output_dir / "predictions.npz",
-        **{
-            f"seed_{result.seed}": result.labels
-            for result in results
-        },
+        **{f"seed_{result.seed}": result.labels for result in results},
     )
 
     save_json(
@@ -503,9 +454,7 @@ def main() -> None:
     per_seed_runtime_summary = []
 
     for result in results:
-        evaluation = evaluation_by_seed[
-            result.seed
-        ]
+        evaluation = evaluation_by_seed[result.seed]
 
         row = {
             "seed": result.seed,
@@ -513,9 +462,7 @@ def main() -> None:
             "converged": result.converged,
             "active_clusters": result.n_active_clusters,
             "max_cluster_share": result.max_cluster_share,
-            "mean_cosine_similarity": float(
-                1.0 - result.objective
-            ),
+            "mean_cosine_similarity": float(1.0 - result.objective),
             "mean_cosine_distance": result.objective,
             "mean_metrics": evaluation["mean"],
         }
@@ -531,9 +478,7 @@ def main() -> None:
         )
 
     report = {
-        "experiment": (
-            "cached_dev_legacy_reproduction"
-        ),
+        "experiment": ("cached_dev_legacy_reproduction"),
         "backend": "legacy_gpu",
         "split": "dev",
         "cache_key": CACHE_KEY,
@@ -543,53 +488,32 @@ def main() -> None:
         "seeds": list(SEEDS),
         "max_iter": 100,
         "tolerance": 1e-5,
-        "objective_definition": (
-            "mean_cosine_distance"
-        ),
+        "objective_definition": ("mean_cosine_distance"),
         "alignment_valid": alignment.valid,
-        "seed42_metrics_match": (
-            seed42_metrics_match
-        ),
-        "seed42_metric_comparison": (
-            seed42_metric_comparison
-        ),
-        "seed42_prediction_comparison": (
-            seed42_prediction_comparison
-        ),
-        "per_seed": (
-            per_seed_runtime_summary
-        ),
+        "seed42_metrics_match": (seed42_metrics_match),
+        "seed42_metric_comparison": (seed42_metric_comparison),
+        "seed42_prediction_comparison": (seed42_prediction_comparison),
+        "per_seed": (per_seed_runtime_summary),
         "metrics": summary,
         "cache_info": cache_info.to_dict(),
         "environment": {
             "gpu": torch.cuda.get_device_name(0),
             "torch_version": torch.__version__,
             "cuda_version": torch.version.cuda,
-            "tf32_matmul": bool(
-                torch.backends.cuda
-                .matmul.allow_tf32
-            ),
+            "tf32_matmul": bool(torch.backends.cuda.matmul.allow_tf32),
         },
         "inputs": {
             "records": str(records_path),
             "pca_cache": str(pca_cache_path),
             "assignments": str(assignments_path),
             "saved_seed42_predictions": (
-                str(saved_seed42_path)
-                if saved_seed42_path is not None
-                else None
+                str(saved_seed42_path) if saved_seed42_path is not None else None
             ),
         },
         "checksums": {
-            "records_sha256": sha256_file(
-                records_path
-            ),
-            "pca_cache_sha256": sha256_file(
-                pca_cache_path
-            ),
-            "assignments_sha256": sha256_file(
-                assignments_path
-            ),
+            "records_sha256": sha256_file(records_path),
+            "pca_cache_sha256": sha256_file(pca_cache_path),
+            "assignments_sha256": sha256_file(assignments_path),
             "saved_seed42_predictions_sha256": (
                 sha256_file(saved_seed42_path)
                 if saved_seed42_path is not None
@@ -644,32 +568,22 @@ def main() -> None:
     )
     print(
         "Report:",
-        output_dir
-        / "reproduction_report.json",
+        output_dir / "reproduction_report.json",
     )
 
     if not seed42_metrics_match:
-        raise RuntimeError(
-            "Seed-42 DEV metric reproduction failed."
-        )
+        raise RuntimeError("Seed-42 DEV metric reproduction failed.")
 
     if args.require_exact_seed42:
         if seed42_prediction_comparison is None:
+            raise RuntimeError("Saved seed-42 predictions were not found.")
+
+        if not seed42_prediction_comparison["exact_label_match"]:
             raise RuntimeError(
-                "Saved seed-42 predictions were not found."
+                "Seed-42 DEV labels did not exactly match the saved legacy predictions."
             )
 
-        if not seed42_prediction_comparison[
-            "exact_label_match"
-        ]:
-            raise RuntimeError(
-                "Seed-42 DEV labels did not exactly match "
-                "the saved legacy predictions."
-            )
-
-    print(
-        "Cached DEV legacy reproduction passed."
-    )
+    print("Cached DEV legacy reproduction passed.")
 
 
 if __name__ == "__main__":

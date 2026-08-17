@@ -72,40 +72,27 @@ def select_device(
         if torch.cuda.is_available():
             return torch.device("cuda")
 
-        if (
-            hasattr(torch.backends, "mps")
-            and torch.backends.mps.is_available()
-        ):
+        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
             return torch.device("mps")
 
         return torch.device("cpu")
 
     if normalized == "cuda":
         if not torch.cuda.is_available():
-            raise RuntimeError(
-                "CUDA was requested, but no CUDA device is available."
-            )
+            raise RuntimeError("CUDA was requested, but no CUDA device is available.")
 
         return torch.device("cuda")
 
     if normalized == "mps":
-        if not (
-            hasattr(torch.backends, "mps")
-            and torch.backends.mps.is_available()
-        ):
-            raise RuntimeError(
-                "MPS was requested, but no MPS device is available."
-            )
+        if not (hasattr(torch.backends, "mps") and torch.backends.mps.is_available()):
+            raise RuntimeError("MPS was requested, but no MPS device is available.")
 
         return torch.device("mps")
 
     if normalized == "cpu":
         return torch.device("cpu")
 
-    raise ValueError(
-        "Unsupported device request. "
-        "Use 'auto', 'cuda', 'mps', or 'cpu'."
-    )
+    raise ValueError("Unsupported device request. Use 'auto', 'cuda', 'mps', or 'cpu'.")
 
 
 def get_git_commit(
@@ -193,12 +180,8 @@ def _cuda_information() -> dict[str, Any]:
             {
                 "index": index,
                 "name": properties.name,
-                "total_memory_bytes": int(
-                    properties.total_memory
-                ),
-                "compute_capability": (
-                    f"{properties.major}.{properties.minor}"
-                ),
+                "total_memory_bytes": int(properties.total_memory),
+                "compute_capability": (f"{properties.major}.{properties.minor}"),
             }
         )
 
@@ -247,9 +230,7 @@ def save_environment_info(
     output_path = Path(path).expanduser().resolve()
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    information = collect_environment_info(
-        project_root=project_root
-    )
+    information = collect_environment_info(project_root=project_root)
 
     with output_path.open("w", encoding="utf-8") as file:
         json.dump(

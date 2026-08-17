@@ -24,8 +24,7 @@ def _validate_matrix(
 
     if matrix.ndim != 2:
         raise ReductionError(
-            f"{name} must have shape (n_samples, n_features), "
-            f"got {matrix.shape}."
+            f"{name} must have shape (n_samples, n_features), got {matrix.shape}."
         )
 
     if matrix.shape[0] == 0:
@@ -253,19 +252,13 @@ def load_pca(
         pca = payload["model"]
         metadata = payload.get("metadata", {})
     else:
-        raise ReductionError(
-            f"Unsupported PCA artifact format in {source}."
-        )
+        raise ReductionError(f"Unsupported PCA artifact format in {source}.")
 
     if not isinstance(pca, PCA):
-        raise ReductionError(
-            f"The artifact at {source} does not contain a PCA model."
-        )
+        raise ReductionError(f"The artifact at {source} does not contain a PCA model.")
 
     if not hasattr(pca, "components_"):
-        raise ReductionError(
-            f"The PCA model loaded from {source} is not fitted."
-        )
+        raise ReductionError(f"The PCA model loaded from {source} is not fitted.")
 
     if not isinstance(metadata, dict):
         raise ReductionError("PCA metadata must be a dictionary.")

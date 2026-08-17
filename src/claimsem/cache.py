@@ -138,42 +138,31 @@ def validate_representation_matrix(
     array = np.asarray(matrix)
 
     if array.ndim != 2:
-        raise CacheError(
-            f"{name} must have two dimensions, got {array.shape}."
-        )
+        raise CacheError(f"{name} must have two dimensions, got {array.shape}.")
 
     if array.shape[0] == 0 or array.shape[1] == 0:
-        raise CacheError(
-            f"{name} cannot contain an empty dimension: {array.shape}."
-        )
+        raise CacheError(f"{name} cannot contain an empty dimension: {array.shape}.")
 
     if expected_rows is not None and array.shape[0] != expected_rows:
         raise CacheError(
-            f"{name} contains {array.shape[0]} rows, "
-            f"expected {expected_rows}."
+            f"{name} contains {array.shape[0]} rows, expected {expected_rows}."
         )
 
     if expected_dim is not None and array.shape[1] != expected_dim:
         raise CacheError(
-            f"{name} has dimension {array.shape[1]}, "
-            f"expected {expected_dim}."
+            f"{name} has dimension {array.shape[1]}, expected {expected_dim}."
         )
 
     if not np.issubdtype(array.dtype, np.floating):
         raise CacheError(
-            f"{name} must contain floating-point values, "
-            f"got {array.dtype}."
+            f"{name} must contain floating-point values, got {array.dtype}."
         )
 
     if require_float32 and array.dtype != np.float32:
-        raise CacheError(
-            f"{name} must have dtype float32, got {array.dtype}."
-        )
+        raise CacheError(f"{name} must have dtype float32, got {array.dtype}.")
 
     if require_finite and not np.all(np.isfinite(array)):
-        raise CacheError(
-            f"{name} contains non-finite values."
-        )
+        raise CacheError(f"{name} contains non-finite values.")
 
     return array
 
@@ -220,9 +209,7 @@ def list_npz_keys(path: str | Path) -> list[str]:
         with np.load(source, allow_pickle=False) as archive:
             return list(archive.files)
     except Exception as exc:
-        raise CacheError(
-            f"Could not inspect NPZ cache: {source}"
-        ) from exc
+        raise CacheError(f"Could not inspect NPZ cache: {source}") from exc
 
 
 def load_npz_matrix(
@@ -253,9 +240,7 @@ def load_npz_matrix(
     except CacheError:
         raise
     except Exception as exc:
-        raise CacheError(
-            f"Could not load key {key!r} from {source}."
-        ) from exc
+        raise CacheError(f"Could not load key {key!r} from {source}.") from exc
 
     return validate_representation_matrix(
         matrix,
@@ -287,9 +272,7 @@ def load_npy_matrix(
             allow_pickle=False,
         )
     except Exception as exc:
-        raise CacheError(
-            f"Could not load NPY cache: {source}"
-        ) from exc
+        raise CacheError(f"Could not load NPY cache: {source}") from exc
 
     return validate_representation_matrix(
         matrix,
@@ -314,27 +297,20 @@ def load_legacy_records(
     source = Path(path).expanduser().resolve()
 
     if not source.exists():
-        raise FileNotFoundError(
-            f"Legacy record file not found: {source}"
-        )
+        raise FileNotFoundError(f"Legacy record file not found: {source}")
 
     try:
         with source.open("rb") as handle:
             records = pickle.load(handle)
     except Exception as exc:
-        raise CacheError(
-            f"Could not load trusted record file: {source}"
-        ) from exc
+        raise CacheError(f"Could not load trusted record file: {source}") from exc
 
     if not isinstance(records, list):
-        raise CacheError(
-            f"Legacy records must be a list, got {type(records)}."
-        )
+        raise CacheError(f"Legacy records must be a list, got {type(records)}.")
 
     if expected_count is not None and len(records) != expected_count:
         raise CacheError(
-            f"Record file contains {len(records)} patents, "
-            f"expected {expected_count}."
+            f"Record file contains {len(records)} patents, expected {expected_count}."
         )
 
     required_fields = {
@@ -348,39 +324,28 @@ def load_legacy_records(
 
     for index, record in enumerate(records):
         if not isinstance(record, Mapping):
-            raise CacheError(
-                f"Record {index} is not a dictionary."
-            )
+            raise CacheError(f"Record {index} is not a dictionary.")
 
         missing_fields = required_fields - set(record.keys())
 
         if missing_fields:
             raise CacheError(
-                f"Record {index} is missing fields: "
-                f"{sorted(missing_fields)}."
+                f"Record {index} is missing fields: {sorted(missing_fields)}."
             )
 
-        patent_id = normalize_identifier(
-            record.get("patent_id")
-        )
+        patent_id = normalize_identifier(record.get("patent_id"))
 
         if patent_id is None:
-            raise CacheError(
-                f"Record {index} has no valid patent ID."
-            )
+            raise CacheError(f"Record {index} has no valid patent ID.")
 
         patent_ids.append(patent_id)
 
         for level in ["section", "class", "subclass"]:
             if normalize_label(record.get(level)) is None:
-                raise CacheError(
-                    f"Record {index} has no CPC {level} label."
-                )
+                raise CacheError(f"Record {index} has no CPC {level} label.")
 
     if len(set(patent_ids)) != len(patent_ids):
-        raise CacheError(
-            "Legacy records contain duplicate patent IDs."
-        )
+        raise CacheError("Legacy records contain duplicate patent IDs.")
 
     return records
 
@@ -392,31 +357,20 @@ def make_evaluation_records(
     evaluation_records: list[dict[str, Any]] = []
 
     for index, record in enumerate(records):
-        patent_id = normalize_identifier(
-            record.get("patent_id")
-        )
+        patent_id = normalize_identifier(record.get("patent_id"))
 
         if patent_id is None:
-            raise CacheError(
-                f"Record {index} has no valid patent ID."
-            )
+            raise CacheError(f"Record {index} has no valid patent ID.")
 
         cpc = {
             level: normalize_label(record.get(level))
             for level in ["section", "class", "subclass"]
         }
 
-        missing_levels = [
-            level
-            for level, value in cpc.items()
-            if value is None
-        ]
+        missing_levels = [level for level, value in cpc.items() if value is None]
 
         if missing_levels:
-            raise CacheError(
-                f"Record {index} is missing CPC levels: "
-                f"{missing_levels}."
-            )
+            raise CacheError(f"Record {index} is missing CPC levels: {missing_levels}.")
 
         evaluation_records.append(
             {
@@ -438,28 +392,19 @@ def load_pca_model(
     source = Path(path).expanduser().resolve()
 
     if not source.exists():
-        raise FileNotFoundError(
-            f"PCA artifact not found: {source}"
-        )
+        raise FileNotFoundError(f"PCA artifact not found: {source}")
 
     try:
         artifact = joblib.load(source)
     except Exception as exc:
-        raise CacheError(
-            f"Could not load PCA artifact: {source}"
-        ) from exc
+        raise CacheError(f"Could not load PCA artifact: {source}") from exc
 
     if isinstance(artifact, PCA):
         pca = artifact
-    elif (
-        isinstance(artifact, Mapping)
-        and isinstance(artifact.get("model"), PCA)
-    ):
+    elif isinstance(artifact, Mapping) and isinstance(artifact.get("model"), PCA):
         pca = artifact["model"]
     else:
-        raise CacheError(
-            f"Unsupported PCA artifact type: {type(artifact)}."
-        )
+        raise CacheError(f"Unsupported PCA artifact type: {type(artifact)}.")
 
     if not hasattr(pca, "components_"):
         raise CacheError("The PCA artifact is not fitted.")
@@ -481,8 +426,7 @@ def load_pca_model(
         expected_input_dim,
     ):
         raise CacheError(
-            "Unexpected PCA component matrix shape: "
-            f"{pca.components_.shape}."
+            f"Unexpected PCA component matrix shape: {pca.components_.shape}."
         )
 
     return pca
@@ -515,24 +459,18 @@ def apply_pca_and_normalize(
     )
 
     if np.any(row_norms < epsilon):
-        indices = np.flatnonzero(
-            row_norms[:, 0] < epsilon
-        ).tolist()
+        indices = np.flatnonzero(row_norms[:, 0] < epsilon).tolist()
 
         raise CacheError(
-            "PCA produced zero or near-zero rows at indices "
-            f"{indices[:20]}."
+            f"PCA produced zero or near-zero rows at indices {indices[:20]}."
         )
 
-    normalized = (
-        transformed
-        / np.maximum(row_norms, epsilon)
-    ).astype(np.float32, copy=False)
+    normalized = (transformed / np.maximum(row_norms, epsilon)).astype(
+        np.float32, copy=False
+    )
 
     if not np.all(np.isfinite(normalized)):
-        raise CacheError(
-            "PCA and normalization produced non-finite values."
-        )
+        raise CacheError("PCA and normalization produced non-finite values.")
 
     return normalized
 
@@ -557,10 +495,7 @@ def compare_cached_pca(
         require_finite=True,
     )
 
-    absolute_error = np.abs(
-        cached.astype(np.float64)
-        - recomputed.astype(np.float64)
-    )
+    absolute_error = np.abs(cached.astype(np.float64) - recomputed.astype(np.float64))
 
     max_error = float(absolute_error.max())
     mean_error = float(absolute_error.mean())
@@ -580,9 +515,7 @@ def validate_assignment_alignment(
     source = Path(assignments_path).expanduser().resolve()
 
     if not source.exists():
-        raise FileNotFoundError(
-            f"Assignment CSV not found: {source}"
-        )
+        raise FileNotFoundError(f"Assignment CSV not found: {source}")
 
     assignments = pd.read_csv(source)
 
@@ -594,27 +527,20 @@ def validate_assignment_alignment(
         "subclass",
     }
 
-    missing_columns = (
-        required_columns - set(assignments.columns)
-    )
+    missing_columns = required_columns - set(assignments.columns)
 
     if missing_columns:
         raise CacheError(
-            f"Assignment CSV is missing columns: "
-            f"{sorted(missing_columns)}."
+            f"Assignment CSV is missing columns: {sorted(missing_columns)}."
         )
 
     n_records = len(records)
     n_assignments = len(assignments)
 
-    record_ids = [
-        normalize_identifier(record.get("patent_id"))
-        for record in records
-    ]
+    record_ids = [normalize_identifier(record.get("patent_id")) for record in records]
 
     assignment_ids = [
-        normalize_identifier(value)
-        for value in assignments["patent_id"].tolist()
+        normalize_identifier(value) for value in assignments["patent_id"].tolist()
     ]
 
     id_comparison_length = min(
@@ -627,23 +553,16 @@ def validate_assignment_alignment(
         for index in range(id_comparison_length)
     )
 
-    patent_id_mismatches += abs(
-        n_records - n_assignments
-    )
+    patent_id_mismatches += abs(n_records - n_assignments)
 
-    patent_id_match = (
-        n_records == n_assignments
-        and patent_id_mismatches == 0
-    )
+    patent_id_match = n_records == n_assignments and patent_id_mismatches == 0
 
     expected_indices = np.arange(
         n_assignments,
         dtype=np.int64,
     )
 
-    actual_indices = assignments[
-        "global_index"
-    ].to_numpy(dtype=np.int64)
+    actual_indices = assignments["global_index"].to_numpy(dtype=np.int64)
 
     global_index_match = bool(
         np.array_equal(
@@ -656,14 +575,10 @@ def validate_assignment_alignment(
     level_mismatches: dict[str, int] = {}
 
     for level in ["section", "class", "subclass"]:
-        record_labels = [
-            normalize_label(record.get(level))
-            for record in records
-        ]
+        record_labels = [normalize_label(record.get(level)) for record in records]
 
         assignment_labels = [
-            normalize_label(value)
-            for value in assignments[level].tolist()
+            normalize_label(value) for value in assignments[level].tolist()
         ]
 
         comparison_length = min(
@@ -672,21 +587,15 @@ def validate_assignment_alignment(
         )
 
         mismatch_count = sum(
-            record_labels[index]
-            != assignment_labels[index]
+            record_labels[index] != assignment_labels[index]
             for index in range(comparison_length)
         )
 
-        mismatch_count += abs(
-            len(record_labels)
-            - len(assignment_labels)
-        )
+        mismatch_count += abs(len(record_labels) - len(assignment_labels))
 
         level_mismatches[level] = mismatch_count
-        level_matches[level] = (
-            mismatch_count == 0
-            and len(record_labels)
-            == len(assignment_labels)
+        level_matches[level] = mismatch_count == 0 and len(record_labels) == len(
+            assignment_labels
         )
 
     report = AlignmentReport(
@@ -704,9 +613,6 @@ def validate_assignment_alignment(
     )
 
     if not report.valid:
-        raise CacheError(
-            "Record and assignment alignment failed: "
-            f"{report.to_dict()}."
-        )
+        raise CacheError(f"Record and assignment alignment failed: {report.to_dict()}.")
 
     return report

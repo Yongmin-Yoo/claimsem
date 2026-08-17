@@ -30,9 +30,7 @@ def _normalize_label_array(
     array = np.asarray(labels, dtype=object)
 
     if array.ndim != 1:
-        raise MetricsError(
-            f"{name} must be one-dimensional, got shape {array.shape}."
-        )
+        raise MetricsError(f"{name} must be one-dimensional, got shape {array.shape}.")
 
     if array.size == 0:
         raise MetricsError(f"{name} must contain at least one label.")
@@ -41,16 +39,12 @@ def _normalize_label_array(
 
     for index, value in enumerate(array.tolist()):
         if value is None:
-            raise MetricsError(
-                f"{name} contains a missing label at index {index}."
-            )
+            raise MetricsError(f"{name} contains a missing label at index {index}.")
 
         text = str(value).strip()
 
         if not text:
-            raise MetricsError(
-                f"{name} contains an empty label at index {index}."
-            )
+            raise MetricsError(f"{name} contains an empty label at index {index}.")
 
         normalized.append(text)
 
@@ -198,8 +192,7 @@ def extract_cpc_labels(
     """Extract one CPC label level from normalized patent records."""
     if level not in DEFAULT_LABEL_LEVELS:
         raise MetricsError(
-            f"Unsupported CPC level {level!r}. "
-            f"Expected one of {DEFAULT_LABEL_LEVELS}."
+            f"Unsupported CPC level {level!r}. Expected one of {DEFAULT_LABEL_LEVELS}."
         )
 
     labels: list[str] = []
@@ -216,9 +209,7 @@ def extract_cpc_labels(
         value = cpc.get(level)
 
         if value is None or not str(value).strip():
-            raise MetricsError(
-                f"Patent {patent_id!r} has no CPC {level} label."
-            )
+            raise MetricsError(f"Patent {patent_id!r} has no CPC {level} label.")
 
         labels.append(str(value).strip())
 
@@ -266,12 +257,7 @@ def evaluate_cpc_levels(
 
     mean_results = {
         metric: float(
-            np.mean(
-                [
-                    level_results[level][metric]
-                    for level in normalized_levels
-                ]
-            )
+            np.mean([level_results[level][metric] for level in normalized_levels])
         )
         for metric in DEFAULT_METRICS
     }
@@ -296,9 +282,7 @@ def evaluate_multiple_seeds(
 ) -> list[dict[str, Any]]:
     """Evaluate multiple spherical K-means results."""
     if not clustering_results:
-        raise MetricsError(
-            "At least one clustering result is required."
-        )
+        raise MetricsError("At least one clustering result is required.")
 
     evaluations: list[dict[str, Any]] = []
 
@@ -321,14 +305,10 @@ def evaluate_multiple_seeds(
             evaluation["objective"] = float(result.objective)
 
         if hasattr(result, "n_active_clusters"):
-            evaluation["n_active_clusters"] = int(
-                result.n_active_clusters
-            )
+            evaluation["n_active_clusters"] = int(result.n_active_clusters)
 
         if hasattr(result, "max_cluster_share"):
-            evaluation["max_cluster_share"] = float(
-                result.max_cluster_share
-            )
+            evaluation["max_cluster_share"] = float(result.max_cluster_share)
 
         evaluations.append(evaluation)
 
@@ -342,14 +322,10 @@ def _mean_and_std(
     array = np.asarray(values, dtype=np.float64)
 
     if array.ndim != 1 or array.size == 0:
-        raise MetricsError(
-            "At least one scalar value is required for aggregation."
-        )
+        raise MetricsError("At least one scalar value is required for aggregation.")
 
     if not np.all(np.isfinite(array)):
-        raise MetricsError(
-            "Cannot aggregate non-finite metric values."
-        )
+        raise MetricsError("Cannot aggregate non-finite metric values.")
 
     return {
         "mean": float(np.mean(array)),
@@ -363,9 +339,7 @@ def summarize_seed_evaluations(
 ) -> dict[str, Any]:
     """Aggregate CPC metrics across clustering seeds."""
     if not evaluations:
-        raise MetricsError(
-            "At least one seed evaluation is required."
-        )
+        raise MetricsError("At least one seed evaluation is required.")
 
     normalized_levels = [str(level) for level in label_levels]
 
@@ -376,8 +350,7 @@ def summarize_seed_evaluations(
 
         for metric in DEFAULT_METRICS:
             values = [
-                float(evaluation["levels"][level][metric])
-                for evaluation in evaluations
+                float(evaluation["levels"][level][metric]) for evaluation in evaluations
             ]
 
             level_summary[level][metric] = _mean_and_std(values)
@@ -385,52 +358,30 @@ def summarize_seed_evaluations(
     mean_summary: dict[str, dict[str, float]] = {}
 
     for metric in DEFAULT_METRICS:
-        values = [
-            float(evaluation["mean"][metric])
-            for evaluation in evaluations
-        ]
+        values = [float(evaluation["mean"][metric]) for evaluation in evaluations]
 
         mean_summary[metric] = _mean_and_std(values)
 
     summary: dict[str, Any] = {
         "n_seeds": int(len(evaluations)),
-        "seeds": [
-            evaluation.get("seed")
-            for evaluation in evaluations
-        ],
+        "seeds": [evaluation.get("seed") for evaluation in evaluations],
         "levels": level_summary,
         "mean": mean_summary,
     }
 
-    if all(
-        "objective" in evaluation
-        for evaluation in evaluations
-    ):
+    if all("objective" in evaluation for evaluation in evaluations):
         summary["objective"] = _mean_and_std(
-            [
-                float(evaluation["objective"])
-                for evaluation in evaluations
-            ]
+            [float(evaluation["objective"]) for evaluation in evaluations]
         )
 
-    if all(
-        "max_cluster_share" in evaluation
-        for evaluation in evaluations
-    ):
+    if all("max_cluster_share" in evaluation for evaluation in evaluations):
         summary["max_cluster_share"] = _mean_and_std(
-            [
-                float(evaluation["max_cluster_share"])
-                for evaluation in evaluations
-            ]
+            [float(evaluation["max_cluster_share"]) for evaluation in evaluations]
         )
 
-    if all(
-        "n_active_clusters" in evaluation
-        for evaluation in evaluations
-    ):
+    if all("n_active_clusters" in evaluation for evaluation in evaluations):
         active_counts = [
-            int(evaluation["n_active_clusters"])
-            for evaluation in evaluations
+            int(evaluation["n_active_clusters"]) for evaluation in evaluations
         ]
 
         summary["n_active_clusters"] = {
