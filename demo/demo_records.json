@@ -1,0 +1,242 @@
+[
+  {
+    "patent_id": "DEMO_G01",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A processor-implemented method for classifying digital records using a trained feature model.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The method of claim 1, wherein the trained feature model includes a neural network.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The method of claim 2, wherein the neural network generates a normalized feature vector.",
+        "parent_ids": ["2"]
+      }
+    ],
+    "cpc": {
+      "section": "G",
+      "class": "G06",
+      "subclass": "G06N"
+    }
+  },
+  {
+    "patent_id": "DEMO_G02",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A data processing system comprising a memory and a processor configured to retrieve indexed documents.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The system of claim 1, wherein the processor ranks the indexed documents according to semantic similarity.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The system of claim 1, wherein the memory stores vector representations of the indexed documents.",
+        "parent_ids": ["1"]
+      }
+    ],
+    "cpc": {
+      "section": "G",
+      "class": "G06",
+      "subclass": "G06F"
+    }
+  },
+  {
+    "patent_id": "DEMO_G03",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A computer-readable medium storing instructions for detecting an anomaly in sensor data.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The computer-readable medium of claim 1, wherein the instructions calculate a temporal feature.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The computer-readable medium of claim 1, wherein the instructions calculate a frequency-domain feature.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "4",
+        "text": "The computer-readable medium of claims 2 and 3, wherein the anomaly is detected from both features.",
+        "parent_ids": ["2", "3"]
+      }
+    ],
+    "cpc": {
+      "section": "G",
+      "class": "G06",
+      "subclass": "G06F"
+    }
+  },
+  {
+    "patent_id": "DEMO_H01",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A wireless communication apparatus comprising a transmitter configured to send a radio signal.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The apparatus of claim 1, wherein the transmitter applies adaptive modulation.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The apparatus of claim 2, wherein a modulation order is selected using channel quality.",
+        "parent_ids": ["2"]
+      }
+    ],
+    "cpc": {
+      "section": "H",
+      "class": "H04",
+      "subclass": "H04L"
+    }
+  },
+  {
+    "patent_id": "DEMO_H02",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A method for establishing a secure communication session between a first device and a second device.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The method of claim 1, wherein the first device transmits an authentication token.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The method of claim 2, wherein the authentication token is cryptographically signed.",
+        "parent_ids": ["2"]
+      }
+    ],
+    "cpc": {
+      "section": "H",
+      "class": "H04",
+      "subclass": "H04W"
+    }
+  },
+  {
+    "patent_id": "DEMO_H03",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A receiver configured to decode a radio transmission using an error-correcting code.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "An antenna assembly configured to receive the radio transmission.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "3",
+        "text": "The receiver of claim 1 coupled to the antenna assembly of claim 2.",
+        "parent_ids": ["1", "2"]
+      },
+      {
+        "claim_id": "4",
+        "text": "The receiver of claim 3, wherein decoding uses an iterative parity check.",
+        "parent_ids": ["3"]
+      }
+    ],
+    "cpc": {
+      "section": "H",
+      "class": "H04",
+      "subclass": "H04L"
+    }
+  },
+  {
+    "patent_id": "DEMO_A01",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A medical monitoring device comprising an optical sensor configured to measure a physiological signal.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The medical monitoring device of claim 1, wherein the optical sensor measures blood oxygen saturation.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The medical monitoring device of claim 2, further comprising a display for presenting the saturation.",
+        "parent_ids": ["2"]
+      }
+    ],
+    "cpc": {
+      "section": "A",
+      "class": "A61",
+      "subclass": "A61B"
+    }
+  },
+  {
+    "patent_id": "DEMO_A02",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A pharmaceutical composition comprising an active compound and a pharmaceutically acceptable carrier.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The composition of claim 1, wherein the active compound is present within a specified concentration range.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The composition of claim 2, wherein the carrier provides controlled release of the active compound.",
+        "parent_ids": ["2"]
+      }
+    ],
+    "cpc": {
+      "section": "A",
+      "class": "A61",
+      "subclass": "A61K"
+    }
+  },
+  {
+    "patent_id": "DEMO_A03",
+    "claims": [
+      {
+        "claim_id": "1",
+        "text": "A surgical instrument comprising an elongated shaft and an actuator.",
+        "parent_ids": []
+      },
+      {
+        "claim_id": "2",
+        "text": "The surgical instrument of claim 1, wherein the actuator controls an end effector.",
+        "parent_ids": ["1"]
+      },
+      {
+        "claim_id": "3",
+        "text": "The surgical instrument of claim 2, wherein the end effector includes opposing jaws.",
+        "parent_ids": ["2"]
+      },
+      {
+        "claim_id": "4",
+        "text": "The surgical instrument of claim 3, wherein the opposing jaws apply a controlled compression force.",
+        "parent_ids": ["3"]
+      }
+    ],
+    "cpc": {
+      "section": "A",
+      "class": "A61",
+      "subclass": "A61B"
+    }
+  }
+]
