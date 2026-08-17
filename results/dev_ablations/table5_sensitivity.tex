@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\caption{Mean CPC NMI on the development set under different root weights $\alpha$ and depth-decay coefficients $\lambda$. Each value is averaged over clustering seeds $\{17,42,73\}$. A PCA transform fitted on the development set is held fixed across all pooling configurations.}
+\label{tab:claimsem_sensitivity}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+\multirow{2}{*}{$\alpha$}
+& \multicolumn{4}{c}{$\lambda$} \\
+\cmidrule(lr){2-5}
+& 0 & 0.05 & 0.10 & 0.20 \\
+\midrule
+1 & 0.3362 & 0.3368 & 0.3378 & 0.3378 \\
+2 & 0.3440 & 0.3458 & 0.3471 & 0.3503 \\
+4 & 0.3599 & 0.3595 & 0.3602 & 0.3629 \\
+8 & 0.3668 & 0.3672 & 0.3674 & 0.3678 \\
+12 & 0.3681 & 0.3686 & 0.3683 & \textbf{0.3686} \\
+16 & 0.3676 & 0.3668 & 0.3673 & 0.3666 \\
+\bottomrule
+\end{tabular}
+\end{table}

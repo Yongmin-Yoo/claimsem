@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "table": 6,
+  "split": "development",
+  "pooling": {
+    "root_weight": 12.0,
+    "depth_decay": 0.1
+  },
+  "pca_dimension": 128,
+  "seeds": [
+    17,
+    42,
+    73
+  ],
+  "cluster_counts": [
+    20,
+    25,
+    30,
+    35,
+    40
+  ],
+  "all_converged": true,
+  "all_clusters_active": true,
+  "results": [
+    {
+      "k": 20,
+      "mean_nmi": 0.348838358668722,
+      "active_clusters": 20,
+      "max_cluster_share": 0.082496194824962
+    },
+    {
+      "k": 25,
+      "mean_nmi": 0.3593171612787,
+      "active_clusters": 25,
+      "max_cluster_share": 0.062032809064772
+    },
+    {
+      "k": 30,
+      "mean_nmi": 0.368289425532843,
+      "active_clusters": 30,
+      "max_cluster_share": 0.05645188567563
+    },
+    {
+      "k": 35,
+      "mean_nmi": 0.373578299453924,
+      "active_clusters": 35,
+      "max_cluster_share": 0.048063588702858
+    },
+    {
+      "k": 40,
+      "mean_nmi": 0.376020733467028,
+      "active_clusters": 40,
+      "max_cluster_share": 0.041298833079655
+    }
+  ]
+}
