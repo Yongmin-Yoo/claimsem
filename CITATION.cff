@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use ClaimSem in your research, please cite this software."
+title: "ClaimSem: Structure-Aware Claim Aggregation for Patent Clustering"
+type: software
+
+authors:
+  - given-names: "Yongmin"
+    family-names: "Yoo"
+
+version: "0.1.0"
+date-released: "2026-08-16"
+
+repository-code: "https://github.com/Yongmin-Yoo/claimsem"
+url: "https://github.com/Yongmin-Yoo/claimsem"
+
+license: "MIT"
+
+keywords:
+  - "patent NLP"
+  - "patent clustering"
+  - "claim dependency"
+  - "claim embeddings"
+  - "structure-aware pooling"
+  - "spherical K-means"
+  - "Cooperative Patent Classification"
+
+abstract: >-
+  ClaimSem is a lightweight method for constructing patent-level
+  representations from individual patent claims. It encodes claims
+  separately with a frozen patent language model and aggregates them
+  using independent-claim emphasis and dependency-depth decay. The
+  resulting patent representations are reduced using a development-fitted
+  PCA transform and clustered using spherical K-means.
