@@ -1,5 +1,7 @@
 # ClaimSem
 
+[![CI](https://github.com/Yongmin-Yoo/claimsem/actions/workflows/ci.yml/badge.svg)](https://github.com/Yongmin-Yoo/claimsem/actions/workflows/ci.yml)
+
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Google Colab](https://img.shields.io/badge/Google-Colab-orange.svg)](https://colab.research.google.com/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-GPU-red.svg)](https://pytorch.org/)
@@ -208,42 +210,43 @@ The final configuration was selected on development data and frozen before test 
 
 ## Final Test Results
 
+The consistent ClaimSem pipeline uses `root_weight=12.0`,
+`depth_decay=0.1`, PCA fitted on DEV only, and spherical K-means
+with seeds `17`, `42`, and `73`.
+
 ### Dataset statistics
 
-| Split | Patents | Claims | CPC sections | CPC classes | CPC subclasses |
-|---|---:|---:|---:|---:|---:|
-| Development | 9,855 | 160,048 | 9 | 123 | 484 |
-| Test | 9,881 | 161,661 | 9 | 121 | 466 |
+| Split | Patents | Claims | Truncated claims | Missing depth |
+|---|---:|---:|---:|---:|
+| DEV | 9,855 | 160,048 | 1,123 | 0 |
+| TEST | 9,881 | 161,661 | 1,199 | 0 |
 
-### CPC alignment results
+### CPC clustering metrics
 
-The results are averaged over spherical $K$-means seeds 17, 42, and 73.
+Values are population mean ± standard deviation over three seeds.
 
-| CPC level | Predicted-cluster purity | Label-wise inverse purity | NMI |
+| CPC level | NMI | Purity | Inverse purity |
 |---|---:|---:|---:|
-| Section | $0.617009 \pm 0.010069$ | $0.188442 \pm 0.005584$ | $0.273401 \pm 0.004359$ |
-| Class | $0.411328 \pm 0.006142$ | $0.366124 \pm 0.004701$ | $0.398139 \pm 0.003565$ |
-| Subclass | $0.249030 \pm 0.008411$ | $0.512870 \pm 0.007868$ | $0.454984 \pm 0.004101$ |
-| Mean | $0.425789 \pm 0.008153$ | $0.355812 \pm 0.004877$ | $0.375508 \pm 0.003952$ |
+| Section | 0.275879 ± 0.001429 | 0.618932 ± 0.002398 | 0.192120 ± 0.006041 |
+| Class | 0.400083 ± 0.005152 | 0.410923 ± 0.003343 | 0.365584 ± 0.009809 |
+| Subclass | 0.457819 ± 0.003838 | 0.253078 ± 0.001128 | 0.516479 ± 0.005529 |
+| Overall mean | 0.377927 ± 0.003214 | 0.427645 ± 0.001454 | 0.358061 ± 0.006689 |
 
-All 30 clusters remain active.
+Validation checks:
 
-The maximum cluster share is
+- TEST patent order matches the source records.
+- The fixed DEV PCA model is applied without TEST refitting.
+- The consistent DEV transform matches the legacy DEV PCA cache.
+- All three seeds converge with all 30 clusters active.
+- Input and output SHA-256 checksums are saved in the report.
 
+Verified overall results:
 
-```math
-0.055662 \pm 0.001145
+```text
+NMI            = 0.377926864235
+Purity         = 0.427644525408
+Inverse purity = 0.358060925008
 ```
-
-### Seed-level results
-
-| Seed | Mean NMI | Mean predicted-cluster purity | Mean label-wise inverse purity |
-|---:|---:|---:|---:|
-| 17 | 0.379336 | 0.430152 | 0.359444 |
-| 42 | 0.370068 | 0.414364 | 0.348919 |
-| 73 | 0.377121 | 0.432851 | 0.359073 |
-
----
 
 ## Evaluation Protocol
 
