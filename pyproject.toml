@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claimsem"
+version = "0.1.0"
+description = "Structure-aware claim aggregation for patent clustering"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT License" }
+authors = [
+    { name = "Yongmin Yoo" }
+]
+keywords = [
+    "patent-nlp",
+    "patent-clustering",
+    "claim-embeddings",
+    "claim-dependency",
+    "document-clustering",
+    "sentence-transformers",
+    "spherical-kmeans",
+    "cpc"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic"
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "joblib>=1.3",
+    "torch>=2.1",
+    "transformers>=4.40",
+    "tokenizers>=0.19",
+    "safetensors>=0.4",
+    "sentencepiece>=0.2",
+    "tqdm>=4.66",
+    "networkx>=3.2",
+    "pyarrow>=14.0",
+    "psutil>=5.9"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5"
+]
+notebook = [
+    "jupyter>=1.0",
+    "ipykernel>=6.29",
+    "matplotlib>=3.8",
+    "seaborn>=0.13"
+]
+
+[project.urls]
+Homepage = "https://github.com/Yongmin-Yoo/claimsem"
+Repository = "https://github.com/Yongmin-Yoo/claimsem"
+Issues = "https://github.com/Yongmin-Yoo/claimsem/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers"
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "W"
+]
+ignore = [
+    "E501"
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["claimsem"]
