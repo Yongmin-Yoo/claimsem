@@ -449,3 +449,409 @@ def assign_to_centroids(
     labels = torch.argmax(similarities, dim=1)
 
     return labels.detach().cpu().numpy().astype(np.int64)
+
+# BEGIN LEGACY DEPTH-OT GPU SPHERICAL K-MEANS
+
+
+def _validate_legacy_vectors(
+    vectors: np.ndarray,
+) -> np.ndarray:
+    """Validate vectors without pre-normalizing them on the CPU.
+
+    The legacy implementation converts the original float32 matrix directly
+    to a device tensor and performs L2 normalization on that device. Avoiding
+    CPU normalization is necessary for exact reproduction.
+    """
+    matrix = np.asarray(vectors)
+
+    if matrix.ndim != 2:
+        raise ClusteringError(
+            "vectors must have shape (n_samples, n_features), "
+            f"got {matrix.shape}."
+        )
+
+    if matrix.shape[0] == 0:
+        raise ClusteringError(
+            "At least one patent vector is required."
+        )
+
+    if matrix.shape[1] == 0:
+        raise ClusteringError(
+            "Patent vectors must have at least one feature."
+        )
+
+    if not np.issubdtype(matrix.dtype, np.number):
+        raise ClusteringError(
+            "Patent vectors must contain numeric values."
+        )
+
+    if not np.all(np.isfinite(matrix)):
+        raise ClusteringError(
+            "Patent vectors contain non-finite values."
+        )
+
+    row_norms = np.linalg.norm(
+        matrix.astype(np.float64, copy=False),
+        axis=1,
+    )
+
+    if np.any(row_norms <= 1e-12):
+        indices = np.flatnonzero(
+            row_norms <= 1e-12
+        ).tolist()
+
+        raise ClusteringError(
+            "Zero or near-zero patent vectors cannot be clustered. "
+            f"Affected row indices: {indices[:20]}."
+        )
+
+    return matrix.astype(
+        np.float32,
+        copy=False,
+    )
+
+
+@torch.no_grad()
+def legacy_gpu_spherical_kmeans(
+    vectors: np.ndarray,
+    n_clusters: int,
+    seed: int = 42,
+    max_iter: int = 100,
+    tolerance: float = 1e-5,
+    device: str | torch.device = "auto",
+) -> SphericalKMeansResult:
+    """Reproduce the Depth-OT legacy GPU spherical K-means.
+
+    This backend preserves the implementation used by
+    ``proposed_model_section_11.py``:
+
+    * device-side float32 L2 normalization;
+    * device-specific ``torch.Generator``;
+    * cosine-distance K-means++ sampling with ``torch.multinomial``;
+    * empty-cluster replacement using the least-similar samples;
+    * convergence based on the change in mean cosine similarity;
+    * final label reassignment after the last centroid update.
+
+    ``SphericalKMeansResult.objective`` remains consistent with the public
+    ClaimSem API and stores mean cosine distance, i.e.
+    ``1 - mean_cosine_similarity``.
+    """
+    matrix = _validate_legacy_vectors(
+        vectors
+    )
+    n_samples, n_features = matrix.shape
+
+    if (
+        not isinstance(n_clusters, int)
+        or isinstance(n_clusters, bool)
+    ):
+        raise ClusteringError(
+            "n_clusters must be an integer."
+        )
+
+    if n_clusters <= 1:
+        raise ClusteringError(
+            "n_clusters must be greater than one."
+        )
+
+    if n_clusters > n_samples:
+        raise ClusteringError(
+            f"n_clusters={n_clusters} exceeds "
+            f"n_samples={n_samples}."
+        )
+
+    if (
+        not isinstance(max_iter, int)
+        or isinstance(max_iter, bool)
+        or max_iter <= 0
+    ):
+        raise ClusteringError(
+            "max_iter must be a positive integer."
+        )
+
+    if (
+        not np.isfinite(tolerance)
+        or tolerance < 0
+    ):
+        raise ClusteringError(
+            "tolerance must be a non-negative "
+            "finite number."
+        )
+
+    resolved_device = _resolve_device(
+        device
+    )
+
+    if resolved_device.type != "cuda":
+        raise ClusteringError(
+            "legacy_gpu_spherical_kmeans requires CUDA "
+            "for exact Depth-OT reproduction."
+        )
+
+    # Match the original Colab/T4 execution configuration.
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+
+    x = torch.as_tensor(
+        matrix,
+        dtype=torch.float32,
+        device=resolved_device,
+    )
+
+    x = F.normalize(
+        x,
+        p=2,
+        dim=1,
+    )
+
+    generator = torch.Generator(
+        device=resolved_device,
+    )
+    generator.manual_seed(
+        int(seed)
+    )
+
+    first_index = int(
+        torch.randint(
+            0,
+            n_samples,
+            (1,),
+            generator=generator,
+            device=resolved_device,
+        ).item()
+    )
+
+    centroid_indices = [
+        first_index
+    ]
+
+    closest_distance = (
+        1.0
+        - torch.matmul(
+            x,
+            x[first_index].unsqueeze(1),
+        ).squeeze(1)
+    )
+
+    # Preserve the original GPU K-means++ procedure exactly.
+    for _ in range(1, n_clusters):
+        probabilities = torch.clamp(
+            closest_distance,
+            min=1e-8,
+        )
+
+        probabilities = (
+            probabilities
+            / probabilities.sum()
+        )
+
+        next_index = int(
+            torch.multinomial(
+                probabilities,
+                num_samples=1,
+                generator=generator,
+            ).item()
+        )
+
+        centroid_indices.append(
+            next_index
+        )
+
+        new_distance = (
+            1.0
+            - torch.matmul(
+                x,
+                x[next_index].unsqueeze(1),
+            ).squeeze(1)
+        )
+
+        closest_distance = torch.minimum(
+            closest_distance,
+            new_distance,
+        )
+
+    centroids = x[
+        torch.tensor(
+            centroid_indices,
+            dtype=torch.long,
+            device=resolved_device,
+        )
+    ].clone()
+
+    centroids = F.normalize(
+        centroids,
+        p=2,
+        dim=1,
+    )
+
+    previous_similarity: float | None = None
+    converged = False
+    n_iterations = 0
+
+    for iteration in range(max_iter):
+        similarities = torch.matmul(
+            x,
+            centroids.T,
+        )
+
+        best_similarity, labels = (
+            similarities.max(dim=1)
+        )
+
+        new_centroids = torch.zeros(
+            (n_clusters, n_features),
+            dtype=torch.float32,
+            device=resolved_device,
+        )
+
+        new_centroids.index_add_(
+            0,
+            labels,
+            x,
+        )
+
+        counts = torch.bincount(
+            labels,
+            minlength=n_clusters,
+        ).float()
+
+        empty_clusters = torch.where(
+            counts == 0
+        )[0]
+
+        if len(empty_clusters) > 0:
+            difficult_points = torch.argsort(
+                best_similarity
+            )[:len(empty_clusters)]
+
+            new_centroids[
+                empty_clusters
+            ] = x[difficult_points]
+
+            counts[
+                empty_clusters
+            ] = 1.0
+
+        new_centroids = (
+            new_centroids
+            / counts.unsqueeze(1)
+        )
+
+        new_centroids = F.normalize(
+            new_centroids,
+            p=2,
+            dim=1,
+        )
+
+        current_similarity = float(
+            best_similarity.mean().item()
+        )
+
+        centroids = new_centroids
+        n_iterations = iteration + 1
+
+        if previous_similarity is not None:
+            if (
+                abs(
+                    current_similarity
+                    - previous_similarity
+                )
+                < tolerance
+            ):
+                converged = True
+                break
+
+        previous_similarity = (
+            current_similarity
+        )
+
+    final_similarities = torch.matmul(
+        x,
+        centroids.T,
+    )
+
+    final_values, final_labels = (
+        final_similarities.max(dim=1)
+    )
+
+    mean_similarity = float(
+        final_values.mean().item()
+    )
+
+    # Public ClaimSem objective: lower cosine distance is better.
+    objective = float(
+        1.0 - mean_similarity
+    )
+
+    cluster_counts = torch.bincount(
+        final_labels,
+        minlength=n_clusters,
+    )
+
+    return SphericalKMeansResult(
+        labels=(
+            final_labels.detach()
+            .cpu()
+            .numpy()
+            .astype(np.int64)
+        ),
+        centroids=(
+            centroids.detach()
+            .cpu()
+            .numpy()
+            .astype(np.float32)
+        ),
+        cluster_counts=(
+            cluster_counts.detach()
+            .cpu()
+            .numpy()
+            .astype(np.int64)
+        ),
+        objective=objective,
+        n_iterations=int(n_iterations),
+        converged=bool(converged),
+        seed=int(seed),
+    )
+
+
+def run_multiple_seeds_legacy(
+    vectors: np.ndarray,
+    n_clusters: int,
+    seeds: Sequence[int] = (17, 42, 73),
+    max_iter: int = 100,
+    tolerance: float = 1e-5,
+    device: str | torch.device = "auto",
+) -> list[SphericalKMeansResult]:
+    """Run the legacy GPU backend for multiple independent seeds."""
+    if not seeds:
+        raise ClusteringError(
+            "At least one clustering seed is required."
+        )
+
+    normalized_seeds = [
+        int(seed)
+        for seed in seeds
+    ]
+
+    if (
+        len(set(normalized_seeds))
+        != len(normalized_seeds)
+    ):
+        raise ClusteringError(
+            "Clustering seeds must be unique."
+        )
+
+    return [
+        legacy_gpu_spherical_kmeans(
+            vectors=vectors,
+            n_clusters=n_clusters,
+            seed=seed,
+            max_iter=max_iter,
+            tolerance=tolerance,
+            device=device,
+        )
+        for seed in normalized_seeds
+    ]
+
+
+# END LEGACY DEPTH-OT GPU SPHERICAL K-MEANS
