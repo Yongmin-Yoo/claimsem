@@ -1,0 +1,25 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Patents closest to the centroids of the automatically selected \textsc{ClaimSem} clusters in the seed-42 test partition. Similarity is cosine similarity between each patent representation and its assigned cluster centroid in the normalized 128-dimensional PCA space used for spherical K-means clustering.}
+\label{tab:centroid_patents}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}lllr@{}}
+\toprule
+\textbf{Cluster} & \textbf{Patent ID} & \textbf{CPC subclass} & \textbf{Similarity} \\
+\midrule
+C03 & US~10516034 & H01L & 0.9123 \\
+ & US~10170334 & H01L & 0.9030 \\
+ & US~10522686 & H01L & 0.8874 \\
+\addlinespace
+C01 & US~10255631 & G06Q & 0.9249 \\
+ & US~10382586 & G06Q & 0.9130 \\
+ & US~10198765 & G06Q & 0.9073 \\
+\addlinespace
+C04 & US~10208780 & F16L & 0.8064 \\
+ & US~10443229 & E04F & 0.8051 \\
+ & US~10344483 & E04F & 0.7993 \\
+\bottomrule
+\end{tabular}
+\end{table}
