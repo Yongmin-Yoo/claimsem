@@ -5,7 +5,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 ROOT = Path(__file__).resolve().parents[1]
 RESULT_ROOT = ROOT / "results" / "test_case_study"
 
@@ -29,13 +28,9 @@ def test_test_cluster_case_study_results() -> None:
     assert report["clustering"]["centroid_reassignment_mismatches"] == 0
 
     selected = report["selected_clusters"]
-    assert [item["cluster_display"] for item in selected] == [
-        "C03", "C01", "C04"
-    ]
+    assert [item["cluster_display"] for item in selected] == ["C03", "C01", "C04"]
     assert [item["size"] for item in selected] == [340, 222, 335]
-    assert [item["dominant_subclass"] for item in selected] == [
-        "H01L", "G06Q", "F16B"
-    ]
+    assert [item["dominant_subclass"] for item in selected] == ["H01L", "G06Q", "F16B"]
 
     assert len(table2) == 9
     assert len(table3) == 9
