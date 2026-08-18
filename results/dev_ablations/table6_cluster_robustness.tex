@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\caption{Robustness to the number of clusters on the development set.
+Max share denotes the fraction of patents assigned to the largest cluster.}
+\label{tab:claimsem_cluster_robustness}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+$\mathbf{K}$
+& \shortstack{\textbf{Mean}\\\textbf{NMI}}
+& \shortstack{\textbf{Active}\\\textbf{clusters}}
+& \shortstack{\textbf{Max}\\\textbf{share}} \\
+\midrule
+20 & 0.3488 & 20 & 0.0825 \\
+25 & 0.3593 & 25 & 0.0620 \\
+30 & 0.3683 & 30 & 0.0565 \\
+35 & 0.3736 & 35 & 0.0481 \\
+40 & 0.3760 & 40 & 0.0413 \\
+\bottomrule
+\end{tabular}
+\end{table}

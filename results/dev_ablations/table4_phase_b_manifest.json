@@ -1,0 +1,72 @@
+{
+  "experiment": "claimsem_table4_phase_b",
+  "status": "success",
+  "configuration": "document_level_encoding",
+  "n_patents": 9855,
+  "first_patent_id": "9854760",
+  "cpc_source": "top-level section/class/subclass",
+  "first_normalized_cpc": {
+    "section": "C",
+    "class": "C12",
+    "subclass": "C12Q"
+  },
+  "unique_label_counts": {
+    "section": 9,
+    "class": 123,
+    "subclass": 484
+  },
+  "encoder": {
+    "model_id": "AAUBS/PatentSBERTa_V2",
+    "revision": "cf95524055d476037e453021653562556374160e",
+    "pooling": "masked_mean",
+    "max_length": 512
+  },
+  "raw_feature_dimension": 768,
+  "pca_feature_dimension": 128,
+  "clustering": {
+    "backend": "legacy_gpu_spherical_kmeans",
+    "n_clusters": 30,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "max_iter": 100,
+    "tolerance": 1e-05,
+    "all_converged": true,
+    "all_clusters_active": true
+  },
+  "anchor": {
+    "expected_mean_nmi": 0.368289425533,
+    "measured_mean_nmi": 0.36828942553284333,
+    "difference": -1.566524687746096e-13,
+    "passed": true
+  },
+  "document_level_results": {
+    "section_nmi": 0.2569686264670841,
+    "class_nmi": 0.38238892792973006,
+    "subclass_nmi": 0.4400503023906593,
+    "mean_nmi": 0.3598026189291578,
+    "mean_nmi_std": 0.0010594939437158872,
+    "mean_predicted_cluster_purity": 0.40960595298494845,
+    "mean_label_wise_inverse_purity": 0.3324651896950223
+  },
+  "repository": {
+    "path": "/content/claimsem-table4",
+    "branch": "experiments/dev-ablation-tables-5-6",
+    "commit": "2335ea71327ec590dd1e27011188cf9597847cb0"
+  },
+  "files": {
+    "records": "/content/drive/MyDrive/depth_ot_patent/data/processed/dev_records.pkl",
+    "raw_features": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/raw_features/document_level_encoding_raw768.npz",
+    "pca_features": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/pca_features_frozen_dev_model/document_level_encoding_pca128.npz",
+    "result": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/results_phase_b/document_level_encoding.json",
+    "predictions": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/predictions_phase_b/document_level_encoding_predictions.npz",
+    "updated_phase_a_csv": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/table4_phase_a.csv",
+    "updated_phase_a_json": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/table4_phase_a.json",
+    "updated_phase_a_latex": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/table4_phase_a.tex",
+    "final_csv": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/table4_final.csv",
+    "final_json": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/table4_final.json",
+    "final_latex": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/table4_final.tex"
+  }
+}

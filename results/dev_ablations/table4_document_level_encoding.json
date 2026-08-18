@@ -1,0 +1,266 @@
+{
+  "experiment": "table4_document_level_encoding",
+  "status": "completed",
+  "split": "dev",
+  "n_patents": 9855,
+  "record_schema": {
+    "cpc_source": "top-level section/class/subclass",
+    "original_keys": [
+      "patent_id",
+      "cpc_codes",
+      "section",
+      "class",
+      "subclass",
+      "claims",
+      "edges",
+      "depth"
+    ],
+    "normalized_field": "cpc"
+  },
+  "representation": {
+    "raw_dimension": 768,
+    "final_dimension": 128,
+    "encoder_model_id": "AAUBS/PatentSBERTa_V2",
+    "encoder_revision": "cf95524055d476037e453021653562556374160e",
+    "pooling": "masked_mean",
+    "max_length": 512,
+    "raw_normalization": "L2",
+    "reduction": "frozen_dev_pca",
+    "pca_model": "/content/drive/MyDrive/claimsem_artifacts/claimsem-dev-ablation-tables-5-6/models/claimwise_semantic_pca128.joblib",
+    "post_pca_normalization": "L2"
+  },
+  "clustering": {
+    "backend": "legacy_gpu_spherical_kmeans",
+    "n_clusters": 30,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "max_iter": 100,
+    "tolerance": 1e-05,
+    "device": "cuda",
+    "all_converged": true,
+    "all_clusters_active": true
+  },
+  "anchor_validation": {
+    "expected_mean_nmi": 0.368289425533,
+    "measured_mean_nmi": 0.36828942553284333,
+    "difference": -1.566524687746096e-13,
+    "passed": true
+  },
+  "metrics": {
+    "n_seeds": 3,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "levels": {
+      "section": {
+        "nmi": {
+          "mean": 0.2569686264670841,
+          "std": 0.0015114227702683134
+        },
+        "predicted_cluster_purity": {
+          "mean": 0.5865381363098258,
+          "std": 0.008875632644813652
+        },
+        "label_wise_inverse_purity": {
+          "mean": 0.16972771858616606,
+          "std": 0.005230341763592818
+        }
+      },
+      "class": {
+        "nmi": {
+          "mean": 0.38238892792973006,
+          "std": 0.0010389069008756456
+        },
+        "predicted_cluster_purity": {
+          "mean": 0.3958396752917301,
+          "std": 0.0013021056353742801
+        },
+        "label_wise_inverse_purity": {
+          "mean": 0.34865550481988833,
+          "std": 0.0039045592831289323
+        }
+      },
+      "subclass": {
+        "nmi": {
+          "mean": 0.4400503023906593,
+          "std": 0.0010037177555723233
+        },
+        "predicted_cluster_purity": {
+          "mean": 0.24644004735328937,
+          "std": 0.00422567162164489
+        },
+        "label_wise_inverse_purity": {
+          "mean": 0.47901234567901235,
+          "std": 0.005662023675719978
+        }
+      }
+    },
+    "mean": {
+      "nmi": {
+        "mean": 0.3598026189291578,
+        "std": 0.0010594939437158872
+      },
+      "predicted_cluster_purity": {
+        "mean": 0.40960595298494845,
+        "std": 0.004145954575299981
+      },
+      "label_wise_inverse_purity": {
+        "mean": 0.3324651896950223,
+        "std": 0.0043528397567353634
+      }
+    },
+    "objective": {
+      "mean": 0.31575624148050946,
+      "std": 0.00103166626399016
+    },
+    "max_cluster_share": {
+      "mean": 0.05881955014375106,
+      "std": 0.005959707472160268
+    },
+    "n_active_clusters": {
+      "minimum": 30,
+      "maximum": 30,
+      "values": [
+        30,
+        30,
+        30
+      ]
+    }
+  },
+  "per_seed": [
+    {
+      "seed": 17,
+      "iterations": 23,
+      "converged": true,
+      "active_clusters": 30,
+      "max_cluster_share": 0.0504312531709792,
+      "objective": 0.3143811821937561,
+      "evaluation": {
+        "levels": {
+          "section": {
+            "nmi": 0.25540899087855934,
+            "predicted_cluster_purity": 0.5805175038051751,
+            "label_wise_inverse_purity": 0.167427701674277
+          },
+          "class": {
+            "nmi": 0.3824637724643827,
+            "predicted_cluster_purity": 0.39472349061390155,
+            "label_wise_inverse_purity": 0.3482496194824962
+          },
+          "subclass": {
+            "nmi": 0.4387715831620615,
+            "predicted_cluster_purity": 0.241298833079655,
+            "label_wise_inverse_purity": 0.4715372907153729
+          }
+        },
+        "mean": {
+          "nmi": 0.35888144883500117,
+          "predicted_cluster_purity": 0.4055132758329105,
+          "label_wise_inverse_purity": 0.32907153729071537
+        },
+        "n_samples": 9855,
+        "n_predicted_clusters": 30,
+        "seed": 17,
+        "objective": 0.3143811821937561,
+        "n_active_clusters": 30,
+        "max_cluster_share": 0.0504312531709792
+      }
+    },
+    {
+      "seed": 42,
+      "iterations": 29,
+      "converged": true,
+      "active_clusters": 30,
+      "max_cluster_share": 0.0637239979705733,
+      "objective": 0.3160213828086853,
+      "evaluation": {
+        "levels": {
+          "section": {
+            "nmi": 0.25648264379958985,
+            "predicted_cluster_purity": 0.5800101471334348,
+            "label_wise_inverse_purity": 0.1647894469812278
+          },
+          "class": {
+            "nmi": 0.381080761768161,
+            "predicted_cluster_purity": 0.39766615930999494,
+            "label_wise_inverse_purity": 0.3440892947742263
+          },
+          "subclass": {
+            "nmi": 0.440155965602415,
+            "predicted_cluster_purity": 0.24637239979705733,
+            "label_wise_inverse_purity": 0.4802638254693049
+          }
+        },
+        "mean": {
+          "nmi": 0.35923979039005527,
+          "predicted_cluster_purity": 0.4080162354134957,
+          "label_wise_inverse_purity": 0.3297141890749197
+        },
+        "n_samples": 9855,
+        "n_predicted_clusters": 30,
+        "seed": 42,
+        "objective": 0.3160213828086853,
+        "n_active_clusters": 30,
+        "max_cluster_share": 0.0637239979705733
+      }
+    },
+    {
+      "seed": 73,
+      "iterations": 24,
+      "converged": true,
+      "active_clusters": 30,
+      "max_cluster_share": 0.06230339928970066,
+      "objective": 0.3168661594390869,
+      "evaluation": {
+        "levels": {
+          "section": {
+            "nmi": 0.25901424472310325,
+            "predicted_cluster_purity": 0.5990867579908675,
+            "label_wise_inverse_purity": 0.1769660071029934
+          },
+          "class": {
+            "nmi": 0.38362224955664637,
+            "predicted_cluster_purity": 0.39512937595129377,
+            "label_wise_inverse_purity": 0.35362760020294265
+          },
+          "subclass": {
+            "nmi": 0.44122335840750126,
+            "predicted_cluster_purity": 0.25164890918315574,
+            "label_wise_inverse_purity": 0.4852359208523592
+          }
+        },
+        "mean": {
+          "nmi": 0.361286617562417,
+          "predicted_cluster_purity": 0.41528834770843903,
+          "label_wise_inverse_purity": 0.3386098427194318
+        },
+        "n_samples": 9855,
+        "n_predicted_clusters": 30,
+        "seed": 73,
+        "objective": 0.3168661594390869,
+        "n_active_clusters": 30,
+        "max_cluster_share": 0.06230339928970066
+      }
+    }
+  ],
+  "files": {
+    "records": "/content/drive/MyDrive/depth_ot_patent/data/processed/dev_records.pkl",
+    "anchor_features": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table5_full_sensitivity/pca_features_frozen_dev_model/root12_d010_pca128.npz",
+    "raw_features": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/raw_features/document_level_encoding_raw768.npz",
+    "pca_features": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/pca_features_frozen_dev_model/document_level_encoding_pca128.npz",
+    "predictions": "/content/drive/MyDrive/claimsem_artifacts/dev_ablation/table4_full_ablation/predictions_phase_b/document_level_encoding_predictions.npz"
+  },
+  "environment": {
+    "gpu": "Tesla T4",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "repository": "/content/claimsem-table4",
+    "repository_branch": "experiments/dev-ablation-tables-5-6",
+    "repository_commit": "2335ea71327ec590dd1e27011188cf9597847cb0"
+  }
+}

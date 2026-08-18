@@ -210,3 +210,25 @@ configs/paths.json
 !configs/dev_search.json
 !configs/smoke_test.json
 !CITATION.cff
+
+# Local DEV ablation artifacts
+/artifacts/
+/results/dev_ablations/*.npz
+/results/dev_ablations/*.pt
+/results/dev_ablations/*.pkl
+/results/dev_ablations/*.joblib
+/results/dev_ablations/partials/
+
+# Track canonical small DEV ablation summaries
+!/results/
+!/results/dev_ablations/
+!/results/dev_ablations/*.csv
+!/results/dev_ablations/*.json
+!/results/dev_ablations/*.tex
+
+# Never track large DEV ablation artifacts
+/results/dev_ablations/*.npz
+/results/dev_ablations/*.pt
+/results/dev_ablations/*.pkl
+/results/dev_ablations/*.joblib
+/results/dev_ablations/partials/

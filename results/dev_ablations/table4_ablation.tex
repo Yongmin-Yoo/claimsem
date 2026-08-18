@@ -1,0 +1,63 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Ablation results on the development set. Sec., Class, and Subcl. denote NMI at the CPC section, class, and subclass levels. Mean $\mathrm{Pur}_{\mathrm{p}}$ and Mean $\mathrm{Pur}_{\mathrm{a}}$ are averaged across the three CPC granularities. $\Delta$ NMI denotes the change in Mean NMI relative to Full \textsc{ClaimSem}. Results are averaged over clustering seeds $\{17,42,73\}$; standard deviations are small relative to the reported gaps (see Appendix for per-cell values).}
+\label{tab:claimsem_ablation}
+\begin{tabular*}{\textwidth}{
+@{\extracolsep{\fill}}
+p{0.23\textwidth}
+ccccccc
+@{}
+}
+\toprule
+\textbf{Variant}
+& \textbf{Sec.}
+& \textbf{Class}
+& \textbf{Subcl.}
+& \shortstack{\textbf{Mean}\\\textbf{NMI}}
+& \shortstack{$\mathbf{\Delta}$\\\textbf{NMI}}
+& \shortstack{\textbf{Mean}\\$\mathbf{Pur}_{\mathbf{p}}$}
+& \shortstack{\textbf{Mean}\\$\mathbf{Pur}_{\mathbf{a}}$} \\
+\midrule
+Full \textsc{ClaimSem}
+& 0.2632 & 0.3922 & 0.4494 & 0.3683 & --
+& 0.4167 & 0.3478 \\
+\midrule
+\multicolumn{8}{@{}l}{\textit{Pooling ablations}} \\
+\addlinespace[2pt]
+Uniform claim pooling
+& 0.2346 & 0.3559 & 0.4182 & 0.3362 & -0.0321
+& 0.3931 & 0.3130 \\
+No root emphasis
+& 0.2352 & 0.3579 & 0.4204 & 0.3378 & -0.0304
+& 0.3941 & 0.3150 \\
+No depth decay
+& 0.2626 & 0.3920 & 0.4495 & 0.3681 & -0.0002
+& 0.4160 & 0.3465 \\
+\midrule
+\multicolumn{8}{@{}l}{\textit{Structural controls}} \\
+\addlinespace[2pt]
+Root claims only
+& 0.2592 & 0.3881 & 0.4452 & 0.3642 & -0.0041
+& 0.4156 & 0.3458 \\
+First claim only
+& 0.2532 & 0.3817 & 0.4397 & 0.3582 & -0.0101
+& 0.4108 & 0.3357 \\
+Shuffled dependent depths
+& 0.2630 & 0.3918 & 0.4493 & 0.3680 & -0.0003
+& 0.4161 & 0.3475 \\
+\midrule
+\multicolumn{8}{@{}l}{\textit{Representation controls}} \\
+\addlinespace[2pt]
+Document-level encoding
+& 0.2570 & 0.3824 & 0.4401 & 0.3598 & -0.0085
+& 0.4096 & 0.3325 \\
+No PCA reduction
+& 0.2588 & 0.3883 & 0.4442 & 0.3638 & -0.0045
+& 0.4149 & 0.3403 \\
+\bottomrule
+\end{tabular*}
+\end{table*}
+

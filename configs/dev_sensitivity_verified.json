@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "claimsem_dev_sensitivity_and_robustness",
+  "split": "development_only",
+  "expected_patents": 9855,
+  "feature_dimension": 768,
+  "pooling_search": {
+    "root_weights": [
+      1,
+      2,
+      4,
+      8,
+      12,
+      16
+    ],
+    "depth_decays": [
+      0,
+      0.05,
+      0.1,
+      0.2
+    ]
+  },
+  "pca": {
+    "enabled": true,
+    "output_dimension": 128,
+    "fit_scope": "development_only",
+    "protocol": "frozen_full_claimsem_dev_pca",
+    "fit_separately_per_variant": false,
+    "whiten": false,
+    "random_state": 42
+  },
+  "clustering": {
+    "method": "spherical_kmeans",
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "max_iterations": 100,
+    "tolerance": 1e-05,
+    "device": "cuda"
+  },
+  "sensitivity": {
+    "n_clusters": 30,
+    "expected_anchor_mean_nmi": 0.368289425533,
+    "expected_best_pool": "root12_d020",
+    "expected_best_mean_nmi": 0.368636867127
+  },
+  "cluster_robustness": {
+    "pool": "root12_d010",
+    "cluster_counts": [
+      20,
+      25,
+      30,
+      35,
+      40
+    ]
+  },
+  "test_data_used": false
+}
