@@ -1,0 +1,69 @@
+{
+  "created_at_unix": 1787026706.5439637,
+  "source_artifacts": {
+    "records": {
+      "path": "/content/drive/MyDrive/depth_ot_patent/data/processed/test_records.pkl",
+      "sha256": "8fc2c7615cd9df0ab559a64f5e7b6bf431aebc69e7ed029fe69f9f0c659eaa83"
+    },
+    "predictions": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/final_test_consistent_root12_d010_runner/clusters/clustering_seed_42.npz",
+      "sha256": "4020e852d1836ee143551cda4c5c69cf34d0219686baf876e1123ce5df1f78f7"
+    },
+    "pca_features": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/final_test_consistent_root12_d010_runner/test_pca128_features.npz",
+      "sha256": "6ee611c8ded9af4079b20a50739381d7adbc02be94d28a59268134cc2c1a677f"
+    }
+  },
+  "verification": {
+    "n_patents": 9881,
+    "feature_shape": [
+      9881,
+      128
+    ],
+    "prediction_shape": [
+      9881
+    ],
+    "centroid_shape": [
+      30,
+      128
+    ],
+    "patent_order_aligned": true,
+    "seed": 42,
+    "converged": true,
+    "active_clusters": 30,
+    "centroid_reassignment_exact": true,
+    "independent_prediction_copy_identical": true
+  },
+  "generated_files": {
+    "table2_cluster_composition.csv": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/test_case_study_tables_2_3/table2_cluster_composition.csv",
+      "sha256": "93cba01f11332e66524fcdf61188870a289548355b008fd3368e226325ddb2a8",
+      "bytes": 821
+    },
+    "table2_cluster_composition.tex": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/test_case_study_tables_2_3/table2_cluster_composition.tex",
+      "sha256": "0043ad30261f40c8b3d4dacd93e9c802a58f1b0e75057fb84f12b00df8cc7efb",
+      "bytes": 1028
+    },
+    "table3_centroid_patents.csv": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/test_case_study_tables_2_3/table3_centroid_patents.csv",
+      "sha256": "293ace5434636501178591f7a343f358127a8b4322f256914fe58006b0f2ea31",
+      "bytes": 751
+    },
+    "table3_centroid_patents.tex": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/test_case_study_tables_2_3/table3_centroid_patents.tex",
+      "sha256": "5c094dff67bd4d0d7a830cfe332123e4ba44a9cda6b1bc4da1f37371298b722a",
+      "bytes": 956
+    },
+    "table2_3_case_study.json": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/test_case_study_tables_2_3/table2_3_case_study.json",
+      "sha256": "2dff0a324d7b78009e104f537183e0300501df5f201a250d25b9b17e72c7d745",
+      "bytes": 8775
+    },
+    "selected_cluster_centroids.npz": {
+      "path": "/content/drive/MyDrive/claimsem_artifacts/test_case_study_tables_2_3/selected_cluster_centroids.npz",
+      "sha256": "9a616d0e927ff4e70eee513581352ccc36df8379551241f476cbbb5249067769",
+      "bytes": 2428
+    }
+  }
+}
