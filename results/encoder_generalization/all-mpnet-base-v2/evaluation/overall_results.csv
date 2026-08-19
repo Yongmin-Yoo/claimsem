@@ -1,0 +1,4 @@
+model,pooling,mean_nmi,std_nmi,relative_gain_percent
+all-mpnet-base-v2,uniform,0.3391243285458739,0.0017960744444658649,
+all-mpnet-base-v2,root+depth,0.362607475435186,0.003233956002471258,6.924642354621142
+all-mpnet-base-v2,paired_delta,0.02348314688931215,0.005020920013124068,

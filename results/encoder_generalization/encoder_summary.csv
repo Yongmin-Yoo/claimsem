@@ -1,0 +1,5 @@
+encoder,uniform_nmi,claimsem_nmi,delta_nmi,relative_gain,seeds
+all-MiniLM-L6-v2,0.3147,0.3493,0.0347,0.11,17;42;73
+all-mpnet-base-v2,0.3391,0.3626,0.0235,0.069,17;42;73
+bert-base-uncased,0.294,0.2991,0.0052,0.018,17;42;73
+PatentSBERTa-V2,0.3428,0.3755,0.0327,0.095,17;42;73

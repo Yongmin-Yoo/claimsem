@@ -1,0 +1,5 @@
+encoder,uniform_nmi,claimsem_nmi,delta_nmi,relative_gain,seeds,clusters,evaluation_dir,reported_in_main_table
+all-MiniLM-L6-v2,0.3147,0.3493,0.0347,0.11026374324753735,17;42;73,30,/content/drive/MyDrive/claimsem_artifacts/encoder_generalization/all-MiniLM-L6-v2/evaluation,True
+all-mpnet-base-v2,0.3391,0.3626,0.0235,0.06930109112356236,17;42;73,30,/content/drive/MyDrive/claimsem_artifacts/encoder_generalization/all-mpnet-base-v2/evaluation,True
+bert-base-uncased,0.294,0.2991,0.0052,0.017687074829931974,17;42;73,30,/content/drive/MyDrive/claimsem_artifacts/encoder_generalization/bert-base-uncased/evaluation,True
+scibert_scivocab_uncased,0.2718,0.2594,-0.0124,-0.04562178072111847,17;42;73,30,/content/drive/MyDrive/claimsem_artifacts/encoder_generalization/scibert_scivocab_uncased/evaluation,False
