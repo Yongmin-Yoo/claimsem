@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.08}
+\caption{Encoder generalization on the test set. NMI is averaged over CPC section, class, and subclass and over seeds $\{17,42,73\}$. $\Delta$ denotes ClaimSem minus uniform pooling.}
+\label{tab:encoder_generalization}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Encoder} & \textbf{Uni.} & \textbf{ClaimSem} & $\boldsymbol{\Delta}$ & \textbf{Gain} \\
+\midrule
+MiniLM-L6-v2 & 0.3147 & 0.3493 & +0.0347 & 11.0\% \\
+MPNet-base-v2 & 0.3391 & 0.3626 & +0.0235 & 6.9\% \\
+BERT-base-uncased & 0.2940 & 0.2991 & +0.0052 & 1.8\% \\
+PatentSBERTa-V2 & \textbf{0.3428} & \textbf{0.3755} & +0.0327 & 9.5\% \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

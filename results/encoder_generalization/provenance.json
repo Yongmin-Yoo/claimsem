@@ -1,0 +1,47 @@
+{
+  "release": "v0.2.0",
+  "generated_at_utc": "2026-08-19T03:56:41.002796+00:00",
+  "dataset": {
+    "dev_patents": 9855,
+    "test_patents": 9881,
+    "dev_claims": 160048,
+    "test_claims": 161661
+  },
+  "evaluation": {
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "clusters": 30,
+    "pca_dim": 128,
+    "pca_fit_split": "DEV",
+    "clustering": "spherical_kmeans",
+    "max_iter": 100,
+    "tolerance": 1e-05,
+    "levels": [
+      "section",
+      "class",
+      "subclass"
+    ]
+  },
+  "model_ids": {
+    "all-MiniLM-L6-v2": "sentence-transformers/all-MiniLM-L6-v2",
+    "all-mpnet-base-v2": "sentence-transformers/all-mpnet-base-v2",
+    "bert-base-uncased": "google-bert/bert-base-uncased",
+    "scibert_scivocab_uncased": "allenai/scibert_scivocab_uncased",
+    "PatentSBERTa-V2": "AAUBS/PatentSBERTa_V2"
+  },
+  "validation_scope": {
+    "validated": [
+      "all-MiniLM-L6-v2",
+      "all-mpnet-base-v2",
+      "bert-base-uncased",
+      "scibert_scivocab_uncased"
+    ],
+    "excluded": [
+      "PatentSBERTa-V2"
+    ],
+    "patentsberta_note": "PatentSBERTa numerical validation intentionally excluded."
+  }
+}

@@ -232,3 +232,5 @@ configs/paths.json
 /results/dev_ablations/*.pkl
 /results/dev_ablations/*.joblib
 /results/dev_ablations/partials/
+*.safetensors
+*.pyc

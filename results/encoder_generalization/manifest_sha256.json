@@ -1,0 +1,80 @@
+{
+  "generated_at_utc": "2026-08-19T03:56:41.007574+00:00",
+  "files": [
+    {
+      "path": "results/encoder_generalization/PatentSBERTa-V2/features/uniform/dev/preparation_report.json",
+      "size_bytes": 950,
+      "sha256": "89f701c070c61f6aba325c2c02811519fedf3ece9dcb10ab8ef941c372c16cc5"
+    },
+    {
+      "path": "results/encoder_generalization/RELEASE_NOTES_v0.2.0.md",
+      "size_bytes": 506,
+      "sha256": "d1c688380f0c4d94e6133283e69232ac4c91d9fc91777b1fd82e59c5c88846e1"
+    },
+    {
+      "path": "results/encoder_generalization/all-MiniLM-L6-v2/evaluation/full_evaluation.json",
+      "size_bytes": 15270,
+      "sha256": "79830a62f4cf17e0da62a8a2151407e5960437f8018829f64a8cf899474579a8"
+    },
+    {
+      "path": "results/encoder_generalization/all-MiniLM-L6-v2/evaluation/overall_results.csv",
+      "size_bytes": 240,
+      "sha256": "5f444078217235e3669808c5e8a3240051988c48b0dea729f37f942e50162414"
+    },
+    {
+      "path": "results/encoder_generalization/all-MiniLM-L6-v2/evaluation/per_level_results.csv",
+      "size_bytes": 1013,
+      "sha256": "7394fc62fbd0068d7d894490f5044ccd620f79f0a323f4e501df235eaa20483d"
+    },
+    {
+      "path": "results/encoder_generalization/all-mpnet-base-v2/evaluation/full_evaluation.json",
+      "size_bytes": 15259,
+      "sha256": "4e01ff7adddb5cddcf9b7e81dda002b3e244708572355d900d46198524bca563"
+    },
+    {
+      "path": "results/encoder_generalization/all-mpnet-base-v2/evaluation/overall_results.csv",
+      "size_bytes": 280,
+      "sha256": "fded12159afbc2d03d26562bd9f5dddc0c8937108c9775d47f358eb5ed28a7e9"
+    },
+    {
+      "path": "results/encoder_generalization/all-mpnet-base-v2/evaluation/per_level_results.csv",
+      "size_bytes": 1260,
+      "sha256": "84a5dd81f82bc7e36cee9b3ffc4492e5248fa64bfe30d74f9736340f91aaad3f"
+    },
+    {
+      "path": "results/encoder_generalization/bert-base-uncased/evaluation/full_evaluation.json",
+      "size_bytes": 11519,
+      "sha256": "6896087062fae29dc11e006590a7c57d5323c9b7d5ff326e887e87023f0711c5"
+    },
+    {
+      "path": "results/encoder_generalization/bert-base-uncased/evaluation/overall_results.csv",
+      "size_bytes": 589,
+      "sha256": "9c4e6f93240f3c8e13bb68f1290a92d0749c2122e2da8d0ec014b7e27ce9a3f4"
+    },
+    {
+      "path": "results/encoder_generalization/bert-base-uncased/evaluation/per_level_results.csv",
+      "size_bytes": 1211,
+      "sha256": "c9121915ec244c97ec62f54f8c4c668ac635e52bd16351f41761f59f9c2701f4"
+    },
+    {
+      "path": "results/encoder_generalization/encoder_generalization_table.tex",
+      "size_bytes": 776,
+      "sha256": "398d22e84aa229a87b0eca1a6d4eb1c985aab3f49466c4da44af3cc115a73dc9"
+    },
+    {
+      "path": "results/encoder_generalization/encoder_summary.csv",
+      "size_bytes": 274,
+      "sha256": "d31fcf8e88c20463733c5e82c7ed6e6754a0305c4dd434452265b7e5e1bd950d"
+    },
+    {
+      "path": "results/encoder_generalization/non_patentsberta_validation_summary.csv",
+      "size_bytes": 805,
+      "sha256": "254254dceb920accc39b5274b0aa1b99b37924453ce1eb4d7bd3537896ae303a"
+    },
+    {
+      "path": "results/encoder_generalization/provenance.json",
+      "size_bytes": 1133,
+      "sha256": "ec58147a0eb7a1b7f83d79b9cadf82512ab3d33dbfa646bcee2f6ebad17a3974"
+    }
+  ]
+}
