@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-19T04:11:36.438619+00:00",
+  "generated_at_utc": "2026-08-19T04:14:45.607741+00:00",
   "release": "v0.2.0",
   "patentsberta_numerical_validation": "not performed",
   "files": [
@@ -55,8 +55,8 @@
     },
     {
       "path": "results/encoder_generalization/encoder_generalization_detailed.tex",
-      "size_bytes": 2391,
-      "sha256": "7262dc5d71d01ff86d468e1f26340b5b51a0e4386b4f32f2f0dc9b5cf6bd3f4a"
+      "size_bytes": 2415,
+      "sha256": "8ccbcaf28d455e7e6ed27be33ed35d0c341cc558a423ecd04773160d9251b04c"
     },
     {
       "path": "results/encoder_generalization/encoder_generalization_table.tex",
