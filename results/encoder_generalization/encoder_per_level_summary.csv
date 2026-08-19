@@ -1,0 +1,49 @@
+encoder,pooling,level,nmi_mean,nmi_std,source
+MiniLM-L6-v2,uniform,section,0.2216029627835401,0.0021404289641528,evaluation CSV
+MiniLM-L6-v2,uniform,class,0.3278963327040513,0.0031638659638184,evaluation CSV
+MiniLM-L6-v2,uniform,subclass,0.3944889269953071,0.0035687914201535,evaluation CSV
+MiniLM-L6-v2,uniform,mean,0.3146627408276328,0.0029331806180096,evaluation CSV
+MiniLM-L6-v2,root+depth,section,0.2445093762548051,0.0001675210950486,evaluation CSV
+MiniLM-L6-v2,root+depth,class,0.3689113803037193,0.0008086278768189,evaluation CSV
+MiniLM-L6-v2,root+depth,subclass,0.4345694374416597,0.0006885649587128,evaluation CSV
+MiniLM-L6-v2,root+depth,mean,0.349330064666728,0.0004839760404366,evaluation CSV
+MiniLM-L6-v2,absolute_delta,section,0.022906413471264986,,evaluation CSV
+MiniLM-L6-v2,absolute_delta,class,0.04101504759966801,,evaluation CSV
+MiniLM-L6-v2,absolute_delta,subclass,0.040080510446352635,,evaluation CSV
+MiniLM-L6-v2,absolute_delta,mean,0.03466732383909521,,evaluation CSV
+MPNet-base-v2,uniform,section,0.2352300077742178,0.0012449960005136,evaluation CSV
+MPNet-base-v2,uniform,class,0.3584246363442627,0.0017312003852231,evaluation CSV
+MPNet-base-v2,uniform,subclass,0.4237183415191409,0.0033203476182212,evaluation CSV
+MPNet-base-v2,uniform,mean,0.3391243285458739,0.0017960744444658,evaluation CSV
+MPNet-base-v2,root+depth,section,0.2544328580852211,0.0025948499567394,evaluation CSV
+MPNet-base-v2,root+depth,class,0.3845239806806295,0.0035035963927474,evaluation CSV
+MPNet-base-v2,root+depth,subclass,0.4488655875397074,0.0037264744398152,evaluation CSV
+MPNet-base-v2,root+depth,mean,0.362607475435186,0.0032339560024712,evaluation CSV
+MPNet-base-v2,absolute_delta,section,0.0192028503110033,,evaluation CSV
+MPNet-base-v2,absolute_delta,class,0.026099344336366792,,evaluation CSV
+MPNet-base-v2,absolute_delta,subclass,0.025147246020566505,,evaluation CSV
+MPNet-base-v2,absolute_delta,mean,0.023483146889312134,,evaluation CSV
+BERT-base-uncased,uniform,section,0.206554786276276,0.0003894827654512,evaluation CSV
+BERT-base-uncased,uniform,class,0.3070584644334457,0.0005400888725344,evaluation CSV
+BERT-base-uncased,uniform,subclass,0.3682461697947272,0.0012895382619548,evaluation CSV
+BERT-base-uncased,uniform,mean,0.2939531401681496,0.0005729278182148,evaluation CSV
+BERT-base-uncased,root+depth,section,0.2093898689603402,0.0008743913953498,evaluation CSV
+BERT-base-uncased,root+depth,class,0.3110295554136888,0.0019556899177516,evaluation CSV
+BERT-base-uncased,root+depth,subclass,0.3769431799800697,0.0014553472834958,evaluation CSV
+BERT-base-uncased,root+depth,mean,0.299120868118033,0.0013078081445857,evaluation CSV
+BERT-base-uncased,absolute_delta,section,0.0028350826840642107,,evaluation CSV
+BERT-base-uncased,absolute_delta,class,0.003971090980243119,,evaluation CSV
+BERT-base-uncased,absolute_delta,subclass,0.008697010185342524,,evaluation CSV
+BERT-base-uncased,absolute_delta,mean,0.005167727949883405,,evaluation CSV
+PatentSBERTa-V2,uniform,section,0.2437,0.0021,user-reported; not revalidated
+PatentSBERTa-V2,uniform,class,0.3611,0.0017,user-reported; not revalidated
+PatentSBERTa-V2,uniform,subclass,0.4237,0.0011,user-reported; not revalidated
+PatentSBERTa-V2,uniform,mean,0.3428,0.0002,user-reported; not revalidated
+PatentSBERTa-V2,root+depth,section,0.2734,0.0003,user-reported; not revalidated
+PatentSBERTa-V2,root+depth,class,0.3981,0.0015,user-reported; not revalidated
+PatentSBERTa-V2,root+depth,subclass,0.455,0.0011,user-reported; not revalidated
+PatentSBERTa-V2,root+depth,mean,0.3755,0.0009,user-reported; not revalidated
+PatentSBERTa-V2,absolute_delta,section,0.0297,,user-reported; not revalidated
+PatentSBERTa-V2,absolute_delta,class,0.037,,user-reported; not revalidated
+PatentSBERTa-V2,absolute_delta,subclass,0.0313,,user-reported; not revalidated
+PatentSBERTa-V2,absolute_delta,mean,0.0327,,user-reported; not revalidated

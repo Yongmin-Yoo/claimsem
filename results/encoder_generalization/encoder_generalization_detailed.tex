@@ -1,0 +1,33 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{6.5pt}
+\renewcommand{\arraystretch}{1.12}
+\caption{Granularity-specific NMI for the post-hoc encoder generalization experiments on the test set. Results are reported as mean $\pm$ standard deviation over seeds $\{17,42,73\}$. The Mean column is computed for each seed across CPC section, class, and subclass before aggregation across seeds. Absolute $\Delta$ is Root+depth minus Uniform and is computed from the corresponding unrounded mean NMI values, except for PatentSBERTa-V2, for which the reported rounded values are reproduced without additional validation.}
+\label{tab:encoder_generalization_detailed}
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+\textbf{Encoder} & \textbf{Pooling} & \textbf{Section} & \textbf{Class} & \textbf{Subclass} & \textbf{Mean} \\
+\midrule
+\multirow{3}{*}{MiniLM-L6-v2}
+& Uniform $0.2216 \pm 0.0021$ & $0.3279 \pm 0.0032$ & $0.3945 \pm 0.0036$ & $0.3147 \pm 0.0029$ \\
+& Root+depth $\mathbf{0.2445 \pm 0.0002}$ & $\mathbf{0.3689 \pm 0.0008}$ & $\mathbf{0.4346 \pm 0.0007}$ & $\mathbf{0.3493 \pm 0.0005}$ \\
+& Absolute $\Delta$ $\mathbf{+0.0229}$ & $\mathbf{+0.0410}$ & $\mathbf{+0.0401}$ & $\mathbf{+0.0347}$ \\
+\midrule
+\multirow{3}{*}{MPNet-base-v2}
+& Uniform $0.2352 \pm 0.0012$ & $0.3584 \pm 0.0017$ & $0.4237 \pm 0.0033$ & $0.3391 \pm 0.0018$ \\
+& Root+depth $\mathbf{0.2544 \pm 0.0026}$ & $\mathbf{0.3845 \pm 0.0035}$ & $\mathbf{0.4489 \pm 0.0037}$ & $\mathbf{0.3626 \pm 0.0032}$ \\
+& Absolute $\Delta$ $\mathbf{+0.0192}$ & $\mathbf{+0.0261}$ & $\mathbf{+0.0251}$ & $\mathbf{+0.0235}$ \\
+\midrule
+\multirow{3}{*}{BERT-base-uncased}
+& Uniform $0.2066 \pm 0.0004$ & $0.3071 \pm 0.0005$ & $0.3682 \pm 0.0013$ & $0.2940 \pm 0.0006$ \\
+& Root+depth $\mathbf{0.2094 \pm 0.0009}$ & $\mathbf{0.3110 \pm 0.0020}$ & $\mathbf{0.3769 \pm 0.0015}$ & $\mathbf{0.2991 \pm 0.0013}$ \\
+& Absolute $\Delta$ $\mathbf{+0.0028}$ & $\mathbf{+0.0040}$ & $\mathbf{+0.0087}$ & $\mathbf{+0.0052}$ \\
+\midrule
+\multirow{3}{*}{PatentSBERTa-V2}
+& Uniform $0.2437 \pm 0.0021$ & $0.3611 \pm 0.0017$ & $0.4237 \pm 0.0011$ & $0.3428 \pm 0.0002$ \\
+& Root+depth $\mathbf{0.2734 \pm 0.0003}$ & $\mathbf{0.3981 \pm 0.0015}$ & $\mathbf{0.4550 \pm 0.0011}$ & $\mathbf{0.3755 \pm 0.0009}$ \\
+& Absolute $\Delta$ $\mathbf{+0.0297}$ & $\mathbf{+0.0370}$ & $\mathbf{+0.0313}$ & $\mathbf{+0.0327}$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

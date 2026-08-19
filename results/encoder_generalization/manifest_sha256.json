@@ -1,11 +1,8 @@
 {
-  "generated_at_utc": "2026-08-19T03:56:41.007574+00:00",
+  "generated_at_utc": "2026-08-19T04:11:36.438619+00:00",
+  "release": "v0.2.0",
+  "patentsberta_numerical_validation": "not performed",
   "files": [
-    {
-      "path": "results/encoder_generalization/PatentSBERTa-V2/features/uniform/dev/preparation_report.json",
-      "size_bytes": 950,
-      "sha256": "89f701c070c61f6aba325c2c02811519fedf3ece9dcb10ab8ef941c372c16cc5"
-    },
     {
       "path": "results/encoder_generalization/RELEASE_NOTES_v0.2.0.md",
       "size_bytes": 506,
@@ -57,9 +54,19 @@
       "sha256": "c9121915ec244c97ec62f54f8c4c668ac635e52bd16351f41761f59f9c2701f4"
     },
     {
+      "path": "results/encoder_generalization/encoder_generalization_detailed.tex",
+      "size_bytes": 2391,
+      "sha256": "7262dc5d71d01ff86d468e1f26340b5b51a0e4386b4f32f2f0dc9b5cf6bd3f4a"
+    },
+    {
       "path": "results/encoder_generalization/encoder_generalization_table.tex",
       "size_bytes": 776,
       "sha256": "398d22e84aa229a87b0eca1a6d4eb1c985aab3f49466c4da44af3cc115a73dc9"
+    },
+    {
+      "path": "results/encoder_generalization/encoder_per_level_summary.csv",
+      "size_bytes": 3881,
+      "sha256": "367dc811e9beaaac573520bc853163faa1d99e312c5284cea96ce964aca68732"
     },
     {
       "path": "results/encoder_generalization/encoder_summary.csv",
