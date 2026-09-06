@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "experiment_name": "claimsem_test_cluster_case_study",
+  "split": "test",
+  "expected_patents": 9881,
+  "expected_sections": 9,
+  "expected_classes": 121,
+  "expected_subclasses": 466,
+  "representation": {
+    "method": "full_claimsem",
+    "root_weight": 12.0,
+    "depth_decay": 0.1,
+    "pca_dimension": 128,
+    "pca_fit_split": "development",
+    "pca_refit_on_test": false
+  },
+  "clustering": {
+    "method": "legacy_gpu_spherical_kmeans",
+    "n_clusters": 30,
+    "case_study_seed": 42,
+    "quantitative_seeds": [
+      17,
+      42,
+      73
+    ]
+  },
+  "selection": {
+    "label_level": "CPC subclass",
+    "minimum_cluster_size": 50,
+    "highest_purity_clusters": 2,
+    "lowest_purity_clusters": 1,
+    "manual_filtering": false,
+    "manual_text_inspection": false,
+    "tie_breaking": [
+      "larger cluster size",
+      "lower internal cluster ID"
+    ]
+  },
+  "retrieval": {
+    "patents_per_cluster": 3,
+    "metric": "cosine similarity",
+    "space": "normalized PCA-128 clustering space"
+  },
+  "expected_selected_clusters": [
+    {
+      "cluster": "C03",
+      "role": "highest_purity",
+      "size": 340,
+      "purity": 0.7382352941176471,
+      "dominant_subclass": "H01L"
+    },
+    {
+      "cluster": "C01",
+      "role": "second_highest_purity",
+      "size": 222,
+      "purity": 0.7342342342342343,
+      "dominant_subclass": "G06Q"
+    },
+    {
+      "cluster": "C04",
+      "role": "lowest_purity",
+      "size": 335,
+      "purity": 0.0417910447761194,
+      "dominant_subclass": "F16B"
+    }
+  ],
+  "large_artifacts": {
+    "repository": "https://huggingface.co/datasets/yongminyoo91/claimsem-test-case-study",
+    "private": true
+  }
+}

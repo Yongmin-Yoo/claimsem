@@ -1,0 +1,10 @@
+selection_role,cluster,cluster_id_zero_based,patent_rank,record_index,patent_id,cpc_section,cpc_class,cpc_subclass,cosine_similarity
+highest_purity,C03,2,1,9637,10516034,H,H01,H01L,0.9122810959815979
+highest_purity,C03,2,2,129,10170334,H,H01,H01L,0.9030452370643616
+highest_purity,C03,2,3,9825,10522686,H,H01,H01L,0.887378454208374
+second_highest_purity,C01,0,1,2427,10255631,G,G06,G06Q,0.9248831272125244
+second_highest_purity,C01,0,2,5999,10382586,G,G06,G06Q,0.9129511713981628
+second_highest_purity,C01,0,3,896,10198765,G,G06,G06Q,0.9073102474212646
+lowest_purity,C04,3,1,1154,10208780,F,F16,F16L,0.8064286112785339
+lowest_purity,C04,3,2,7638,10443229,E,E04,E04F,0.8051429390907288
+lowest_purity,C04,3,3,4935,10344483,E,E04,E04F,0.7992826104164124

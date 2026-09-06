@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0",
+  "split": "test",
+  "method": "full_claimsem",
+  "configuration": {
+    "root_weight": 12.0,
+    "depth_decay": 0.1,
+    "pca_dimension": 128,
+    "n_clusters": 30,
+    "case_study_seed": 42
+  },
+  "data": {
+    "n_patents": 9881,
+    "n_sections": 9,
+    "n_classes": 121,
+    "n_subclasses": 466
+  },
+  "selection_protocol": {
+    "minimum_cluster_size": 50,
+    "high_purity_clusters": 2,
+    "low_purity_clusters": 1,
+    "purity_label_level": "CPC subclass",
+    "high_purity_tie_breaking": [
+      "larger cluster size",
+      "lower internal cluster ID"
+    ],
+    "low_purity_tie_breaking": [
+      "larger cluster size",
+      "lower internal cluster ID"
+    ],
+    "manual_filtering": false,
+    "manual_text_inspection_before_selection": false
+  },
+  "seed_42_metrics": {
+    "section_nmi": 0.2778307764183225,
+    "class_nmi": 0.4054468545305487,
+    "subclass_nmi": 0.460797745400339,
+    "mean_nmi": 0.38135845878307006
+  },
+  "clustering": {
+    "seed": 42,
+    "converged": true,
+    "n_iterations": 55,
+    "objective": 0.3447263836860657,
+    "active_clusters": 30,
+    "centroid_reassignment_mismatches": 0
+  },
+  "selected_clusters": [
+    {
+      "selection_role": "highest_purity",
+      "cluster_id_zero_based": 2,
+      "cluster_display": "C03",
+      "size": 340,
+      "subclass_purity": 0.7382352941176471,
+      "dominant_subclass": "H01L",
+      "top_subclasses": [
+        {
+          "subclass": "H01L",
+          "count": 251,
+          "share": 0.7382352941176471
+        },
+        {
+          "subclass": "G02F",
+          "count": 16,
+          "share": 0.047058823529411764
+        },
+        {
+          "subclass": "H05K",
+          "count": 7,
+          "share": 0.020588235294117647
+        }
+      ]
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster_id_zero_based": 0,
+      "cluster_display": "C01",
+      "size": 222,
+      "subclass_purity": 0.7342342342342343,
+      "dominant_subclass": "G06Q",
+      "top_subclasses": [
+        {
+          "subclass": "G06Q",
+          "count": 163,
+          "share": 0.7342342342342343
+        },
+        {
+          "subclass": "G07F",
+          "count": 15,
+          "share": 0.06756756756756757
+        },
+        {
+          "subclass": "H04L",
+          "count": 9,
+          "share": 0.04054054054054054
+        }
+      ]
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster_id_zero_based": 3,
+      "cluster_display": "C04",
+      "size": 335,
+      "subclass_purity": 0.041791044776119404,
+      "dominant_subclass": "F16B",
+      "top_subclasses": [
+        {
+          "subclass": "F16B",
+          "count": 14,
+          "share": 0.041791044776119404
+        },
+        {
+          "subclass": "H01R",
+          "count": 13,
+          "share": 0.03880597014925373
+        },
+        {
+          "subclass": "E04F",
+          "count": 12,
+          "share": 0.03582089552238806
+        }
+      ]
+    }
+  ],
+  "table2": [
+    {
+      "selection_role": "highest_purity",
+      "cluster": "C03",
+      "cluster_id_zero_based": 2,
+      "cluster_size": 340,
+      "cluster_subclass_purity": 0.7382352941176471,
+      "subclass_rank": 1,
+      "cpc_subclass": "H01L",
+      "subclass_count": 251,
+      "share": 0.7382352941176471
+    },
+    {
+      "selection_role": "highest_purity",
+      "cluster": "C03",
+      "cluster_id_zero_based": 2,
+      "cluster_size": 340,
+      "cluster_subclass_purity": 0.7382352941176471,
+      "subclass_rank": 2,
+      "cpc_subclass": "G02F",
+      "subclass_count": 16,
+      "share": 0.047058823529411764
+    },
+    {
+      "selection_role": "highest_purity",
+      "cluster": "C03",
+      "cluster_id_zero_based": 2,
+      "cluster_size": 340,
+      "cluster_subclass_purity": 0.7382352941176471,
+      "subclass_rank": 3,
+      "cpc_subclass": "H05K",
+      "subclass_count": 7,
+      "share": 0.020588235294117647
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster": "C01",
+      "cluster_id_zero_based": 0,
+      "cluster_size": 222,
+      "cluster_subclass_purity": 0.7342342342342343,
+      "subclass_rank": 1,
+      "cpc_subclass": "G06Q",
+      "subclass_count": 163,
+      "share": 0.7342342342342343
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster": "C01",
+      "cluster_id_zero_based": 0,
+      "cluster_size": 222,
+      "cluster_subclass_purity": 0.7342342342342343,
+      "subclass_rank": 2,
+      "cpc_subclass": "G07F",
+      "subclass_count": 15,
+      "share": 0.06756756756756757
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster": "C01",
+      "cluster_id_zero_based": 0,
+      "cluster_size": 222,
+      "cluster_subclass_purity": 0.7342342342342343,
+      "subclass_rank": 3,
+      "cpc_subclass": "H04L",
+      "subclass_count": 9,
+      "share": 0.04054054054054054
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster": "C04",
+      "cluster_id_zero_based": 3,
+      "cluster_size": 335,
+      "cluster_subclass_purity": 0.041791044776119404,
+      "subclass_rank": 1,
+      "cpc_subclass": "F16B",
+      "subclass_count": 14,
+      "share": 0.041791044776119404
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster": "C04",
+      "cluster_id_zero_based": 3,
+      "cluster_size": 335,
+      "cluster_subclass_purity": 0.041791044776119404,
+      "subclass_rank": 2,
+      "cpc_subclass": "H01R",
+      "subclass_count": 13,
+      "share": 0.03880597014925373
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster": "C04",
+      "cluster_id_zero_based": 3,
+      "cluster_size": 335,
+      "cluster_subclass_purity": 0.041791044776119404,
+      "subclass_rank": 3,
+      "cpc_subclass": "E04F",
+      "subclass_count": 12,
+      "share": 0.03582089552238806
+    }
+  ],
+  "table3": [
+    {
+      "selection_role": "highest_purity",
+      "cluster": "C03",
+      "cluster_id_zero_based": 2,
+      "patent_rank": 1,
+      "record_index": 9637,
+      "patent_id": "10516034",
+      "cpc_section": "H",
+      "cpc_class": "H01",
+      "cpc_subclass": "H01L",
+      "cosine_similarity": 0.9122810959815979
+    },
+    {
+      "selection_role": "highest_purity",
+      "cluster": "C03",
+      "cluster_id_zero_based": 2,
+      "patent_rank": 2,
+      "record_index": 129,
+      "patent_id": "10170334",
+      "cpc_section": "H",
+      "cpc_class": "H01",
+      "cpc_subclass": "H01L",
+      "cosine_similarity": 0.9030452370643616
+    },
+    {
+      "selection_role": "highest_purity",
+      "cluster": "C03",
+      "cluster_id_zero_based": 2,
+      "patent_rank": 3,
+      "record_index": 9825,
+      "patent_id": "10522686",
+      "cpc_section": "H",
+      "cpc_class": "H01",
+      "cpc_subclass": "H01L",
+      "cosine_similarity": 0.887378454208374
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster": "C01",
+      "cluster_id_zero_based": 0,
+      "patent_rank": 1,
+      "record_index": 2427,
+      "patent_id": "10255631",
+      "cpc_section": "G",
+      "cpc_class": "G06",
+      "cpc_subclass": "G06Q",
+      "cosine_similarity": 0.9248831272125244
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster": "C01",
+      "cluster_id_zero_based": 0,
+      "patent_rank": 2,
+      "record_index": 5999,
+      "patent_id": "10382586",
+      "cpc_section": "G",
+      "cpc_class": "G06",
+      "cpc_subclass": "G06Q",
+      "cosine_similarity": 0.9129511713981628
+    },
+    {
+      "selection_role": "second_highest_purity",
+      "cluster": "C01",
+      "cluster_id_zero_based": 0,
+      "patent_rank": 3,
+      "record_index": 896,
+      "patent_id": "10198765",
+      "cpc_section": "G",
+      "cpc_class": "G06",
+      "cpc_subclass": "G06Q",
+      "cosine_similarity": 0.9073102474212646
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster": "C04",
+      "cluster_id_zero_based": 3,
+      "patent_rank": 1,
+      "record_index": 1154,
+      "patent_id": "10208780",
+      "cpc_section": "F",
+      "cpc_class": "F16",
+      "cpc_subclass": "F16L",
+      "cosine_similarity": 0.8064286112785339
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster": "C04",
+      "cluster_id_zero_based": 3,
+      "patent_rank": 2,
+      "record_index": 7638,
+      "patent_id": "10443229",
+      "cpc_section": "E",
+      "cpc_class": "E04",
+      "cpc_subclass": "E04F",
+      "cosine_similarity": 0.8051429390907288
+    },
+    {
+      "selection_role": "lowest_purity",
+      "cluster": "C04",
+      "cluster_id_zero_based": 3,
+      "patent_rank": 3,
+      "record_index": 4935,
+      "patent_id": "10344483",
+      "cpc_section": "E",
+      "cpc_class": "E04",
+      "cpc_subclass": "E04F",
+      "cosine_similarity": 0.7992826104164124
+    }
+  ]
+}
