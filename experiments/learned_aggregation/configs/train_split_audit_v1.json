@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "experiment": "learned_aggregation_train_split_audit_v1",
-  "status": "preregistered_before_new_test_evaluation",
+  "status": "completed_and_locked",
   "primary_comparison": "balanced_roots_minus_structural_vicreg_gat",
   "methods": [
     "uniform_pooling",
@@ -188,7 +188,7 @@
     "python_3_13_dynamic_import_fix_required": true
   },
   "stochastic_training_protocol": {
-    "status": "preregistered_new_train_split_protocol",
+    "status": "completed_new_train_split_protocol",
     "original_implementation_recovered": false,
     "must_be_described_as": "newly_specified_train_split_protocol",
     "feature_dropout": {
@@ -222,9 +222,10 @@
       "augmentation_stream": 20001,
       "independent_views": true
     },
-    "pilot_training_allowed": true,
-    "full_training_allowed": false,
-    "reason_full_training_not_yet_allowed": "Run seed-11 short pilot with DEV loss and checkpoint/resume validation before launching all ten seeds."
+    "pilot_training_completed": true,
+    "full_training_completed": true,
+    "further_training_allowed": false,
+    "reason_further_training_not_allowed": "The final TEST evaluation is complete and locked. Any additional optimization must be registered as a new experiment."
   },
   "one_batch_gradient_smoke_test": {
     "status": "passed",
@@ -320,6 +321,27 @@
     "cpc_used_for_checkpoint_selection": false,
     "test_used_for_training": false,
     "test_used_for_checkpoint_selection": false,
-    "external_report_package_sha256": "32f3ede28f2dc613595e84d6faa52df93b21954b719734a85dfda0843d63290e"
+    "external_report_package_sha256": "32f3ede28f2dc613595e84d6faa52df93b21954b719734a85dfda0843d63290e",
+    "results_locked": true,
+    "additional_training_after_test_evaluation_allowed": false
+  },
+  "experiment_lifecycle": {
+    "status": "completed_and_locked",
+    "preregistration_preserved": true,
+    "historical_authorization": {
+      "experiment_status_before_completion": "preregistered_before_new_test_evaluation",
+      "protocol_status_before_completion": "preregistered_new_train_split_protocol",
+      "pilot_training_allowed_before_completion": true,
+      "full_training_allowed_before_completion": false,
+      "reason_full_training_not_yet_allowed": "Run seed-11 short pilot with DEV loss and checkpoint/resume validation before launching all ten seeds.",
+      "purpose": "Preserve the preregistration and pre-run authorization state as historical provenance."
+    },
+    "pilot_training_completed": true,
+    "full_training_completed": true,
+    "final_test_evaluation_completed": true,
+    "post_evaluation_audit_completed": true,
+    "results_cryptographically_locked": true,
+    "further_training_allowed": false,
+    "reason_further_training_not_allowed": "Final TEST evaluation has been completed and the results have been cryptographically locked. Further training would constitute a new experiment and must use a separately preregistered protocol."
   }
 }
