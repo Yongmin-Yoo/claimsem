@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "required_fields": [
+    "experiment_name",
+    "created_at_utc",
+    "git_commit",
+    "python_version",
+    "package_versions",
+    "data_provenance",
+    "split_sizes",
+    "model_configuration",
+    "optimization_configuration",
+    "training_seed",
+    "clustering_seeds",
+    "selected_checkpoint",
+    "selected_epoch",
+    "runtime",
+    "output_files"
+  ],
+  "forbidden_fields": [
+    "access_tokens",
+    "private_credentials"
+  ]
+}

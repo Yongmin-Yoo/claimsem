@@ -232,3 +232,8 @@ configs/paths.json
 /results/dev_ablations/*.pkl
 /results/dev_ablations/*.joblib
 /results/dev_ablations/partials/
+# Learned aggregation private/large artifacts
+experiments/learned_aggregation/artifacts/
+experiments/learned_aggregation/checkpoints/
+experiments/learned_aggregation/cache/
+experiments/learned_aggregation/predictions/

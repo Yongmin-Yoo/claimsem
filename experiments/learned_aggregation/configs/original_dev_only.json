@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "experiment": "learned_aggregation_original_dev_only",
+  "status": "recovered_from_artifacts",
+  "data": {
+    "training_split": "development_only",
+    "validation_split": "10_percent_of_development",
+    "test_usage": [
+      "final_inference",
+      "transductive_clustering",
+      "CPC_evaluation"
+    ],
+    "cpc_used_for_training": false
+  },
+  "model": {
+    "input_embedding_dim": 768,
+    "structural_feature_dim": 2,
+    "hidden_dim": 192,
+    "projection_dim": 128,
+    "gat_heads_first": 4,
+    "gat_heads_second": 1,
+    "edge_feature_dim": 2,
+    "feature_dropout": 0.1,
+    "edge_dropout": 0.1,
+    "model_dropout": 0.1
+  },
+  "optimization": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 256,
+    "max_epochs": 15,
+    "min_epochs": 5,
+    "early_stopping_patience": 4,
+    "checkpoint_metric": "self_supervised_validation_loss"
+  },
+  "evaluation": {
+    "pca_fit_split": "development",
+    "pca_dimension": 128,
+    "pca_refit_on_test": false,
+    "clustering": "transductive_spherical_kmeans",
+    "n_clusters": 30,
+    "seeds": [
+      17,
+      42,
+      73
+    ]
+  },
+  "known_limitations": [
+    "training_used_only_the_development_split",
+    "training_and_clustering_used_the_same_numeric_seed",
+    "VICReg_validation_loss_improved_through_the_final_epoch"
+  ]
+}
