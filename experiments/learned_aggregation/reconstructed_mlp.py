@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from typing import Dict
@@ -79,14 +78,11 @@ class RecoveredSSLMLP(nn.Module):
         number_of_documents: int | None = None,
     ) -> Dict[str, torch.Tensor]:
         if claim_embeddings.ndim != 2:
-            raise ValueError(
-                "claim_embeddings must have shape [N, D]"
-            )
+            raise ValueError("claim_embeddings must have shape [N, D]")
 
         if claim_embeddings.shape[1] != self.input_dim:
             raise ValueError(
-                f"Expected dimension {self.input_dim}, "
-                f"got {claim_embeddings.shape[1]}"
+                f"Expected dimension {self.input_dim}, got {claim_embeddings.shape[1]}"
             )
 
         claim_embeddings = claim_embeddings.float()
@@ -98,19 +94,11 @@ class RecoveredSSLMLP(nn.Module):
         if number_of_documents is None:
             if batch_index.numel() == 0:
                 raise ValueError("Empty batch_index")
-            number_of_documents = (
-                int(batch_index.max().item()) + 1
-            )
+            number_of_documents = int(batch_index.max().item()) + 1
 
-        hidden = F.gelu(
-            self.input_projection(
-                claim_embeddings
-            )
-        )
+        hidden = F.gelu(self.input_projection(claim_embeddings))
 
-        attention_logits = self.attention_scorer(
-            hidden
-        ).squeeze(-1)
+        attention_logits = self.attention_scorer(hidden).squeeze(-1)
 
         attention_weights = pyg_softmax(
             attention_logits,
@@ -118,14 +106,11 @@ class RecoveredSSLMLP(nn.Module):
             num_nodes=number_of_documents,
         )
 
-        pooled = claim_embeddings.new_zeros(
-            (number_of_documents, self.input_dim)
-        )
+        pooled = claim_embeddings.new_zeros((number_of_documents, self.input_dim))
         pooled.index_add_(
             0,
             batch_index,
-            attention_weights.unsqueeze(1)
-            * claim_embeddings,
+            attention_weights.unsqueeze(1) * claim_embeddings,
         )
 
         projected = self.projector(pooled)

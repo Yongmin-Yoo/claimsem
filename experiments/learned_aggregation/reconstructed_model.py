@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from typing import Dict
@@ -38,9 +37,7 @@ class RecoveredStructuralVICRegGAT(nn.Module):
         super().__init__()
 
         if hidden_dim % gat_heads != 0:
-            raise ValueError(
-                "hidden_dim must be divisible by gat_heads"
-            )
+            raise ValueError("hidden_dim must be divisible by gat_heads")
 
         self.input_dim = int(input_dim)
         self.hidden_dim = int(hidden_dim)
@@ -152,9 +149,7 @@ class RecoveredStructuralVICRegGAT(nn.Module):
             Number of documents in the batch.
         """
         if claim_embeddings.ndim != 2:
-            raise ValueError(
-                "claim_embeddings must have shape [N, D]"
-            )
+            raise ValueError("claim_embeddings must have shape [N, D]")
 
         if claim_embeddings.shape[1] != self.input_dim:
             raise ValueError(
@@ -181,21 +176,15 @@ class RecoveredStructuralVICRegGAT(nn.Module):
             raise ValueError("batch_index length mismatch")
 
         if edge_index.ndim != 2 or edge_index.shape[0] != 2:
-            raise ValueError(
-                "edge_index must have shape [2, E]"
-            )
+            raise ValueError("edge_index must have shape [2, E]")
 
         if edge_attr.shape != (edge_index.shape[1], self.edge_dim):
-            raise ValueError(
-                "edge_attr must have shape [E, edge_dim]"
-            )
+            raise ValueError("edge_attr must have shape [E, edge_dim]")
 
         if number_of_documents is None:
             if batch_index.numel() == 0:
                 raise ValueError("Empty batch_index")
-            number_of_documents = int(
-                batch_index.max().item()
-            ) + 1
+            number_of_documents = int(batch_index.max().item()) + 1
 
         # Confirmed feature order: depth first, root second.
         structural_features = torch.stack(
@@ -208,9 +197,7 @@ class RecoveredStructuralVICRegGAT(nn.Module):
             dim=1,
         )
 
-        hidden = F.gelu(
-            self.input_projection(node_input)
-        )
+        hidden = F.gelu(self.input_projection(node_input))
 
         hidden = (
             F.elu(
@@ -239,9 +226,7 @@ class RecoveredStructuralVICRegGAT(nn.Module):
             dim=1,
         )
 
-        attention_logits = self.attention_scorer(
-            attention_input
-        ).squeeze(-1)
+        attention_logits = self.attention_scorer(attention_input).squeeze(-1)
 
         attention_weights = pyg_softmax(
             attention_logits,
@@ -250,14 +235,11 @@ class RecoveredStructuralVICRegGAT(nn.Module):
         )
 
         # Pool the original 768-dimensional frozen claim embeddings.
-        pooled = claim_embeddings.new_zeros(
-            (number_of_documents, self.input_dim)
-        )
+        pooled = claim_embeddings.new_zeros((number_of_documents, self.input_dim))
         pooled.index_add_(
             0,
             batch_index,
-            attention_weights.unsqueeze(1)
-            * claim_embeddings,
+            attention_weights.unsqueeze(1) * claim_embeddings,
         )
 
         projected = self.projector(pooled)
@@ -290,9 +272,7 @@ def vicreg_loss(
         raise ValueError("VICReg view shapes must match")
 
     if first.ndim != 2:
-        raise ValueError(
-            "VICReg inputs must have shape [batch, dimension]"
-        )
+        raise ValueError("VICReg inputs must have shape [batch, dimension]")
 
     invariance = F.mse_loss(first, second)
 
@@ -315,12 +295,8 @@ def vicreg_loss(
     )
 
     variance = 0.5 * (
-        F.relu(
-            variance_target - first_std
-        ).mean()
-        + F.relu(
-            variance_target - second_std
-        ).mean()
+        F.relu(variance_target - first_std).mean()
+        + F.relu(variance_target - second_std).mean()
     )
 
     batch_size = first.shape[0]
@@ -328,13 +304,9 @@ def vicreg_loss(
 
     denominator = max(batch_size - 1, 1)
 
-    first_covariance = (
-        first_centered.T @ first_centered
-    ) / denominator
+    first_covariance = (first_centered.T @ first_centered) / denominator
 
-    second_covariance = (
-        second_centered.T @ second_centered
-    ) / denominator
+    second_covariance = (second_centered.T @ second_centered) / denominator
 
     identity = torch.eye(
         feature_dim,
@@ -343,10 +315,8 @@ def vicreg_loss(
     )
 
     covariance = (
-        first_covariance[~identity].pow(2).sum()
-        / feature_dim
-        + second_covariance[~identity].pow(2).sum()
-        / feature_dim
+        first_covariance[~identity].pow(2).sum() / feature_dim
+        + second_covariance[~identity].pow(2).sum() / feature_dim
     )
 
     total = (

@@ -1,4 +1,3 @@
-
 """Resumable document-batch loader for learned-aggregation train partials.
 
 Important protocol rules
@@ -15,16 +14,15 @@ Important protocol rules
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Sequence, Tuple
 import hashlib
 import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Iterator, List, Optional, Tuple
 
 import numpy as np
 import torch
 import torch.nn.functional as F
-
 
 TRAIN_DEPTH_DIVISOR = 55.0
 EXPECTED_SHARDS = 496
@@ -150,26 +148,17 @@ class TrainPartialDataset:
         if self.depth_divisor <= 0:
             raise ValueError("depth_divisor must be positive")
 
-        self.shard_paths = sorted(
-            self.partial_dir.glob("shard_*_graphs.npz")
-        )
+        self.shard_paths = sorted(self.partial_dir.glob("shard_*_graphs.npz"))
         if len(self.shard_paths) != expected_shards:
             raise RuntimeError(
-                f"Expected {expected_shards} shards, "
-                f"found {len(self.shard_paths)}"
+                f"Expected {expected_shards} shards, found {len(self.shard_paths)}"
             )
 
         self.plan_dir.mkdir(parents=True, exist_ok=True)
 
-        self.documents_per_shard = np.empty(
-            len(self.shard_paths), dtype=np.int32
-        )
-        self.claims_per_shard = np.empty(
-            len(self.shard_paths), dtype=np.int64
-        )
-        self.edges_per_shard = np.empty(
-            len(self.shard_paths), dtype=np.int64
-        )
+        self.documents_per_shard = np.empty(len(self.shard_paths), dtype=np.int32)
+        self.claims_per_shard = np.empty(len(self.shard_paths), dtype=np.int64)
+        self.edges_per_shard = np.empty(len(self.shard_paths), dtype=np.int64)
 
         for shard_index, path in enumerate(self.shard_paths):
             with np.load(path, allow_pickle=False) as z:
@@ -185,17 +174,13 @@ class TrainPartialDataset:
 
         if self.n_documents != EXPECTED_DOCUMENTS:
             raise RuntimeError(
-                f"Document mismatch: {self.n_documents} "
-                f"!= {EXPECTED_DOCUMENTS}"
+                f"Document mismatch: {self.n_documents} != {EXPECTED_DOCUMENTS}"
             )
         if self.n_claims != EXPECTED_CLAIMS:
-            raise RuntimeError(
-                f"Claim mismatch: {self.n_claims} != {EXPECTED_CLAIMS}"
-            )
+            raise RuntimeError(f"Claim mismatch: {self.n_claims} != {EXPECTED_CLAIMS}")
         if self.n_edges != EXPECTED_DIRECTED_EDGES:
             raise RuntimeError(
-                f"Edge mismatch: {self.n_edges} "
-                f"!= {EXPECTED_DIRECTED_EDGES}"
+                f"Edge mismatch: {self.n_edges} != {EXPECTED_DIRECTED_EDGES}"
             )
 
     def _plan_paths(
@@ -252,9 +237,7 @@ class TrainPartialDataset:
                     index=shard_index,
                 )
             )
-            local_order = doc_rng.permutation(n_docs).astype(
-                np.int32, copy=False
-            )
+            local_order = doc_rng.permutation(n_docs).astype(np.int32, copy=False)
 
             with np.load(
                 self.shard_paths[shard_index],
@@ -263,9 +246,7 @@ class TrainPartialDataset:
                 # Intentionally read only patent IDs, never CPC labels.
                 patent_ids = np.asarray(z["patent_ids"])[local_order]
 
-            shard_parts.append(
-                np.full(n_docs, shard_index, dtype=np.int16)
-            )
+            shard_parts.append(np.full(n_docs, shard_index, dtype=np.int16))
             document_parts.append(local_order)
             patent_parts.append(patent_ids.astype(str, copy=False))
 
@@ -330,15 +311,11 @@ class TrainPartialDataset:
             document_indices = z["document_indices"].copy()
             patent_ids = z["patent_ids"].copy()
 
-        hash_input = "\n".join(
-            patent_ids.astype(str).tolist()
-        ).encode("utf-8")
+        hash_input = "\n".join(patent_ids.astype(str).tolist()).encode("utf-8")
         actual_hash = hashlib.sha256(hash_input).hexdigest()
 
         if actual_hash != metadata["order_sha256"]:
-            raise RuntimeError(
-                f"Epoch-plan hash mismatch: {npz_path}"
-            )
+            raise RuntimeError(f"Epoch-plan hash mismatch: {npz_path}")
 
         return EpochPlan(
             training_seed=int(training_seed),
@@ -415,9 +392,7 @@ class TrainPartialDataset:
         plan = self.create_epoch_plan(training_seed, epoch)
 
         if not 0 <= start_document <= plan.n_documents:
-            raise ValueError(
-                f"Invalid start_document={start_document}"
-            )
+            raise ValueError(f"Invalid start_document={start_document}")
 
         current_shard_index: Optional[int] = None
         current_npz = None
@@ -448,17 +423,11 @@ class TrainPartialDataset:
                 ]
             )
 
-            x = np.concatenate(docs_x, axis=0).astype(
-                np.float32, copy=False
-            )
-            depths = np.concatenate(docs_depth).astype(
-                np.int64, copy=False
-            )
+            x = np.concatenate(docs_x, axis=0).astype(np.float32, copy=False)
+            depths = np.concatenate(docs_depth).astype(np.int64, copy=False)
 
             root_indicator = (depths == 0).astype(np.float32)
-            normalized_depth = (
-                depths.astype(np.float32) / self.depth_divisor
-            )
+            normalized_depth = depths.astype(np.float32) / self.depth_divisor
             structural = np.stack(
                 [normalized_depth, root_indicator],
                 axis=1,
@@ -471,9 +440,7 @@ class TrainPartialDataset:
 
             shifted_src: List[np.ndarray] = []
             shifted_dst: List[np.ndarray] = []
-            for doc_i, (src, dst) in enumerate(
-                zip(docs_src, docs_dst)
-            ):
+            for doc_i, (src, dst) in enumerate(zip(docs_src, docs_dst)):
                 offset = int(node_ptr[doc_i])
                 shifted_src.append(src + offset)
                 shifted_dst.append(dst + offset)
@@ -494,9 +461,7 @@ class TrainPartialDataset:
             # Preserve canonical edge_type and separately construct the
             # recovered model's edge feature order.
             edge_feature_type = (
-                1 - edge_type_np
-                if reverse_edge_features
-                else edge_type_np
+                1 - edge_type_np if reverse_edge_features else edge_type_np
             )
 
             batch_obj = GraphBatch(
@@ -575,9 +540,7 @@ class TrainPartialDataset:
                     current_shard_index = shard_index
 
                 if current_arrays is None:
-                    raise RuntimeError(
-                        "Shard arrays were not initialized"
-                    )
+                    raise RuntimeError("Shard arrays were not initialized")
 
                 node_ptr = current_arrays["node_ptr"]
                 edge_ptr = current_arrays["edge_ptr"]
@@ -596,12 +559,8 @@ class TrainPartialDataset:
                     dtype=np.int64,
                 )
 
-                src = np.asarray(
-                    current_arrays["edge_src"][edge_start:edge_stop]
-                )
-                dst = np.asarray(
-                    current_arrays["edge_dst"][edge_start:edge_stop]
-                )
+                src = np.asarray(current_arrays["edge_src"][edge_start:edge_stop])
+                dst = np.asarray(current_arrays["edge_dst"][edge_start:edge_stop])
                 src, dst = self._localize_edges(
                     src,
                     dst,

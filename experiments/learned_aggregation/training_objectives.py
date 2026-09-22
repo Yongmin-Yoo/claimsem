@@ -1,4 +1,3 @@
-
 """Newly specified train-split stochastic objectives.
 
 This module is not claimed to reproduce the unavailable original
@@ -167,9 +166,7 @@ def symmetric_info_nce_loss(
     )
     logits = logits.masked_fill(diagonal, float("-inf"))
 
-    positive_index = (
-        torch.arange(total, device=logits.device) + n
-    ) % total
+    positive_index = (torch.arange(total, device=logits.device) + n) % total
 
     loss = F.cross_entropy(logits, positive_index)
 
