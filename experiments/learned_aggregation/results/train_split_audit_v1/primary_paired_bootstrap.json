@@ -1,0 +1,15 @@
+{
+  "schema_version": "paired_document_bootstrap_v1",
+  "comparison": "balanced_roots_minus_structural_vicreg_gat",
+  "replicates": 2000,
+  "seed": 20260922,
+  "point_estimate": 0.026144470131961972,
+  "bootstrap_mean": 0.02507487638330565,
+  "bootstrap_standard_error": 0.0015893448935803789,
+  "percentile_95_ci": {
+    "lower": 0.021951983573009662,
+    "upper": 0.028013991580957593
+  },
+  "conditional_on": "Fixed trained checkpoints, fixed PCA transformations, and fixed clustering outputs.",
+  "paired_resampling_unit": "test_document"
+}

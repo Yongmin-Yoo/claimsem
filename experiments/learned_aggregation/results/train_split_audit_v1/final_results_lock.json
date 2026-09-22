@@ -1,0 +1,693 @@
+{
+  "schema_version": "final_results_lock_v1",
+  "status": "locked",
+  "created_unix_time": 1790079473.4821053,
+  "files": [
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/checkpoint_manifest.json",
+      "sha256": "e108e26f5ede0e0667a8675b4cdc252e24d120b70c33d346772f1b3a4779de6c",
+      "bytes": 7243
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/dev_fitted_pca.joblib",
+      "sha256": "e027c46d2775055831e4060d7d572858b3b31c8e6baa747cafdf5acd41fdafec",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/dev_pca128.npz",
+      "sha256": "02fc5a518876aa0da7e57958ca2f7b84b59a1e9f9fd5e662289403758f1c29b1",
+      "bytes": 4730038
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/evaluation_complete.json",
+      "sha256": "038f9ed77fcdfc2e4769caa67cda29a443928c2e01d4076215be1b8a57bfc95e",
+      "bytes": 4415
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/metrics_summary.json",
+      "sha256": "06bf8d70b630d99a3062157e0f4aa38453b8216d55bf36b06ddfdf4e73b68dc7",
+      "bytes": 1816
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/test_pca128.npz",
+      "sha256": "2e36bffb44300bf45549734b11be84e1310fb68cdeb8624487f85b442206e298",
+      "bytes": 4743342
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/test_predictions.npz",
+      "sha256": "30ca2a5df36f53d73cc14d0da884aa0a48a55966c56dcfd474869f638d2cea63",
+      "bytes": 43786
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/dev_fitted_pca.joblib",
+      "sha256": "6e5eafb681b8fbb3a441543508005b34938d0faab518674c4ab798d2de493af1",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/dev_pca128.npz",
+      "sha256": "1bfe56e176810ea50396154b5ba7601df6b73b0531fa0ab24158a3d85c1c0935",
+      "bytes": 4731216
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/evaluation_complete.json",
+      "sha256": "32b2c7985a0b8e9105de84232afcf3a50981b35ae61ae2b4f2c1d8a7b87a2356",
+      "bytes": 4451
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/metrics_summary.json",
+      "sha256": "fd69f035eb5daa2c32d4949b0df674acd571aecd177b808a99f5e2c2b400b39f",
+      "bytes": 1804
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/test_pca128.npz",
+      "sha256": "f9bd83af1eff534ef08be4ce2958bb8bd6cf6b7a27358cd07feeecea0fb54665",
+      "bytes": 4744008
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/test_predictions.npz",
+      "sha256": "5cb071729967d3da994a0b458cbe9a4f3796150dac8e61c78e2620a3fab8c9b7",
+      "bytes": 44682
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/dev_fitted_pca.joblib",
+      "sha256": "0263e0d1d48f0fae43c3cf097b1072b2ef98b9c773b63f1a43de9466faae840b",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/dev_pca128.npz",
+      "sha256": "3510aecc39fd755ceea175a859c6ca3f784c485d5807c175bb81584871eaf002",
+      "bytes": 4731191
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/evaluation_complete.json",
+      "sha256": "b85c63cc9fb40cdaeee81b2bbcd6e98ab638410f89fd83ad6b4856860a61462e",
+      "bytes": 4456
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/metrics_summary.json",
+      "sha256": "ac76039a72620a7c693507799a84d6d45ef78f7245b3d53891a0acc5bc6f2720",
+      "bytes": 1809
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/test_pca128.npz",
+      "sha256": "7a960c701f30c0c6b7d0810727ff449ea268f643af163b1c74fd30c158db8cfa",
+      "bytes": 4743755
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/test_predictions.npz",
+      "sha256": "2252b3e97909176530c7c49822448202f4e93ff8c34b5f2675bf794d241f5c15",
+      "bytes": 44499
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/dev_fitted_pca.joblib",
+      "sha256": "129ecacbaa8952906585381685d03ef0d1f9ab1be546c47a8610f2beb647fa79",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/dev_pca128.npz",
+      "sha256": "f3c6b222203af033cc6ca9938b6c730aae3f9db4bc734403be4de37c675b896e",
+      "bytes": 4731131
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/evaluation_complete.json",
+      "sha256": "c902444de55f2e8327b0f0acee6ee7849e86bde80010955750e4b469e605f144",
+      "bytes": 4461
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/metrics_summary.json",
+      "sha256": "474b1a6c578b30419b3f780b56246616518d38e9e65f360b2130d44f797af7fb",
+      "bytes": 1813
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/test_pca128.npz",
+      "sha256": "87f67b28962bba9c6cb8e4f9fdf86d72cb7b8967677737200dcff825aeaa2baf",
+      "bytes": 4743161
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/test_predictions.npz",
+      "sha256": "1ec511c577015320a2ecabebaa5b4f5ad616252a3acfbc2bf3efc0fdfc30d001",
+      "bytes": 44501
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/dev_fitted_pca.joblib",
+      "sha256": "011e6cf14113f996afb5a8a6352446d87fe6ebc6381847724941eb9cf7056e09",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/dev_pca128.npz",
+      "sha256": "c1a723f0e9f3d4e13c7d0d1db0cccf174ee845683ee5929638ce1bc63fbaa4ad",
+      "bytes": 4730867
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/evaluation_complete.json",
+      "sha256": "f647ec1d2bd0ce2639b388aeba78c2295505aebcb91e2834b92898bfa7d30a19",
+      "bytes": 4450
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/metrics_summary.json",
+      "sha256": "d9b2fcd2e89a3ea7e8f6e9f8d220f9801ba918e6c4cf63d0d1e3e2869f0ab93e",
+      "bytes": 1805
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/test_pca128.npz",
+      "sha256": "250df4a265f1c081fd84b4258a7406d44fa860fd222af47113c23fa7367f875b",
+      "bytes": 4743918
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/test_predictions.npz",
+      "sha256": "d877a45c0191d0785d16c2d61c69868c38298ae0aaf7224351a392640c9edfea",
+      "bytes": 44585
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/dev_fitted_pca.joblib",
+      "sha256": "3c767dabe50354f3ff919e6e42122dc1c5e31601d66765509d8d3145c1670a73",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/dev_pca128.npz",
+      "sha256": "7e4165d3a1d9bc5c000de0be839399481d68877933cfc0102155204f3f3f852a",
+      "bytes": 4730893
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/evaluation_complete.json",
+      "sha256": "94d7e9d5a60cd3ddff739e246e11c753261afd047a0577d8831d6712ab5c363f",
+      "bytes": 4453
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/metrics_summary.json",
+      "sha256": "e37490a9abbf6f669fca28e85ee488cfed2c7aa8198d6f29a5460d105c1de11c",
+      "bytes": 1809
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/test_pca128.npz",
+      "sha256": "f18d748d528a72c177c421836003f487e331b864e743748867851d83769f8598",
+      "bytes": 4743923
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/test_predictions.npz",
+      "sha256": "eda2a2f2dcf34e8715604b8877308b1aad5e993f1136c2e2248f9ab7043861df",
+      "bytes": 44607
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/dev_fitted_pca.joblib",
+      "sha256": "0378738d92a32ca9571ca2ea9a276ae7c3beff98eebcf6a1457a467133814204",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/dev_pca128.npz",
+      "sha256": "55adb5255a8e492722915dd5066c856a4284dda8cf68c5f12413545c72f9b3bb",
+      "bytes": 4731009
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/evaluation_complete.json",
+      "sha256": "226635d1ea4954e1d49a5fc3e3994e65ca6c61b6b2bc1b0fe845f35830960af4",
+      "bytes": 4454
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/metrics_summary.json",
+      "sha256": "b9b6651ce1353ec2b55c8d62fc97eea3da75cfc8e5aeba164d465bfbf235152d",
+      "bytes": 1809
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/test_pca128.npz",
+      "sha256": "c7cec96b1e499d0420d4ac178de504653655aae3b75a4d0886e3a2776664d7b7",
+      "bytes": 4743322
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/test_predictions.npz",
+      "sha256": "2bd825c35c68057cbabb983195b625721516e25c47f80e49b9fa3236d6cf848b",
+      "bytes": 44635
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/dev_fitted_pca.joblib",
+      "sha256": "77e723e595eaf2be7cdbc790c50fdd6e48668e30bc3b97dd6244720b7efeaf0a",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/dev_pca128.npz",
+      "sha256": "f53f02e32f97384c059238c391161c4476075a90e5d05d30a460276f40fc5af6",
+      "bytes": 4731289
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/evaluation_complete.json",
+      "sha256": "d2d03ba85f0ccd17bd358399fe5be6526738c7edc5eace1ed0305120901e6d83",
+      "bytes": 4459
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/metrics_summary.json",
+      "sha256": "8e7671d86ae47ed8eedfbcbfec720b486b16dded3d73280911bbf51515ae3010",
+      "bytes": 1811
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/test_pca128.npz",
+      "sha256": "b4b47f698be08d16a2acab435c941fe51f55effbbb3f4b9d2a67d3db0152b585",
+      "bytes": 4743660
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/test_predictions.npz",
+      "sha256": "f403624a5dff5395f086841e2388524d8039c6b27809613073bf1473599564cb",
+      "bytes": 44610
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/dev_fitted_pca.joblib",
+      "sha256": "a05b5150ca94a5e6697a2cf183658ae5a668454f429923451ea5f081ea3ceaf6",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/dev_pca128.npz",
+      "sha256": "be7b13f27315d8216f058c51bee0e45832deaa15602480c75d84935254fd31b7",
+      "bytes": 4731032
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/evaluation_complete.json",
+      "sha256": "161989dcffeff4061f5c660ec796759e0c587b0979a5cd4d0f430d45cf49f6a1",
+      "bytes": 4453
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/metrics_summary.json",
+      "sha256": "ec0cf5c4fdc2ae8cdc3e05e6e018ed2d3636d2a7749a184152257be3b4fde516",
+      "bytes": 1805
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/test_pca128.npz",
+      "sha256": "a3808cab12f563d43dac2186e3e2d79ef1a575ba624a43c6d275651c8df019de",
+      "bytes": 4743906
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/test_predictions.npz",
+      "sha256": "33d2c2918f8c27199ba00c6d3c8fb6f0ddf5b63a6adf2f87bae3b62ac5469d61",
+      "bytes": 44531
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/dev_fitted_pca.joblib",
+      "sha256": "b9f21c581b9a86355b9e3ce25192792b2e695bc8fd022f3ff08e998699508dd7",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/dev_pca128.npz",
+      "sha256": "332efa6a80a067e2fd7332caea2873eb8cc126cb5114280af95a2ceccd6e6ad0",
+      "bytes": 4730994
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/evaluation_complete.json",
+      "sha256": "446b2dee84e0537c74d37cd6b58db22830c31b4b683e59c784e6eb0253460689",
+      "bytes": 4463
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/metrics_summary.json",
+      "sha256": "3d6c54a847982e9cd1b7725799441642be4c0638bde8130d153ac1ea9ca1301e",
+      "bytes": 1815
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/test_pca128.npz",
+      "sha256": "ecc161e5761a94d3375a015929f28d7a095d6508bec91d450cbbb9343abe3b66",
+      "bytes": 4743578
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/test_predictions.npz",
+      "sha256": "90b6f2cf4006c004085b7b91908e899c4fdb7dc8b1d97dc7314da72940651cd7",
+      "bytes": 44662
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/dev_fitted_pca.joblib",
+      "sha256": "040b97d63296332e722423f5ac0a5878a1f134c0c0ae1a57cdb678ca677b21cb",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/dev_pca128.npz",
+      "sha256": "dfc1f7e850710f25c61ad65448be09ae47426314dc6a1390267dc6ec5e28e9b1",
+      "bytes": 4730924
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/evaluation_complete.json",
+      "sha256": "744a4a92dd0aa2f120250c2cae6b4509b3a556fdf3f502a47deea4a2a25435db",
+      "bytes": 4460
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/metrics_summary.json",
+      "sha256": "c8ee83c3466179ccda2db1e6ba4ffeab56e87dd8a7a64627126ca6ce568f72f2",
+      "bytes": 1815
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/test_pca128.npz",
+      "sha256": "951a226d8b4d37eb01a1ed649bb8e30f61d9509e37ca7484c986bfa48f3f09ec",
+      "bytes": 4743853
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/test_predictions.npz",
+      "sha256": "1a2523a522b3135b99d541f30214b41178d995c0bb41720c2ce73400dec8bbd0",
+      "bytes": 44725
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/dev_fitted_pca.joblib",
+      "sha256": "c1a3c12265d2edcf4772ded00c58ab6866929a1d90c33eed04fe21cf281958f1",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/dev_pca128.npz",
+      "sha256": "4f8a0f4c22a938f14770f310b34efd9429aa8d934fbd4a3e599eed32eca838b8",
+      "bytes": 4731644
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/evaluation_complete.json",
+      "sha256": "02977d382dbcba3605a7c56202ebfc98535aed4db28dcc3510eb18911284def1",
+      "bytes": 4481
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/metrics_summary.json",
+      "sha256": "1fd6a35a993d350d2ee54fa65a25523efe7815e3e3d5470bdc77e48f82bbce59",
+      "bytes": 1816
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/test_pca128.npz",
+      "sha256": "b6139269b261d27780b0446cbaa9007d10e9ccc65793f9ebbe750deaa0c15b26",
+      "bytes": 4743916
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/test_predictions.npz",
+      "sha256": "3e7be6b23584f1d2b3ef472c443d9711cf5eb8715b028ff15696330f03ced19f",
+      "bytes": 44338
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/dev_fitted_pca.joblib",
+      "sha256": "81175bd95d8603f7dbaf35744dd4786ed16d5d44f77b8b4ba60ae40d5d9b3cce",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/dev_pca128.npz",
+      "sha256": "2a676f6661a8e45df65002d4149b187f407bf2bdfe8f01aca6ba1f2a5626d2c7",
+      "bytes": 4731643
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/evaluation_complete.json",
+      "sha256": "7ec6e3679e12cf5e45cd9866655a40b631d99f4ca28174643fd90de3f54e31f0",
+      "bytes": 4485
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/metrics_summary.json",
+      "sha256": "59fc25afde40bec9a1ed2c849676b55329dc76a7c502bad69474883a65d77acc",
+      "bytes": 1815
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/test_pca128.npz",
+      "sha256": "23afd415572b2286bab29ffa1e906e7eca255086f3e09fe5b49d033adc846d81",
+      "bytes": 4744037
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/test_predictions.npz",
+      "sha256": "d40af72f32066fdbc6ded23a24db27c034aa1addaa52b821b9f86cf51d45f57a",
+      "bytes": 44389
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/dev_fitted_pca.joblib",
+      "sha256": "3d92505173d9f065d850af0e769e3b49c33eece7edba4763108d63f9fc180660",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/dev_pca128.npz",
+      "sha256": "28f46374581ccfd2340f274e013f0ab7eea9f1fe16ff31a77094c65b70f97960",
+      "bytes": 4731306
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/evaluation_complete.json",
+      "sha256": "ff53a63e82d6de4c37cfbc50dd9e557aa7b7798100066b74fb71cfcd38258236",
+      "bytes": 4476
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/metrics_summary.json",
+      "sha256": "872804982bfb70590a6d07b24f3be73ae2444bc2439527a784cbe202bdd0216f",
+      "bytes": 1813
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/test_pca128.npz",
+      "sha256": "d891d6123d655e8ee5eb5f3520f8c8c6b4dc2379616541e8e298895d7ea05f28",
+      "bytes": 4744037
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/test_predictions.npz",
+      "sha256": "883afcfaf92a7bd71c3959764e8b8278330dc296fa00c826653578158721e2c2",
+      "bytes": 44456
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/dev_fitted_pca.joblib",
+      "sha256": "3b7cd34930f56de0e0f60c3e1707c7eb8ba48361f78b767b0a400aee025dfc88",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/dev_pca128.npz",
+      "sha256": "c1f45a84e5d0c70424b70a4d8e7caa72941bfafb0171f60a7427aedf0ebd9bad",
+      "bytes": 4731148
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/evaluation_complete.json",
+      "sha256": "b46b8245e93b455549b1aeb016d75e30f3028f298f90f927623a0832a5ec81b9",
+      "bytes": 4474
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/metrics_summary.json",
+      "sha256": "2c8fa42c85d965834779b4c97cd5b9e09890b62825edae9780fd8fc32fe7b0d4",
+      "bytes": 1806
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/test_pca128.npz",
+      "sha256": "3c0162c68f62c9f78006aaf3eb9778499c9b87be8eb4f0a2275e6f4c31d807c4",
+      "bytes": 4743693
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/test_predictions.npz",
+      "sha256": "c20c73023131781165da903afec0df0554f0b3a812b30088465e13020d219954",
+      "bytes": 44336
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/dev_fitted_pca.joblib",
+      "sha256": "be5e6932a3183c5ae6f320f6a964ba5f5d61ee429e41f32816c58e2470b385cd",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/dev_pca128.npz",
+      "sha256": "71951d03f1255988add78c139cc451eae00b4523106425bd69af453d25f06e0b",
+      "bytes": 4731339
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/evaluation_complete.json",
+      "sha256": "707e6a486405dfbebbca256281d94d1564e8fef33ab61145969bd392f21d28d8",
+      "bytes": 4466
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/metrics_summary.json",
+      "sha256": "0a4f6a41b03df3afdda44e0f890fe4536bfc04a55858c3e3c6ae6f6fd06909d2",
+      "bytes": 1804
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/test_pca128.npz",
+      "sha256": "e42909592c801b53e76c9543eb345d2b5f4df159b242e30e717fd321d4a632ed",
+      "bytes": 4743912
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/test_predictions.npz",
+      "sha256": "654ab958a76fb9eb8ba32639eb40f1c3b68b5e32de89dd9226bb659412b619cc",
+      "bytes": 44418
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/dev_fitted_pca.joblib",
+      "sha256": "f36a28bf1673c15ef830d037b26ee4ec6458375bce4a7c7f9bcb85795c48c81b",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/dev_pca128.npz",
+      "sha256": "cf12faca0801890e1bb4972d8be13ebc541704372821a69fffe150d987b74bc7",
+      "bytes": 4731442
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/evaluation_complete.json",
+      "sha256": "62f45799ec6eea08751b9bbe045301a4250c8a6c78ba0b985c69994ad15b666a",
+      "bytes": 4482
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/metrics_summary.json",
+      "sha256": "a84e98752e66f2068dce7c66b660c4c0f69b7318636153b6db569441bacdae10",
+      "bytes": 1815
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/test_pca128.npz",
+      "sha256": "aedae3800008d463e2bffbd549e9ceef69006c61bdee29c2a3e3ca99ddd3ccc5",
+      "bytes": 4743876
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/test_predictions.npz",
+      "sha256": "342be82929bd517769bef6f18f53e2a10677876a1f2ae5bf56475fbbe977cd20",
+      "bytes": 44419
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/dev_fitted_pca.joblib",
+      "sha256": "15459c9c1ec8f6d3105aa599109bfafbee8db8f0437867125792f0354e4b19a9",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/dev_pca128.npz",
+      "sha256": "7e1524684ba7c73ef4f9af3cb946d7ede23cb2ea39fd69afcddb21e11f04f697",
+      "bytes": 4731352
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/evaluation_complete.json",
+      "sha256": "985cc2910650809f95e8863e323e789d4860d100059db446acaad3b8fc6973c2",
+      "bytes": 4478
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/metrics_summary.json",
+      "sha256": "8b0b9d84682e0cd5fd24a5fa3a30ce8be5dae5e02850818d022f6d1a12f0ce11",
+      "bytes": 1812
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/test_pca128.npz",
+      "sha256": "1f9bc7eb8e5f5d3ef969e21e6fa74a9843cd37def92296dfe69a8377bacfe689",
+      "bytes": 4744015
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/test_predictions.npz",
+      "sha256": "e1c06e72245e1d30dea61b1501f1ce6f301a4f2cb21bb4d4e9e6075dad40a731",
+      "bytes": 44414
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/dev_fitted_pca.joblib",
+      "sha256": "599e0d875a004d0b2e4904acb159407ba34fc6ae5d490d647ba944f0a84c0cb1",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/dev_pca128.npz",
+      "sha256": "118824ab8de7093d7e9bb8fd619a7f449a5bb1c56aa8851d1cf16ac434ce6e18",
+      "bytes": 4731424
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/evaluation_complete.json",
+      "sha256": "b09692701a8ccd6814c4ad274605b3d5df005bf4b6ee3555a6d9eb0334a9e51d",
+      "bytes": 4477
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/metrics_summary.json",
+      "sha256": "4046cd29398099a69ba11522e5f065ce40733eadc29b4bd31d0d958a276dd914",
+      "bytes": 1813
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/test_pca128.npz",
+      "sha256": "6ab4b9e8f0eb8966958faff9000afc63af486d8f50af1fc9aa58f13585125557",
+      "bytes": 4743777
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/test_predictions.npz",
+      "sha256": "f01acb6f368be350bfee61588ccbccb269ea9ab11ca82fc450e911d94437eefd",
+      "bytes": 44446
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/dev_fitted_pca.joblib",
+      "sha256": "3921fa421375636502e5996fd8d0fc866caddc80b9826023b1e20922c7970bae",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/dev_pca128.npz",
+      "sha256": "6a8bfd8c62d78e2c3e1cf7960e1a76fb255e1dbb35e0c57b5438e6f602cdf131",
+      "bytes": 4731099
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/evaluation_complete.json",
+      "sha256": "c3249994070471fae9a949e30dd89e79a777528a030e91767e0a80a122d095c4",
+      "bytes": 4476
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/metrics_summary.json",
+      "sha256": "627ab1b396dd3f04278f9d8b6da45c94d41233eb6223495033cbe1a28d4c2eba",
+      "bytes": 1811
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/test_pca128.npz",
+      "sha256": "6121fcf261d12f76e85a2cfd64a586178e41924d3d95a54f9ce05f6769235e8a",
+      "bytes": 4743500
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/test_predictions.npz",
+      "sha256": "0fa5c3401e7bb32c9870b534d666a26c93c443a63cfb0f6a117e5ff0ccad6e9f",
+      "bytes": 44495
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/dev_fitted_pca.joblib",
+      "sha256": "0ec1e1d24fc875152a655e359fdfe21ece1ecd8b86c011bb2bb8a088b5d8ea6d",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/dev_pca128.npz",
+      "sha256": "421bfcd567f796ca4b436c62116f000a913a0006ab38683dbcc499e1390891dc",
+      "bytes": 4731382
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/evaluation_complete.json",
+      "sha256": "9d53e277a3fa3f71f3e0ac91baab8a2922fd8a38ffa478a92021e69108580bd1",
+      "bytes": 4474
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/metrics_summary.json",
+      "sha256": "34ccacebe7f9e11f126f0f38cf2b4cecb44006e98ec6d654a59549c0e1b01c81",
+      "bytes": 1805
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/test_pca128.npz",
+      "sha256": "fcef746f225d4d0ee7e17fcde13847f417280e0ef90d36d1c1c65cea67bb2ec9",
+      "bytes": 4743613
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/test_predictions.npz",
+      "sha256": "8fc5ffbdbf67d060aa941657cd2d8135364dfaa5d15ba9635e6237c107ec4e44",
+      "bytes": 44469
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/dev_fitted_pca.joblib",
+      "sha256": "5bebf9e42ce50d899465c4b24389a5d4d3244a1abe0a5af8c5bdf228b7d2a3a0",
+      "bytes": 398746
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/dev_pca128.npz",
+      "sha256": "c2c36cb1d62e762d073defb2e4ab9e596810437d35f983f2be6c240aa457c453",
+      "bytes": 4731426
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/evaluation_complete.json",
+      "sha256": "c311499a2e8dc72bbc8bb9ee52fba83bb587f606810e4a9a15e425fc8af67551",
+      "bytes": 4413
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/metrics_summary.json",
+      "sha256": "ae9aabd35cb5aa91b6aa5e504ff856dc59353adaf4c2db4def59fa5ae7100191",
+      "bytes": 1810
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/test_pca128.npz",
+      "sha256": "f62fe55e8105b5dd5b713c8eb13f7fc55f8801d8a6493dec803d44a389c25885",
+      "bytes": 4743977
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/test_predictions.npz",
+      "sha256": "69407523fc92cdead89517037ee3215ae9f8493acc73a75828474d0ea2fee2fd",
+      "bytes": 44741
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/final_evaluation_report.json",
+      "sha256": "2f3a1a430775c353aa6d66c6a0c6ff0e2c4b18c313bd1d44f391e8faa7b51832",
+      "bytes": 122899
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/primary_paired_bootstrap.json",
+      "sha256": "e67356527d8f1a50c8f6fb7e60c84d5e91b7308baac05626adb2de58bf078922",
+      "bytes": 545
+    },
+    {
+      "path": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/primary_paired_bootstrap.npz",
+      "sha256": "18bf890720e764e25865a937f5a5cb3d2fa71dfc17be396a4246d3dd49990f30",
+      "bytes": 14731
+    }
+  ],
+  "checkpoint_manifest_sha256": "e108e26f5ede0e0667a8675b4cdc252e24d120b70c33d346772f1b3a4779de6c",
+  "final_report_sha256": "2f3a1a430775c353aa6d66c6a0c6ff0e2c4b18c313bd1d44f391e8faa7b51832",
+  "bootstrap_report_sha256": "e67356527d8f1a50c8f6fb7e60c84d5e91b7308baac05626adb2de58bf078922",
+  "test_metrics_used_for_training": false,
+  "test_metrics_used_for_checkpoint_selection": false,
+  "future_retraining_after_test_evaluation_prohibited": true
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "post_evaluation_audit_v1",
+  "status": "passed",
+  "evaluation_jobs_verified": 22,
+  "expected_evaluation_jobs": 22,
+  "clustering_runs_verified": 110,
+  "expected_clustering_runs": 110,
+  "all_clusters_active": true,
+  "all_clustering_runs_converged": true,
+  "nonconverged_jobs": [],
+  "bootstrap_replicates_verified": 2000,
+  "bootstrap_all_finite": true,
+  "checkpoint_manifest_verified": true,
+  "pca_fit_split": "development",
+  "pca_refitted_on_test": false,
+  "test_metrics_used_for_training": false,
+  "test_metrics_used_for_checkpoint_selection": false,
+  "primary_comparison": {
+    "difference": 0.026144470131961944,
+    "training_seed_95_ci": [
+      0.025607056712423033,
+      0.026681883551500855
+    ],
+    "paired_bootstrap_95_ci": [
+      0.021951983573009662,
+      0.028013991580957593
+    ],
+    "training_seed_interpretation": "balanced_roots_higher",
+    "bootstrap_interpretation": "balanced_roots_higher"
+  },
+  "generated_files": {
+    "training_seed_table": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/training_seed_results.csv",
+    "publication_table_csv": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/publication_method_summary.csv",
+    "publication_table_markdown": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/publication_method_summary.md",
+    "astra_report_draft": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/astra_final_report_draft.md",
+    "result_lock": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/final_results_lock.json"
+  }
+}

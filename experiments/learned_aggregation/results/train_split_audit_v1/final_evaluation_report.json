@@ -1,0 +1,3689 @@
+{
+  "schema_version": "learned_aggregation_final_evaluation_v1",
+  "status": "completed",
+  "methods": [
+    "uniform_pooling",
+    "balanced_roots",
+    "ssl_mlp_attention",
+    "structural_vicreg_gat"
+  ],
+  "training_seeds": [
+    11,
+    17,
+    23,
+    29,
+    37,
+    42,
+    53,
+    61,
+    73,
+    89
+  ],
+  "clustering_seeds": [
+    17,
+    42,
+    73,
+    101,
+    137
+  ],
+  "pca": {
+    "fit_split": "development",
+    "refitted_on_test": false,
+    "dimension": 128,
+    "random_state": 42,
+    "solver": "randomized"
+  },
+  "clustering": {
+    "backend": "legacy_gpu_spherical_kmeans",
+    "mode": "transductive_test",
+    "n_clusters": 30,
+    "max_iterations": 300,
+    "tolerance": 1e-06
+  },
+  "training_seed_statistics": {
+    "uniform_pooling": {
+      "mean_nmi_over_clustering_seeds": 0.34511869210082413
+    },
+    "balanced_roots": {
+      "mean_nmi_over_clustering_seeds": 0.3766910058251928
+    },
+    "ssl_mlp_attention": {
+      "n": 10,
+      "mean": 0.34718243988104674,
+      "sample_std": 0.0004686646552266349,
+      "standard_error": 0.00014820477693337032,
+      "lower": 0.3468471773833377,
+      "upper": 0.3475177023787558
+    },
+    "structural_vicreg_gat": {
+      "n": 10,
+      "mean": 0.35054653569323085,
+      "sample_std": 0.0007512521582445869,
+      "standard_error": 0.00023756679171701373,
+      "lower": 0.35000912227369196,
+      "upper": 0.35108394911276974
+    },
+    "balanced_roots_minus_structural_vicreg_gat": {
+      "n": 10,
+      "mean": 0.026144470131961944,
+      "sample_std": 0.0007512521582445868,
+      "standard_error": 0.00023756679171701368,
+      "lower": 0.025607056712423033,
+      "upper": 0.026681883551500855
+    },
+    "balanced_roots_minus_ssl_mlp_attention": {
+      "n": 10,
+      "mean": 0.02950856594414606,
+      "sample_std": 0.000468664655226635,
+      "standard_error": 0.00014820477693337035,
+      "lower": 0.02917330344643704,
+      "upper": 0.02984382844185508
+    },
+    "aggregation_rule": "Average clustering seeds and CPC granularities within each training seed before between-training-seed inference."
+  },
+  "paired_document_bootstrap": {
+    "schema_version": "paired_document_bootstrap_v1",
+    "comparison": "balanced_roots_minus_structural_vicreg_gat",
+    "replicates": 2000,
+    "seed": 20260922,
+    "point_estimate": 0.026144470131961972,
+    "bootstrap_mean": 0.02507487638330565,
+    "bootstrap_standard_error": 0.0015893448935803789,
+    "percentile_95_ci": {
+      "lower": 0.021951983573009662,
+      "upper": 0.028013991580957593
+    },
+    "conditional_on": "Fixed trained checkpoints, fixed PCA transformations, and fixed clustering outputs.",
+    "paired_resampling_unit": "test_document"
+  },
+  "method_results": {
+    "uniform_pooling": {
+      "schema_version": "final_representation_evaluation_v1",
+      "status": "completed",
+      "method": "uniform_pooling",
+      "training_seed": null,
+      "pca_fit_split": "development",
+      "pca_refitted_on_test": false,
+      "pca_dimension": 128,
+      "pca_random_state": 42,
+      "n_clusters": 30,
+      "clustering_seeds": [
+        17,
+        42,
+        73,
+        101,
+        137
+      ],
+      "kmeans_max_iter": 300,
+      "kmeans_tolerance": 1e-06,
+      "all_converged": true,
+      "all_clusters_active": true,
+      "clustering": [
+        {
+          "seed": 17,
+          "converged": true,
+          "iterations": 59,
+          "active_clusters": 30,
+          "max_cluster_share": 0.053435887055966,
+          "mean_cosine_distance": 0.3769863247871399
+        },
+        {
+          "seed": 42,
+          "converged": true,
+          "iterations": 121,
+          "active_clusters": 30,
+          "max_cluster_share": 0.04716121850015181,
+          "mean_cosine_distance": 0.37626081705093384
+        },
+        {
+          "seed": 73,
+          "converged": true,
+          "iterations": 103,
+          "active_clusters": 30,
+          "max_cluster_share": 0.05788887764396316,
+          "mean_cosine_distance": 0.3772536516189575
+        },
+        {
+          "seed": 101,
+          "converged": true,
+          "iterations": 38,
+          "active_clusters": 30,
+          "max_cluster_share": 0.06639004149377593,
+          "mean_cosine_distance": 0.37746351957321167
+        },
+        {
+          "seed": 137,
+          "converged": true,
+          "iterations": 40,
+          "active_clusters": 30,
+          "max_cluster_share": 0.058698512296326284,
+          "mean_cosine_distance": 0.3785303235054016
+        }
+      ],
+      "metrics": {
+        "n_seeds": 5,
+        "seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "levels": {
+          "section": {
+            "nmi": {
+              "mean": 0.2468347258853058,
+              "std": 0.0021937161406738754
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.5803866005465034,
+              "std": 0.00531275509826005
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.1762372229531424,
+              "std": 0.004340521520965586
+            }
+          },
+          "class": {
+            "nmi": {
+              "mean": 0.36278846791465585,
+              "std": 0.001579698233106008
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.3911142596903147,
+              "std": 0.003387307616144242
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3335492359072968,
+              "std": 0.0042066928984987005
+            }
+          },
+          "subclass": {
+            "nmi": {
+              "mean": 0.4257328825025106,
+              "std": 0.002208882842986921
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.23969233883210203,
+              "std": 0.005366922095823099
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.47924299160004047,
+              "std": 0.004721201049145955
+            }
+          }
+        },
+        "mean": {
+          "nmi": {
+            "mean": 0.34511869210082413,
+            "std": 0.001750719481350531
+          },
+          "predicted_cluster_purity": {
+            "mean": 0.40373106635630673,
+            "std": 0.0037007773229801736
+          },
+          "label_wise_inverse_purity": {
+            "mean": 0.32967648348682654,
+            "std": 0.0030517278233115038
+          }
+        },
+        "objective": {
+          "mean": 0.3772989273071289,
+          "std": 0.0007376815489945504
+        },
+        "max_cluster_share": {
+          "mean": 0.05671490739803664,
+          "std": 0.006339496198636883
+        },
+        "n_active_clusters": {
+          "minimum": 30,
+          "maximum": 30,
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ]
+        }
+      },
+      "mean_nmi": 0.34511869210082413,
+      "runtime_seconds": 4.026694059371948,
+      "paths": {
+        "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/uniform_pooling/dev_raw768.npz",
+        "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/uniform_pooling/test_raw768.npz",
+        "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/dev_fitted_pca.joblib",
+        "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/uniform_pooling/test_predictions.npz"
+      },
+      "test_labels_used_for_training": false,
+      "test_labels_used_for_checkpoint_selection": false,
+      "test_labels_used_for_final_evaluation": true
+    },
+    "balanced_roots": {
+      "schema_version": "final_representation_evaluation_v1",
+      "status": "completed",
+      "method": "balanced_roots",
+      "training_seed": null,
+      "pca_fit_split": "development",
+      "pca_refitted_on_test": false,
+      "pca_dimension": 128,
+      "pca_random_state": 42,
+      "n_clusters": 30,
+      "clustering_seeds": [
+        17,
+        42,
+        73,
+        101,
+        137
+      ],
+      "kmeans_max_iter": 300,
+      "kmeans_tolerance": 1e-06,
+      "all_converged": true,
+      "all_clusters_active": true,
+      "clustering": [
+        {
+          "seed": 17,
+          "converged": true,
+          "iterations": 63,
+          "active_clusters": 30,
+          "max_cluster_share": 0.054346726039874504,
+          "mean_cosine_distance": 0.3692554235458374
+        },
+        {
+          "seed": 42,
+          "converged": true,
+          "iterations": 92,
+          "active_clusters": 30,
+          "max_cluster_share": 0.058091286307053944,
+          "mean_cosine_distance": 0.3695528507232666
+        },
+        {
+          "seed": 73,
+          "converged": true,
+          "iterations": 61,
+          "active_clusters": 30,
+          "max_cluster_share": 0.05586479101305536,
+          "mean_cosine_distance": 0.3694467544555664
+        },
+        {
+          "seed": 101,
+          "converged": true,
+          "iterations": 58,
+          "active_clusters": 30,
+          "max_cluster_share": 0.054346726039874504,
+          "mean_cosine_distance": 0.3679603934288025
+        },
+        {
+          "seed": 137,
+          "converged": true,
+          "iterations": 44,
+          "active_clusters": 30,
+          "max_cluster_share": 0.05728165165469082,
+          "mean_cosine_distance": 0.36953210830688477
+        }
+      ],
+      "metrics": {
+        "n_seeds": 5,
+        "seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "levels": {
+          "section": {
+            "nmi": {
+              "mean": 0.2753099777586139,
+              "std": 0.0012004003478906838
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.6179738892824613,
+              "std": 0.005085817236293716
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.19220726647100497,
+              "std": 0.0035903440135438432
+            }
+          },
+          "class": {
+            "nmi": {
+              "mean": 0.39768721317728817,
+              "std": 0.0035715837583884407
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4094929662989576,
+              "std": 0.0036396432184445777
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3643558344297136,
+              "std": 0.0041852121054905935
+            }
+          },
+          "subclass": {
+            "nmi": {
+              "mean": 0.4570758265396765,
+              "std": 0.0029211235899725364
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.25102722396518573,
+              "std": 0.0027712991126881653
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.5151907701649631,
+              "std": 0.003290370567194602
+            }
+          }
+        },
+        "mean": {
+          "nmi": {
+            "mean": 0.3766910058251928,
+            "std": 0.0023786889218873402
+          },
+          "predicted_cluster_purity": {
+            "mean": 0.4261646931822015,
+            "std": 0.0037669165198338968
+          },
+          "label_wise_inverse_purity": {
+            "mean": 0.35725129035522724,
+            "std": 0.003317485603587624
+          }
+        },
+        "objective": {
+          "mean": 0.36914950609207153,
+          "std": 0.0006037607752832736
+        },
+        "max_cluster_share": {
+          "mean": 0.05598623621090983,
+          "std": 0.0015165799166018989
+        },
+        "n_active_clusters": {
+          "minimum": 30,
+          "maximum": 30,
+          "values": [
+            30,
+            30,
+            30,
+            30,
+            30
+          ]
+        }
+      },
+      "mean_nmi": 0.3766910058251928,
+      "runtime_seconds": 2.7488086223602295,
+      "paths": {
+        "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/balanced_roots/dev_raw768.npz",
+        "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/balanced_roots/test_raw768.npz",
+        "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/dev_fitted_pca.joblib",
+        "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/balanced_roots/test_predictions.npz"
+      },
+      "test_labels_used_for_training": false,
+      "test_labels_used_for_checkpoint_selection": false,
+      "test_labels_used_for_final_evaluation": true
+    },
+    "ssl_mlp_attention": {
+      "11": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 11,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 37,
+            "active_clusters": 30,
+            "max_cluster_share": 0.053739500050602164,
+            "mean_cosine_distance": 0.3775522708892822
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 75,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06669365448841211,
+            "mean_cosine_distance": 0.3797174096107483
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 37,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05890092095941706,
+            "mean_cosine_distance": 0.37844163179397583
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 45,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0697297844347738,
+            "mean_cosine_distance": 0.37768805027008057
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 43,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06912255844550147,
+            "mean_cosine_distance": 0.37967437505722046
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24777054122352493,
+                "std": 0.0024799587920973426
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5747798805788887,
+                "std": 0.007445117818891292
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.18198562898492057,
+                "std": 0.012247881837435323
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.365447734535424,
+                "std": 0.0016506823713619853
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.387025604695881,
+                "std": 0.005372568035645306
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33684849711567655,
+                "std": 0.008024067614386374
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.42715380902367944,
+                "std": 0.00184884842590718
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23287116688594273,
+                "std": 0.004841757378975075
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4794454002631313,
+                "std": 0.00664060841446309
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3467906949275428,
+              "std": 0.0015046040258801328
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.3982255507202375,
+              "std": 0.005577516714030212
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.33275984212124277,
+              "std": 0.008013639337311149
+            }
+          },
+          "objective": {
+            "mean": 0.3786147475242615,
+            "std": 0.0009334096252381154
+          },
+          "max_cluster_share": {
+            "mean": 0.06363728367574131,
+            "std": 0.0062761048400068
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3467906949275428,
+        "runtime_seconds": 2.6623754501342773,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_011/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_011/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_011/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "17": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 17,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 43,
+            "active_clusters": 30,
+            "max_cluster_share": 0.054245521708329116,
+            "mean_cosine_distance": 0.3780023455619812
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 54,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06821171946159296,
+            "mean_cosine_distance": 0.38102346658706665
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 64,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05687683432850926,
+            "mean_cosine_distance": 0.37796688079833984
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 47,
+            "active_clusters": 30,
+            "max_cluster_share": 0.07812974395304119,
+            "mean_cosine_distance": 0.37989288568496704
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 50,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0584961036332355,
+            "mean_cosine_distance": 0.37896251678466797
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24906855817488394,
+                "std": 0.00373440196265488
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5768444489424146,
+                "std": 0.010010003736953009
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.18224876024693856,
+                "std": 0.0068605489998052865
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3653767651160616,
+                "std": 0.0033295131176408295
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3898593259791519,
+                "std": 0.0059338542903873805
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33634247545794954,
+                "std": 0.004428357403324225
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.42737233140829317,
+                "std": 0.0028047609906651557
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23720271227608541,
+                "std": 0.007375122880292347
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4803764801133489,
+                "std": 0.0063061262755768855
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3472725515664129,
+              "std": 0.002849864170966774
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4013021623992173,
+              "std": 0.007173489175218142
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.332989238606079,
+              "std": 0.0038159028753238463
+            }
+          },
+          "objective": {
+            "mean": 0.3791696190834045,
+            "std": 0.0011672072105747453
+          },
+          "max_cluster_share": {
+            "mean": 0.0631919846169416,
+            "std": 0.008835225088786772
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3472725515664129,
+        "runtime_seconds": 4.425739765167236,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_017/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_017/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_017/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "23": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 23,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 30,
+            "active_clusters": 30,
+            "max_cluster_share": 0.053638295719056775,
+            "mean_cosine_distance": 0.37777453660964966
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 83,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05707924299160004,
+            "mean_cosine_distance": 0.3783416152000427
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 41,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05626960833923692,
+            "mean_cosine_distance": 0.37807148694992065
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 56,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06750328914077522,
+            "mean_cosine_distance": 0.3782476782798767
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 55,
+            "active_clusters": 30,
+            "max_cluster_share": 0.059305738285598625,
+            "mean_cosine_distance": 0.3803229331970215
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.2495371907805099,
+                "std": 0.0009622239021251993
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5802449144823398,
+                "std": 0.003047309310562137
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17720878453597816,
+                "std": 0.004242864112048629
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36525975317872184,
+                "std": 0.0016712174483352485
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3914988361501872,
+                "std": 0.0032026653992621758
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33393381236716924,
+                "std": 0.002810202107771873
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4270305093235855,
+                "std": 0.001997945240474627
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23823499645784843,
+                "std": 0.0037470211855074056
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4806396113753668,
+                "std": 0.007260068913588919
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3472758177609391,
+              "std": 0.0013432912104106942
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.40332624903012515,
+              "std": 0.0025986203450961273
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3305940694261714,
+              "std": 0.004125055668596553
+            }
+          },
+          "objective": {
+            "mean": 0.37855165004730223,
+            "std": 0.0009064678002005088
+          },
+          "max_cluster_share": {
+            "mean": 0.05875923489525352,
+            "std": 0.004732901474473257
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3472758177609391,
+        "runtime_seconds": 2.6541237831115723,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_023/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_023/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_023/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "29": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 29,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 44,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05384070438214755,
+            "mean_cosine_distance": 0.3782627582550049
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 117,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0584961036332355,
+            "mean_cosine_distance": 0.3799254298210144
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 42,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05677562999696387,
+            "mean_cosine_distance": 0.3785618543624878
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 40,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0688189454508653,
+            "mean_cosine_distance": 0.37853020429611206
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 92,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06558040684141281,
+            "mean_cosine_distance": 0.37966424226760864
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24869047011783546,
+                "std": 0.002571926011523636
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5777350470600142,
+                "std": 0.007287442754785224
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17811962351988667,
+                "std": 0.00769712003646158
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3660969400702479,
+                "std": 0.0020059037902251378
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.388078129743953,
+                "std": 0.008224768369080208
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33500657828155045,
+                "std": 0.006797255405475192
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.42801226275097476,
+                "std": 0.002215781482861595
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23469284485375974,
+                "std": 0.00664134871379997
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4791417872684951,
+                "std": 0.004681988460516436
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34759989097968613,
+              "std": 0.001908227585282078
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.400168673885909,
+              "std": 0.007187119659495804
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3307559963566441,
+              "std": 0.005311469694142123
+            }
+          },
+          "objective": {
+            "mean": 0.37898889780044553,
+            "std": 0.0006713012502821485
+          },
+          "max_cluster_share": {
+            "mean": 0.06070235806092501,
+            "std": 0.005604344633564856
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34759989097968613,
+        "runtime_seconds": 2.708933115005493,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_029/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_029/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_029/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "37": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 37,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 36,
+            "active_clusters": 30,
+            "max_cluster_share": 0.053537091387511386,
+            "mean_cosine_distance": 0.3798302412033081
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 80,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06709847181459366,
+            "mean_cosine_distance": 0.38062161207199097
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 61,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05728165165469082,
+            "mean_cosine_distance": 0.3802202343940735
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 27,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06750328914077522,
+            "mean_cosine_distance": 0.3807922601699829
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 38,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05768646898087238,
+            "mean_cosine_distance": 0.381969690322876
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24889493167485016,
+                "std": 0.0017019002757877521
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5800829875518672,
+                "std": 0.005814944087302697
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17793745572310496,
+                "std": 0.005668671343074536
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3652660588158669,
+                "std": 0.002458512673479843
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3904867928347333,
+                "std": 0.005449869698223718
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33522922781095027,
+                "std": 0.005749831268214855
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4281010841889944,
+                "std": 0.0028506259494538696
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23774921566643054,
+                "std": 0.007271909759548438
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4815706912255845,
+                "std": 0.007647887523634839
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3474206915599038,
+              "std": 0.0018940089375479822
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4027729986843437,
+              "std": 0.005624088195171933
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3315791249198799,
+              "std": 0.005067048879625765
+            }
+          },
+          "objective": {
+            "mean": 0.3806868076324463,
+            "std": 0.0007228492692771202
+          },
+          "max_cluster_share": {
+            "mean": 0.060621394595688695,
+            "std": 0.005643899805120405
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3474206915599038,
+        "runtime_seconds": 3.029937505722046,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_037/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_037/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_037/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "42": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 42,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 35,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05394190871369295,
+            "mean_cosine_distance": 0.3793632984161377
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 77,
+            "active_clusters": 30,
+            "max_cluster_share": 0.04888169213642344,
+            "mean_cosine_distance": 0.38063889741897583
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 56,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0564720170023277,
+            "mean_cosine_distance": 0.3796548843383789
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 35,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06719967614613906,
+            "mean_cosine_distance": 0.37988054752349854
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05728165165469082,
+            "mean_cosine_distance": 0.3813319802284241
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24961793886527217,
+                "std": 0.002194390529668518
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5810950308673212,
+                "std": 0.003882554836837595
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17581216476065176,
+                "std": 0.0042944040098427914
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3656133827639959,
+                "std": 0.0010592663534710104
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3916202813480417,
+                "std": 0.0036655532693743286
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3308167189555713,
+                "std": 0.002899040429293046
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.42724017965382677,
+                "std": 0.0017363405383990097
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23853860945248456,
+                "std": 0.004224962672711041
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.478069021354114,
+                "std": 0.0046379417730421455
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3474905004276983,
+              "std": 0.0012855474974299386
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4037513072226158,
+              "std": 0.002958722667217432
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3282326350234457,
+              "std": 0.002843935756064408
+            }
+          },
+          "objective": {
+            "mean": 0.380173921585083,
+            "std": 0.0007169212331949664
+          },
+          "max_cluster_share": {
+            "mean": 0.05675538913065479,
+            "std": 0.005989176231882416
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3474905004276983,
+        "runtime_seconds": 3.8438680171966553,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_042/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_042/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_042/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "53": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 53,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 41,
+            "active_clusters": 30,
+            "max_cluster_share": 0.054953952029146845,
+            "mean_cosine_distance": 0.37744539976119995
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 74,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06709847181459366,
+            "mean_cosine_distance": 0.3814663290977478
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 41,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05778767331241777,
+            "mean_cosine_distance": 0.3779163360595703
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 70,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05667442566541848,
+            "mean_cosine_distance": 0.37770259380340576
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 43,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05728165165469082,
+            "mean_cosine_distance": 0.3791045546531677
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24889034711479488,
+                "std": 0.00325622547330292
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5779779374557231,
+                "std": 0.009569670960309919
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.1802044327497217,
+                "std": 0.007003924714646479
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36602553407961314,
+                "std": 0.0012434141395002765
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39036534763687886,
+                "std": 0.004921236880280764
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33650440238842216,
+                "std": 0.005469904534160738
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.42808916065259106,
+                "std": 0.0014785521722727195
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23564416557028642,
+                "std": 0.004116217926296428
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.48185406335391157,
+                "std": 0.007028099809928679
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34766834728233303,
+              "std": 0.0014528986931144437
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4013291502209628,
+              "std": 0.006051706868251742
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3328542994973518,
+              "std": 0.00451876805177016
+            }
+          },
+          "objective": {
+            "mean": 0.37872704267501833,
+            "std": 0.0014829399626968456
+          },
+          "max_cluster_share": {
+            "mean": 0.05875923489525352,
+            "std": 0.004277771937698647
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34766834728233303,
+        "runtime_seconds": 2.5663704872131348,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_053/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_053/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_053/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "61": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 61,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 34,
+            "active_clusters": 30,
+            "max_cluster_share": 0.053537091387511386,
+            "mean_cosine_distance": 0.37789320945739746
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 68,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06659245015686671,
+            "mean_cosine_distance": 0.3796175718307495
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05596599534460075,
+            "mean_cosine_distance": 0.37826526165008545
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 42,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06892014978241069,
+            "mean_cosine_distance": 0.3783862590789795
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06800931079850217,
+            "mean_cosine_distance": 0.3810844421386719
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.248872761204347,
+                "std": 0.002928717823974498
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5765003542151603,
+                "std": 0.008213054192602137
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.18265357757312012,
+                "std": 0.009057058294293851
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3658006718851035,
+                "std": 0.001935678985289302
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.38856391053537087,
+                "std": 0.006213847059359024
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.34045137131869246,
+                "std": 0.00837003263966616
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4276956932088374,
+                "std": 0.0027529694511164516
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23264851735654282,
+                "std": 0.0057504725093667
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4814492460277299,
+                "std": 0.006939518360672792
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34745637543276264,
+              "std": 0.0019899759067648075
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.3992375940356914,
+              "std": 0.006579357515348882
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.33485139830651417,
+              "std": 0.007476192907864265
+            }
+          },
+          "objective": {
+            "mean": 0.37904934883117675,
+            "std": 0.0011709501378007864
+          },
+          "max_cluster_share": {
+            "mean": 0.06260499949397835,
+            "std": 0.00650062766436353
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34745637543276264,
+        "runtime_seconds": 2.7706918716430664,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_061/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_061/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_061/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "73": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 73,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 37,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05414431737678373,
+            "mean_cosine_distance": 0.3786717653274536
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 93,
+            "active_clusters": 30,
+            "max_cluster_share": 0.04716121850015181,
+            "mean_cosine_distance": 0.37824374437332153
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 74,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05677562999696387,
+            "mean_cosine_distance": 0.3779027462005615
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 70,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06011537293796174,
+            "mean_cosine_distance": 0.37968021631240845
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 125,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05525756502378302,
+            "mean_cosine_distance": 0.3779270648956299
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24802864662480079,
+                "std": 0.0027344106349946155
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5799210606213946,
+                "std": 0.005280655434590112
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17427385892116182,
+                "std": 0.0037063452604451483
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3644658478947953,
+                "std": 0.0025316645615121734
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39145835441756904,
+                "std": 0.0026266374978254625
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33089768242080764,
+                "std": 0.0025591692022424732
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4270893513202153,
+                "std": 0.0025590545639785126
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.2378504199979759,
+                "std": 0.0044678703653450525
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4786762473433863,
+                "std": 0.00501646912649641
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34652794861327046,
+              "std": 0.0024747208468794118
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4030766116789798,
+              "std": 0.003493893788684789
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.32794926289511855,
+              "std": 0.002863333485301953
+            }
+          },
+          "objective": {
+            "mean": 0.378485107421875,
+            "std": 0.0006590809674602751
+          },
+          "max_cluster_share": {
+            "mean": 0.054690820767128834,
+            "std": 0.0042681839483758935
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34652794861327046,
+        "runtime_seconds": 3.8345632553100586,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_073/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_073/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_073/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "89": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "ssl_mlp_attention",
+        "training_seed": 89,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 39,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05687683432850926,
+            "mean_cosine_distance": 0.3788132667541504
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 61,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06709847181459366,
+            "mean_cosine_distance": 0.38053417205810547
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 65,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0595081469486894,
+            "mean_cosine_distance": 0.37916845083236694
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 49,
+            "active_clusters": 30,
+            "max_cluster_share": 0.07134905373950005,
+            "mean_cosine_distance": 0.3789551258087158
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 52,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05707924299160004,
+            "mean_cosine_distance": 0.3795539140701294
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.24786219025390022,
+                "std": 0.002955669478507962
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5774111931990691,
+                "std": 0.0068207815325206185
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.18024491448233987,
+                "std": 0.009082715222781956
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36442111848106323,
+                "std": 0.0028478508556840903
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.38795668454609855,
+                "std": 0.0037309138451554168
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33415646189656917,
+                "std": 0.006073744041545606
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.42668143204479214,
+                "std": 0.0029146097608100346
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.23718247140977633,
+                "std": 0.005736634320351331
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.48189454508652974,
+                "std": 0.006286279987040561
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34632158025991855,
+              "std": 0.0025012949910976604
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.40085011638498125,
+              "std": 0.004851178254880565
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3320986404884796,
+              "std": 0.00509837740036058
+            }
+          },
+          "objective": {
+            "mean": 0.3794049859046936,
+            "std": 0.0006173646356944096
+          },
+          "max_cluster_share": {
+            "mean": 0.06238234996457849,
+            "std": 0.005819592268428855
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34632158025991855,
+        "runtime_seconds": 2.863208055496216,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_089/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/ssl_mlp_attention/seed_089/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/ssl_mlp_attention/seed_089/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      }
+    },
+    "structural_vicreg_gat": {
+      "11": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 11,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 52,
+            "active_clusters": 30,
+            "max_cluster_share": 0.054953952029146845,
+            "mean_cosine_distance": 0.3742133378982544
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 61,
+            "active_clusters": 30,
+            "max_cluster_share": 0.052221435077421316,
+            "mean_cosine_distance": 0.3771979808807373
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 65,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0584961036332355,
+            "mean_cosine_distance": 0.3748687505722046
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 30,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06669365448841211,
+            "mean_cosine_distance": 0.3762854337692261
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 31,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05900212529096245,
+            "mean_cosine_distance": 0.3781772255897522
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.2515756420980677,
+                "std": 0.0030266890485821764
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5835036939581014,
+                "std": 0.005136396510121393
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.18014371015079442,
+                "std": 0.0054383557966467076
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36942351042782534,
+                "std": 0.0011882370166779275
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3939682218398947,
+                "std": 0.004829217895979915
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3379819856289849,
+                "std": 0.0031853490607807655
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4322269100650038,
+                "std": 0.0020577662661297722
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.24189859325979152,
+                "std": 0.002524353337534861
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4878656006477077,
+                "std": 0.007251373338066814
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.35107535419696567,
+              "std": 0.0015160495088177577
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4064568363525959,
+              "std": 0.0034938937886847994
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.33533043214249564,
+              "std": 0.0034318997493457083
+            }
+          },
+          "objective": {
+            "mean": 0.37614854574203493,
+            "std": 0.0014572919708978355
+          },
+          "max_cluster_share": {
+            "mean": 0.058273454103835644,
+            "std": 0.004881113343249809
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.35107535419696567,
+        "runtime_seconds": 2.606887102127075,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_011/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_011/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_011/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "17": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 17,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 34,
+            "active_clusters": 30,
+            "max_cluster_share": 0.054346726039874504,
+            "mean_cosine_distance": 0.37473154067993164
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 75,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0595081469486894,
+            "mean_cosine_distance": 0.37613457441329956
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 47,
+            "active_clusters": 30,
+            "max_cluster_share": 0.057990081975508555,
+            "mean_cosine_distance": 0.37508630752563477
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 36,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06608642849913976,
+            "mean_cosine_distance": 0.37625133991241455
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 133,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05414431737678373,
+            "mean_cosine_distance": 0.3756673336029053
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.2525894465160801,
+                "std": 0.003292092731201776
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5851432041291368,
+                "std": 0.003887827327434343
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17832203218297743,
+                "std": 0.0056279072696610475
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3698856407202452,
+                "std": 0.003611025384233775
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39512195121951216,
+                "std": 0.0032533060737420377
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33810343082683947,
+                "std": 0.0036300626721655167
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.43293799801411065,
+                "std": 0.0030765085823207935
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.2426677461795365,
+                "std": 0.0023399001747383347
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4861046452788179,
+                "std": 0.004643238849165769
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.35180436175014534,
+              "std": 0.0029525483129209844
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.40764430050939515,
+              "std": 0.001782831110472084
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.33417670276287825,
+              "std": 0.003498086561699608
+            }
+          },
+          "objective": {
+            "mean": 0.37557421922683715,
+            "std": 0.0005881029852751428
+          },
+          "max_cluster_share": {
+            "mean": 0.05841514016799919,
+            "std": 0.004359264244824386
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.35180436175014534,
+        "runtime_seconds": 2.702415704727173,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_017/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_017/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_017/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "23": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 23,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 72,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05505515636069224,
+            "mean_cosine_distance": 0.3756628632545471
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 104,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05181661775123975,
+            "mean_cosine_distance": 0.375957190990448
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 39,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05515636069223763,
+            "mean_cosine_distance": 0.376941978931427
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 49,
+            "active_clusters": 30,
+            "max_cluster_share": 0.07064062341868232,
+            "mean_cosine_distance": 0.3772572875022888
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 39,
+            "active_clusters": 30,
+            "max_cluster_share": 0.058698512296326284,
+            "mean_cosine_distance": 0.377974271774292
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.2518375239776623,
+                "std": 0.0025499359369619682
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5829774314340653,
+                "std": 0.004695095712026699
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17892925817224978,
+                "std": 0.004242864112048626
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36781671932010346,
+                "std": 0.0028049214582534783
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39386701750834935,
+                "std": 0.002240619103108535
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3379617447626758,
+                "std": 0.002374832474229532
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4299482477510093,
+                "std": 0.002912764678294312
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.2408865499443376,
+                "std": 0.0040725910682815605
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4859224774820362,
+                "std": 0.005946337989528148
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34986749701625836,
+              "std": 0.0024725520931433227
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.40591033296225076,
+              "std": 0.0025988130307731125
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3342711601389873,
+              "std": 0.0030157758739776655
+            }
+          },
+          "objective": {
+            "mean": 0.3767587184906006,
+            "std": 0.0008488898946232414
+          },
+          "max_cluster_share": {
+            "mean": 0.058273454103835644,
+            "std": 0.006555791313235073
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34986749701625836,
+        "runtime_seconds": 4.219921112060547,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_023/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_023/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_023/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "29": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 29,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 64,
+            "active_clusters": 30,
+            "max_cluster_share": 0.054953952029146845,
+            "mean_cosine_distance": 0.3750874400138855
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06699726748304828,
+            "mean_cosine_distance": 0.38036471605300903
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 48,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05839489930169011,
+            "mean_cosine_distance": 0.3758811950683594
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 43,
+            "active_clusters": 30,
+            "max_cluster_share": 0.07155146240259083,
+            "mean_cosine_distance": 0.37667208909988403
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 39,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05879971662787167,
+            "mean_cosine_distance": 0.3787294030189514
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.25122304930955647,
+                "std": 0.003975508918631765
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5798603380224674,
+                "std": 0.011943929231270876
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.18234996457848396,
+                "std": 0.006162803678651169
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3691389599281175,
+                "std": 0.002029220448161208
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39048679283473336,
+                "std": 0.010229670554674362
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3399251087946564,
+                "std": 0.002367748821518427
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.43247775728067106,
+                "std": 0.0024302506028685824
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.2384778868535573,
+                "std": 0.008495041192569476
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.488452585770671,
+                "std": 0.0077113716112149
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.35094658883944835,
+              "std": 0.0025338800397833854
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4029416725702527,
+              "std": 0.009936380337059084
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3369092197146038,
+              "std": 0.002992713978506468
+            }
+          },
+          "objective": {
+            "mean": 0.37734696865081785,
+            "std": 0.0019353215975670627
+          },
+          "max_cluster_share": {
+            "mean": 0.06213945956886955,
+            "std": 0.006148027784304995
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.35094658883944835,
+        "runtime_seconds": 2.6534132957458496,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_029/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_029/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_029/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "37": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 37,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 38,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05505515636069224,
+            "mean_cosine_distance": 0.3755752444267273
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 83,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05626960833923692,
+            "mean_cosine_distance": 0.3760529160499573
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05839489930169011,
+            "mean_cosine_distance": 0.3766738772392273
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 32,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06962858010322842,
+            "mean_cosine_distance": 0.3776249885559082
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 34,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0574840603177816,
+            "mean_cosine_distance": 0.3794060945510864
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.25195834664406913,
+                "std": 0.0035043823819365396
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5849610363323551,
+                "std": 0.004901048987723728
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.1791923894342678,
+                "std": 0.006409550847822718
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3692079574064676,
+                "std": 0.0036850510383345868
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39303714198967715,
+                "std": 0.00242603480643217
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.338002226495294,
+                "std": 0.0040179011843236405
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4313892148000453,
+                "std": 0.003152527747367305
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.24106871774111935,
+                "std": 0.003065672817756127
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.48752150592045346,
+                "std": 0.008436921421505223
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3508518396168607,
+              "std": 0.003214622470956356
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4063556320210505,
+              "std": 0.0022042624544326
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3349053739500051,
+              "std": 0.00463003395492906
+            }
+          },
+          "objective": {
+            "mean": 0.3770666241645813,
+            "std": 0.0013557994169011438
+          },
+          "max_cluster_share": {
+            "mean": 0.059366460884525865,
+            "std": 0.005253119017236838
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3508518396168607,
+        "runtime_seconds": 2.654529571533203,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_037/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_037/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_037/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "42": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 42,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 47,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05444793037141989,
+            "mean_cosine_distance": 0.3752979040145874
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 86,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05657322133387309,
+            "mean_cosine_distance": 0.37501275539398193
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 49,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05465033903451068,
+            "mean_cosine_distance": 0.37630999088287354
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 31,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06831292379313834,
+            "mean_cosine_distance": 0.37709546089172363
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 55,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05900212529096245,
+            "mean_cosine_distance": 0.3772416114807129
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.25079346207231257,
+                "std": 0.002580548358518822
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5828559862362109,
+                "std": 0.004892850030090338
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17949600242890396,
+                "std": 0.005235150502281857
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36788981338969257,
+                "std": 0.0031078685785466105
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3932800323853861,
+                "std": 0.0009319594723790147
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3357757312012954,
+                "std": 0.0014502972668898242
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.43004854987627256,
+                "std": 0.0031736804419697545
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.24056269608339234,
+                "std": 0.0035349153317625727
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4828053840704382,
+                "std": 0.004928391174703321
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3495772751127592,
+              "std": 0.0027485556053203145
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4055662382349965,
+              "std": 0.0020446058180169013
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3326923725668792,
+              "std": 0.0024898002520621332
+            }
+          },
+          "objective": {
+            "mean": 0.37619154453277587,
+            "std": 0.0009079506733805877
+          },
+          "max_cluster_share": {
+            "mean": 0.05859730796478089,
+            "std": 0.005127375407165562
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3495772751127592,
+        "runtime_seconds": 3.0300822257995605,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_042/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_042/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_042/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "53": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 53,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 45,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05404311304523834,
+            "mean_cosine_distance": 0.3761858344078064
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 70,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05900212529096245,
+            "mean_cosine_distance": 0.3780873417854309
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 36,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05728165165469082,
+            "mean_cosine_distance": 0.3770598769187927
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 58,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06446715919441352,
+            "mean_cosine_distance": 0.37676459550857544
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 52,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05839489930169011,
+            "mean_cosine_distance": 0.3776024580001831
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.2510171234453522,
+                "std": 0.002562456684800681
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5813176803967209,
+                "std": 0.006955322447497872
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.1802651553486489,
+                "std": 0.005327386784182845
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3676131985432215,
+                "std": 0.002598133800564058
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3943123165671491,
+                "std": 0.0029702393730129434
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33504706001416856,
+                "std": 0.0037276180812733355
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4295504115066836,
+                "std": 0.0031544551100425046
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.2418176297945552,
+                "std": 0.004176490760539683
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.48551766015585474,
+                "std": 0.007197499511430096
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.34939357783175246,
+              "std": 0.0022055545018389486
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.40581587558614185,
+              "std": 0.0024652344819682177
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3336099585062241,
+              "std": 0.003938881598168008
+            }
+          },
+          "objective": {
+            "mean": 0.3771400213241577,
+            "std": 0.0006586507535459487
+          },
+          "max_cluster_share": {
+            "mean": 0.058637789697399044,
+            "std": 0.0033800428645382264
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.34939357783175246,
+        "runtime_seconds": 4.1017303466796875,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_053/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_053/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_053/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "61": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 61,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 52,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05515636069223763,
+            "mean_cosine_distance": 0.375343382358551
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 73,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05718044732314543,
+            "mean_cosine_distance": 0.3772464990615845
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 41,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05535876935532841,
+            "mean_cosine_distance": 0.3764857053756714
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 42,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06902135411395607,
+            "mean_cosine_distance": 0.3774344325065613
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 65,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05525756502378302,
+            "mean_cosine_distance": 0.37834203243255615
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.2517952181660955,
+                "std": 0.0016977176616798978
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5846371824714097,
+                "std": 0.0013401838159900344
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17923287116688594,
+                "std": 0.005092901223341767
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36902172924498505,
+                "std": 0.0028081787552753693
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3922477482036231,
+                "std": 0.0050538974814016814
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3366460884525858,
+                "std": 0.004106751564152029
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4315468844256207,
+                "std": 0.003711963414043316
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.24029956482137432,
+                "std": 0.0029118721600411993
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.48557838275478193,
+                "std": 0.007078517741137825
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3507879439455671,
+              "std": 0.002301980717511146
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.40572816516546906,
+              "std": 0.0014481613345571427
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3338191141247512,
+              "std": 0.002497886559144682
+            }
+          },
+          "objective": {
+            "mean": 0.37697041034698486,
+            "std": 0.0010054896988927551
+          },
+          "max_cluster_share": {
+            "mean": 0.05839489930169012,
+            "std": 0.005365547860801561
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3507879439455671,
+        "runtime_seconds": 2.6990840435028076,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_061/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_061/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_061/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "73": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 73,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 71,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05525756502378302,
+            "mean_cosine_distance": 0.3749467730522156
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 74,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05444793037141989,
+            "mean_cosine_distance": 0.37535524368286133
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 73,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05839489930169011,
+            "mean_cosine_distance": 0.37586694955825806
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 58,
+            "active_clusters": 30,
+            "max_cluster_share": 0.0647707721890497,
+            "mean_cosine_distance": 0.3760031461715698
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 41,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06011537293796174,
+            "mean_cosine_distance": 0.3788819909095764
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.25188953585947066,
+                "std": 0.0020705038636911624
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.58419188341261,
+                "std": 0.0064696724194603095
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17951624329521304,
+                "std": 0.005558467678739326
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.36909127972975936,
+                "std": 0.0026759535631489524
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.3961339945349661,
+                "std": 0.004249328734158891
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.33721283270923996,
+                "std": 0.005514661078938803
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4316452797056491,
+                "std": 0.002485658411176777
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.24262726444691834,
+                "std": 0.002925207870138805
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.48677259386701743,
+                "std": 0.008677030629319096
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.35087536509829303,
+              "std": 0.0022425882948445184
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4076510474648316,
+              "std": 0.00392815370811586
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3345005566238235,
+              "std": 0.005482772099125419
+            }
+          },
+          "objective": {
+            "mean": 0.37621082067489625,
+            "std": 0.0013875413398191318
+          },
+          "max_cluster_share": {
+            "mean": 0.058597307964780895,
+            "std": 0.003710212079713262
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.35087536509829303,
+        "runtime_seconds": 3.003316640853882,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_073/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_073/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_073/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      },
+      "89": {
+        "schema_version": "final_representation_evaluation_v1",
+        "status": "completed",
+        "method": "structural_vicreg_gat",
+        "training_seed": 89,
+        "pca_fit_split": "development",
+        "pca_refitted_on_test": false,
+        "pca_dimension": 128,
+        "pca_random_state": 42,
+        "n_clusters": 30,
+        "clustering_seeds": [
+          17,
+          42,
+          73,
+          101,
+          137
+        ],
+        "kmeans_max_iter": 300,
+        "kmeans_tolerance": 1e-06,
+        "all_converged": true,
+        "all_clusters_active": true,
+        "clustering": [
+          {
+            "seed": 17,
+            "converged": true,
+            "iterations": 51,
+            "active_clusters": 30,
+            "max_cluster_share": 0.053739500050602164,
+            "mean_cosine_distance": 0.37489408254623413
+          },
+          {
+            "seed": 42,
+            "converged": true,
+            "iterations": 79,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05626960833923692,
+            "mean_cosine_distance": 0.37660300731658936
+          },
+          {
+            "seed": 73,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05758526464932699,
+            "mean_cosine_distance": 0.37652695178985596
+          },
+          {
+            "seed": 101,
+            "converged": true,
+            "iterations": 74,
+            "active_clusters": 30,
+            "max_cluster_share": 0.06436595486286813,
+            "mean_cosine_distance": 0.37606269121170044
+          },
+          {
+            "seed": 137,
+            "converged": true,
+            "iterations": 46,
+            "active_clusters": 30,
+            "max_cluster_share": 0.05697803866005465,
+            "mean_cosine_distance": 0.37733471393585205
+          }
+        ],
+        "metrics": {
+          "n_seeds": 5,
+          "seeds": [
+            17,
+            42,
+            73,
+            101,
+            137
+          ],
+          "levels": {
+            "section": {
+              "nmi": {
+                "mean": 0.25133172657452263,
+                "std": 0.002668151390424651
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.5826535775731202,
+                "std": 0.006072057480686712
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.17921263030057685,
+                "std": 0.0037120887957044152
+              }
+            },
+            "class": {
+              "nmi": {
+                "mean": 0.3683381686113549,
+                "std": 0.0035650966576178623
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.39396822183989477,
+                "std": 0.002966098510309429
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.3375974091691124,
+                "std": 0.003005887908895836
+              }
+            },
+            "subclass": {
+              "nmi": {
+                "mean": 0.4311867653868985,
+                "std": 0.003132586607297535
+              },
+              "predicted_cluster_purity": {
+                "mean": 0.24125088553790103,
+                "std": 0.0032883777617625284
+              },
+              "label_wise_inverse_purity": {
+                "mean": 0.4857403096852545,
+                "std": 0.005742344830508121
+              }
+            }
+          },
+          "mean": {
+            "nmi": {
+              "mean": 0.3502855535242586,
+              "std": 0.002919950590675024
+            },
+            "predicted_cluster_purity": {
+              "mean": 0.4059575616503053,
+              "std": 0.002406346845326
+            },
+            "label_wise_inverse_purity": {
+              "mean": 0.3341834497183146,
+              "std": 0.002226842837305385
+            }
+          },
+          "objective": {
+            "mean": 0.3762842893600464,
+            "std": 0.000805684641114735
+          },
+          "max_cluster_share": {
+            "mean": 0.05778767331241776,
+            "std": 0.0035401269388165807
+          },
+          "n_active_clusters": {
+            "minimum": 30,
+            "maximum": 30,
+            "values": [
+              30,
+              30,
+              30,
+              30,
+              30
+            ]
+          }
+        },
+        "mean_nmi": 0.3502855535242586,
+        "runtime_seconds": 4.209000110626221,
+        "paths": {
+          "dev_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_089/dev_raw768.npz",
+          "test_raw": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/raw_representations/structural_vicreg_gat/seed_089/test_raw768.npz",
+          "pca": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/dev_fitted_pca.joblib",
+          "predictions": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/evaluations/structural_vicreg_gat/seed_089/test_predictions.npz"
+        },
+        "test_labels_used_for_training": false,
+        "test_labels_used_for_checkpoint_selection": false,
+        "test_labels_used_for_final_evaluation": true
+      }
+    }
+  },
+  "data_use": {
+    "cpc_used_for_training": false,
+    "cpc_used_for_checkpoint_selection": false,
+    "test_used_for_training": false,
+    "test_used_for_checkpoint_selection": false,
+    "test_cpc_used_for_final_evaluation": true
+  },
+  "paths": {
+    "checkpoint_manifest": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/checkpoint_manifest.json",
+    "evaluation_root": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1",
+    "bootstrap_samples": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/primary_paired_bootstrap.npz",
+    "bootstrap_report": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1/primary_paired_bootstrap.json"
+  },
+  "environment": {
+    "python": "3.13.15 (main, Aug  6 2026, 11:06:22) [GCC 13.3.0]",
+    "numpy": "2.1.3",
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "gpu": "Tesla T4"
+  }
+}

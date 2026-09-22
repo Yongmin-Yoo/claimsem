@@ -289,3 +289,34 @@ their original development-derived divisor of 27.
 Before the ten-seed experiment, seed 11 must pass a short pilot covering
 loss curves, checkpoint saving, resume behavior, and deterministic
 validation.
+
+<!-- FINAL_TRAIN_SPLIT_RESULTS_START -->
+## Final train-split learned-aggregation evaluation
+
+The final audit trained SSL-MLP + attention and Structural VICReg-GAT
+with ten independent training seeds. Every resulting representation was
+evaluated with five independent spherical K-means seeds.
+
+Final mean TEST NMI:
+
+- Uniform pooling: 0.345119
+- SSL-MLP + attention: 0.347182
+- Structural VICReg-GAT: 0.350547
+- Balanced ROOTS: 0.376691
+
+Balanced ROOTS minus Structural VICReg-GAT was
++0.026144 NMI. The between-training-run 95% CI was
+[0.025607, 0.026682], and the
+paired-document bootstrap 95% CI was
+[0.021952,
+0.028014].
+
+Both intervals exclude zero. Learned aggregation improved over uniform
+pooling, but Balanced ROOTS retained the highest mean NMI under the
+fixed evaluation protocol.
+
+Compact results and provenance records are stored in
+`results/train_split_audit_v1/`. Large checkpoints, representations,
+patent records, CPC labels, predictions, and raw bootstrap samples are
+excluded from Git.
+<!-- FINAL_TRAIN_SPLIT_RESULTS_END -->

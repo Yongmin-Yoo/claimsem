@@ -1,0 +1,16 @@
+{
+  "package": "${GOOGLE_DRIVE_ROOT}/claimsem_artifacts/learned_aggregation_train_audit_v1/final_evaluation_v1_report_package.zip",
+  "sha256": "32f3ede28f2dc613595e84d6faa52df93b21954b719734a85dfda0843d63290e",
+  "bytes": 26726,
+  "files": [
+    "final_evaluation_report.json",
+    "primary_paired_bootstrap.json",
+    "checkpoint_manifest.json",
+    "post_evaluation_audit.json",
+    "final_results_lock.json",
+    "training_seed_results.csv",
+    "publication_method_summary.csv",
+    "publication_method_summary.md",
+    "astra_final_report_draft.md"
+  ]
+}

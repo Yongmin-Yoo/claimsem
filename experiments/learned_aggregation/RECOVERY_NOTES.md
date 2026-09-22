@@ -118,3 +118,25 @@ uses the behaviorally recovered inference paths.
 The train-derived depth divisor is 55 and is frozen for train, DEV, and
 TEST in the new experiment. The recovered historical DEV-only model
 continues to use 27.
+
+<!-- FINAL_TRAIN_SPLIT_AUDIT_START -->
+## Final train-split audit outcome
+
+The train-split audit completed ten SSL-MLP training runs and ten
+Structural VICReg-GAT training runs. Checkpoints were selected only by
+development self-supervised loss. TEST and CPC labels were not used for
+training or checkpoint selection.
+
+The final evaluation used five clustering seeds per representation and
+a paired-document bootstrap with 2,000 replicates. Balanced ROOTS
+outperformed Structural VICReg-GAT by 0.026144 NMI. The
+between-training-run 95% confidence interval was [0.025607, 0.026682],
+and the paired-document bootstrap interval was [0.021952, 0.028014].
+
+This result does not change the source-code recovery qualification. The
+deterministic model inference paths were recovered from archived
+artifacts, but the original stochastic training implementation was not
+recovered. The train-split stochastic protocol is newly specified and
+must not be represented as an exact reconstruction of the unavailable
+original implementation.
+<!-- FINAL_TRAIN_SPLIT_AUDIT_END -->

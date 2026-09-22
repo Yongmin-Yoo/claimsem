@@ -1,0 +1,58 @@
+{
+  "schema_version": "learned_aggregation_final_evaluation_protocol_v1",
+  "checkpoint_selection": {
+    "split": "development",
+    "metric": "self_supervised_validation_loss",
+    "cpc_labels_forbidden": true,
+    "test_data_forbidden": true
+  },
+  "model_budgets": {
+    "ssl_mlp_attention": {
+      "maximum_epochs": 15,
+      "training_seeds": 10
+    },
+    "structural_vicreg_gat": {
+      "maximum_epochs": 45,
+      "training_seeds": 10
+    }
+  },
+  "representation": {
+    "output_dimension": 768,
+    "deterministic_inference": true,
+    "train_derived_depth_divisor": 55
+  },
+  "pca": {
+    "input_dimension": 768,
+    "output_dimension": 128,
+    "fit_split": "development",
+    "fit_separately_per_representation": true,
+    "random_state": 42,
+    "refit_on_test": false
+  },
+  "clustering": {
+    "split": "test",
+    "mode": "transductive",
+    "backend": "legacy_gpu_spherical_kmeans",
+    "number_of_clusters": 30,
+    "seeds": [
+      17,
+      42,
+      73,
+      101,
+      137
+    ],
+    "maximum_iterations": 300,
+    "tolerance": 1e-06
+  },
+  "evaluation": {
+    "label_levels": [
+      "section",
+      "class",
+      "subclass"
+    ],
+    "primary_metric": "mean_nmi_across_section_class_subclass",
+    "training_seed_aggregation": "Average clustering seeds within each training seed before between-training-run inference.",
+    "paired_document_bootstrap_replicates": 2000,
+    "paired_document_bootstrap_is_conditional_on_fixed_outputs": true
+  }
+}
