@@ -256,3 +256,36 @@ These files must not be interpreted as proof that the unavailable
 original stochastic training implementation was recovered exactly.
 The new train-split training protocol defines and records its
 augmentation and optimization choices explicitly.
+
+## Train-split stochastic training protocol
+
+The original stochastic training-view implementation was not recovered.
+The following choices are newly specified for the full-train audit and
+must not be described as an exact reconstruction of the unavailable
+training code.
+
+- Claim-feature dropout: probability 0.1, independently sampled for the
+  two training views before model forward.
+- Model dropout: probability 0.1 on the projection output.
+- Structural VICReg-GAT edge behavior: no explicit edge removal;
+  `GATConv` attention-coefficient dropout remains 0.1.
+- Structural VICReg-GAT objective: VICReg with invariance, variance, and
+  covariance weights 25, 25, and 1.
+- SSL-MLP objective: symmetric in-batch NT-Xent/InfoNCE with temperature
+  0.07.
+- The document-order RNG stream is separated from the augmentation RNG
+  stream.
+- CPC section, class, and subclass labels are not loaded during
+  optimization or checkpoint selection.
+- Validation uses fixed augmentation seeds and checkpoint selection uses
+  only self-supervised development loss.
+
+The training graph cache was validated at 496 shards, 49,599 patents,
+844,636 claims, and 1,446,960 directed edges. The train-derived maximum
+claim depth is 55. This divisor is fixed for train, development, and test
+in the new audit. The recovered DEV-only checkpoints continue to use
+their original development-derived divisor of 27.
+
+Before the ten-seed experiment, seed 11 must pass a short pilot covering
+loss curves, checkpoint saving, resume behavior, and deterministic
+validation.

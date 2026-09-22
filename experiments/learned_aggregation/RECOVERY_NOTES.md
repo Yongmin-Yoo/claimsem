@@ -97,3 +97,24 @@ refit all compared methods in one documented environment.
 
 These settings must not be silently inferred. The new train-split
 protocol will define and record them explicitly before final runs.
+
+## Newly specified full-train protocol
+
+The unresolved original stochastic implementation is not silently
+inferred. For the new train-split audit, stochastic views are explicitly
+defined in `training_objectives.py`:
+
+- independent claim-feature dropout at probability 0.1;
+- projection-output dropout at probability 0.1;
+- GAT attention-coefficient dropout at probability 0.1;
+- no explicit edge deletion;
+- VICReg weights 25/25/1 for Structural VICReg-GAT;
+- symmetric in-batch NT-Xent/InfoNCE at temperature 0.07 for SSL-MLP.
+
+These are preregistered experimental choices, not recovered historical
+facts. Deterministic evaluation disables stochastic augmentation and
+uses the behaviorally recovered inference paths.
+
+The train-derived depth divisor is 55 and is frozen for train, DEV, and
+TEST in the new experiment. The recovered historical DEV-only model
+continues to use 27.

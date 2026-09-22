@@ -120,5 +120,158 @@
     "mlp_deterministic_inference_recovered": true,
     "original_stochastic_view_generation_recovered": false,
     "policy": "new stochastic training choices must be explicitly documented and must not be presented as exact recovery"
+  },
+  "structural_depth_normalization": {
+    "rule": "training_split_global_max",
+    "train_derived_divisor": 55,
+    "apply_fixed_divisor_to": [
+      "train",
+      "development",
+      "test"
+    ],
+    "clip": false,
+    "original_dev_only_checkpoint_divisor": 27,
+    "test_information_used": false
+  },
+  "train_partial_cache": {
+    "schema_version": "train_graph_partials_v1",
+    "n_shards": 496,
+    "n_documents": 49599,
+    "n_claims": 844636,
+    "n_directed_edges": 1446960,
+    "global_max_depth": 55,
+    "integrity_validated": true,
+    "label_fields_used_for_training": false
+  },
+  "document_sampling": {
+    "policy": "shuffle_shards_then_shuffle_documents_within_each_shard",
+    "batch_size_documents": 256,
+    "materialize_epoch_order": true,
+    "record_patent_order": true,
+    "record_order_sha256": true,
+    "resume_cursor": "start_document",
+    "document_order_rng_independent_from_augmentation_rng": true
+  },
+  "edge_features": {
+    "source": "cached_edge_type",
+    "encoding": "two_class_one_hot",
+    "canonical_order": {
+      "column_0": "parent_to_child",
+      "column_1": "child_to_parent"
+    },
+    "reverse_cached_edge_type": false,
+    "note": "The archived checkpoint diagnostics could not reliably distinguish the two column orientations. The new train-split experiment therefore preregisters and retains the graph-builder canonical order."
+  },
+  "loader_validation": {
+    "status": "passed",
+    "training_seed": 11,
+    "epoch": 0,
+    "epoch_order_sha256": "d5959a4e60661a0045deb20c3ec10918cb98fac597161ee1c0a3dfe0071483bf",
+    "unique_document_references": 49599,
+    "first_batch": {
+      "documents": 256,
+      "nodes": 4138,
+      "directed_edges": 8152,
+      "claim_embedding_shape": [
+        4138,
+        768
+      ],
+      "structural_feature_shape": [
+        4138,
+        2
+      ],
+      "document_range": [
+        0,
+        256
+      ]
+    },
+    "python_3_13_dynamic_import_fix_required": true
+  },
+  "stochastic_training_protocol": {
+    "status": "preregistered_new_train_split_protocol",
+    "original_implementation_recovered": false,
+    "must_be_described_as": "newly_specified_train_split_protocol",
+    "feature_dropout": {
+      "probability": 0.1,
+      "placement": "frozen_claim_embeddings_before_model_forward",
+      "independent_between_views": true,
+      "inverted_dropout": true
+    },
+    "structural_vicreg_gat": {
+      "explicit_edge_removal": false,
+      "gat_attention_coefficient_dropout": 0.1,
+      "projection_output_dropout": 0.1,
+      "objective": "VICReg",
+      "invariance_weight": 25.0,
+      "variance_weight": 25.0,
+      "covariance_weight": 1.0
+    },
+    "ssl_mlp_attention": {
+      "projection_output_dropout": 0.1,
+      "objective": "symmetric_NT_Xent_InfoNCE",
+      "temperature": 0.07,
+      "negative_samples": "other_documents_in_same_minibatch"
+    },
+    "validation_views": {
+      "policy": "fixed_deterministic_augmentation_seeds",
+      "cpc_labels_used": false
+    },
+    "rng": {
+      "document_order_stream": 10001,
+      "within_shard_order_stream": 10002,
+      "augmentation_stream": 20001,
+      "independent_views": true
+    },
+    "pilot_training_allowed": true,
+    "full_training_allowed": false,
+    "reason_full_training_not_yet_allowed": "Run seed-11 short pilot with DEV loss and checkpoint/resume validation before launching all ten seeds."
+  },
+  "one_batch_gradient_smoke_test": {
+    "status": "passed",
+    "training_seed": 11,
+    "epoch": 0,
+    "batch_index": 0,
+    "documents": 256,
+    "nodes": 4138,
+    "edges": 8152,
+    "canonical_edge_order": true,
+    "gat": {
+      "loss": 24.4293212890625,
+      "invariance": 0.0005688270321115851,
+      "variance": 0.9766039848327637,
+      "covariance": 5.02308296290721e-07,
+      "mean_std_first": 0.023362385109066963,
+      "mean_std_second": 0.02342967875301838,
+      "gradients": {
+        "trainable_parameters": 416385,
+        "parameters_with_gradient": 415617,
+        "parameters_with_finite_gradient": 415617,
+        "global_gradient_norm": 0.6629986213775696,
+        "no_gradient_parameter_names": [
+          "norm1.weight",
+          "norm1.bias",
+          "norm2.weight",
+          "norm2.bias"
+        ]
+      }
+    },
+    "mlp": {
+      "loss": 5.161417484283447,
+      "positive_cosine_similarity": 0.8950853943824768,
+      "temperature": 0.07,
+      "gradients": {
+        "trainable_parameters": 339777,
+        "parameters_with_gradient": 339009,
+        "parameters_with_finite_gradient": 339009,
+        "global_gradient_norm": 5.690986313197788,
+        "no_gradient_parameter_names": [
+          "norm1.weight",
+          "norm1.bias",
+          "norm2.weight",
+          "norm2.bias"
+        ]
+      }
+    },
+    "peak_cuda_memory_gb": 2.4645166397094727
   }
 }
