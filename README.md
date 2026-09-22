@@ -970,6 +970,39 @@ The generated clusters should not be described as supervised CPC predictions.
 
 ---
 
+<!-- LEARNED_AGGREGATION_AUDIT_START -->
+## Learned-Aggregation Train-Split Audit
+
+A matched train-split audit compared fixed and learned aggregation
+using the same frozen PatentSBERTa-V2 representations, DEV-fitted
+PCA, and TEST clustering protocol.
+
+| Method | Mean TEST NMI |
+|---|---:|
+| Uniform pooling | 0.345119 |
+| SSL-MLP + attention | 0.347182 |
+| Structural VICReg-GAT | 0.350547 |
+| **Balanced ROOTS** | **0.376691** |
+
+Balanced ROOTS exceeds Structural VICReg-GAT by 0.026144 NMI.
+The training-seed 95% CI is [0.025607, 0.026682], and the
+paired-document bootstrap 95% CI is [0.021952, 0.028014].
+
+The learned models improve over uniform pooling on average.
+The comparison therefore supports the strength of the fixed
+root-aware prior, not the general claim that learned aggregation
+is ineffective.
+
+The audit used 10 neural-training seeds and five clustering seeds.
+Eight of 10 GAT runs selected the maximum epoch, so the conclusion
+is limited to the evaluated models and optimization budgets.
+Longer neural training was not tested and is not required for the
+reported, protocol-bounded claim.
+
+Details are available in
+`experiments/learned_aggregation/results/train_split_audit_v1/`.
+<!-- LEARNED_AGGREGATION_AUDIT_END -->
+
 ## Limitations
 
 1. Root weight and depth decay are selected using development labels and may not transfer unchanged to every patent collection.

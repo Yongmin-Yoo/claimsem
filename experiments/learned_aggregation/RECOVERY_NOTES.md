@@ -140,3 +140,36 @@ recovered. The train-split stochastic protocol is newly specified and
 must not be represented as an exact reconstruction of the unavailable
 original implementation.
 <!-- FINAL_TRAIN_SPLIT_AUDIT_END -->
+
+<!-- FINAL_INTERPRETATION_START -->
+## Final Interpretation of the Train-Split Audit
+
+The original DEV-only, three-seed comparison has been superseded
+for the primary learned-aggregation claim by a full train-split
+audit with 10 neural-training seeds and five clustering seeds per
+representation.
+
+Balanced ROOTS achieves a mean TEST NMI of 0.376691, compared with
+0.350547 for Structural VICReg-GAT. The difference is +0.026144,
+with a training-seed 95% CI of [0.025607, 0.026682] and a
+paired-document bootstrap 95% CI of [0.021952, 0.028014].
+
+This supports higher mean NMI for Balanced ROOTS among the methods
+evaluated under the fixed protocol. It does not establish that
+learned aggregation is unnecessary or that the neural models would
+remain below Balanced ROOTS under every architecture or training
+budget. Both learned methods improve over uniform pooling on
+average.
+
+Eight of 10 Structural VICReg-GAT runs selected epoch 45, the
+maximum permitted epoch. The final report therefore treats
+optimization budget as a limitation rather than claiming complete
+neural convergence. The earlier DEV-only runtime and attention
+statistics are retained only as historical recovery evidence and
+are not used to characterize the final train-split models.
+
+Deterministic inference architectures were recovered from archived
+checkpoints. The train-split stochastic augmentation and
+optimization protocol was newly specified because the original
+stochastic training source was unavailable.
+<!-- FINAL_INTERPRETATION_END -->

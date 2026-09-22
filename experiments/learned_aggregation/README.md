@@ -11,9 +11,9 @@ VICReg-GAT under the same frozen PatentSBERTa-V2 claim embeddings,
 preprocessing, PCA rule, clustering configuration, and test set.
 
 The experiment is not designed to make ROOTS win. Its purpose is to
-give the learned aggregators sufficient training data and optimization
-budget, separate training randomness from clustering randomness, and
-reassess the conclusion.
+give the learned aggregators the full training split and a larger,
+explicitly bounded optimization budget, separate training randomness from
+clustering randomness, and reassess the conclusion.
 
 ## Original protocol recovered from artifacts
 
@@ -140,7 +140,9 @@ Training must save:
 - Training time and peak memory
 
 If validation loss is still improving at the maximum epoch, the
-training budget must be increased before final evaluation.
+boundary selection must be reported as an optimization-budget limitation;
+longer training is a follow-up analysis rather than a prerequisite for the
+protocol-bounded claim.
 
 Hyperparameter-selection runs must be separated from final
 performance-measurement runs.
@@ -190,7 +192,7 @@ SSL-MLP is a secondary comparison.
 ## Interpretation policy
 
 - If Balanced ROOTS is clearly better, restrict the claim to the
-  sufficiently trained self-supervised baselines evaluated here.
+  self-supervised baselines and optimization budgets evaluated here.
 - If the confidence interval includes zero, report that superiority
   was not established. Do not claim equivalence or non-inferiority.
 - If a learned model is better, report it and frame ROOTS as a simple,
@@ -291,32 +293,58 @@ loss curves, checkpoint saving, resume behavior, and deterministic
 validation.
 
 <!-- FINAL_TRAIN_SPLIT_RESULTS_START -->
-## Final train-split learned-aggregation evaluation
+## Final Train-Split Learned-Aggregation Evaluation
 
-The final audit trained SSL-MLP + attention and Structural VICReg-GAT
-with ten independent training seeds. Every resulting representation was
-evaluated with five independent spherical K-means seeds.
+The final audit trained SSL-MLP + attention and Structural
+VICReg-GAT on 49,599 training patents using 10 independent
+training seeds. Each representation was evaluated with five
+independent spherical K-means seeds.
 
-Final mean TEST NMI:
+### Final mean TEST NMI
 
-- Uniform pooling: 0.345119
-- SSL-MLP + attention: 0.347182
-- Structural VICReg-GAT: 0.350547
-- Balanced ROOTS: 0.376691
+| Method | Mean NMI |
+|---|---:|
+| Uniform pooling | 0.345119 |
+| SSL-MLP + attention | 0.347182 |
+| Structural VICReg-GAT | 0.350547 |
+| **Balanced ROOTS** | **0.376691** |
 
-Balanced ROOTS minus Structural VICReg-GAT was
-+0.026144 NMI. The between-training-run 95% CI was
-[0.025607, 0.026682], and the
-paired-document bootstrap 95% CI was
-[0.021952,
-0.028014].
+Balanced ROOTS minus Structural VICReg-GAT is +0.026144 NMI.
+The training-seed 95% CI is [0.025607, 0.026682], and the
+conditional paired-document bootstrap 95% CI is
+[0.021952, 0.028014]. Both intervals are positive.
 
-Both intervals exclude zero. Learned aggregation improved over uniform
-pooling, but Balanced ROOTS retained the highest mean NMI under the
-fixed evaluation protocol.
+The training-seed interval reflects variation among 10 independently
+trained GAT models after averaging five clustering runs per model.
+The document-bootstrap interval reflects TEST-document resampling
+conditional on fixed checkpoints, PCA transformations, and
+clustering outputs.
+
+SSL-MLP and Structural VICReg-GAT improve over uniform pooling by
++0.002064 and +0.005428 NMI on average, respectively. The result
+should therefore be stated as higher mean NMI for Balanced ROOTS
+under the evaluated protocol, not as evidence that learned
+aggregation is generally ineffective.
+
+SSL-MLP used a maximum budget of 15 epochs, and Structural
+VICReg-GAT used 45. Six MLP runs selected epoch 15; eight of 10 GAT runs
+selected epoch 45, and the remaining two selected epoch 44. These
+boundary selections do not establish full neural optimization
+convergence. Longer training may change the comparison, but no
+additional training is required to support the protocol-bounded
+claim reported here.
+
+All 110 K-means runs converged with all 30 clusters active.
+K-means convergence is distinct from neural-training convergence.
+
+The earlier 25--27 second measurements belong to the previous
+DEV-only audit and are not used as final train-split cost estimates.
+The unavailable original stochastic training source was not
+recovered; the released train-split protocol is newly specified
+and must not be described as an exact reconstruction.
 
 Compact results and provenance records are stored in
-`results/train_split_audit_v1/`. Large checkpoints, representations,
-patent records, CPC labels, predictions, and raw bootstrap samples are
-excluded from Git.
+`results/train_split_audit_v1/`. Large checkpoints,
+representations, patent records, CPC labels, predictions, PCA
+binaries, and raw bootstrap samples are excluded from Git.
 <!-- FINAL_TRAIN_SPLIT_RESULTS_END -->
