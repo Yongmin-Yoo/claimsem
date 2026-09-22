@@ -71,5 +71,54 @@
     "paired_document_bootstrap": true,
     "document_bootstrap_is_conditional_on_fixed_outputs": true,
     "ssl_mlp_comparison": "secondary"
+  },
+  "model_settings": {
+    "shared": {
+      "input_embedding_dim": 768,
+      "hidden_dim": 192,
+      "projection_dim": 128,
+      "feature_dropout": 0.1,
+      "model_dropout": 0.1
+    },
+    "ssl_mlp_attention": {
+      "attention_hidden_dim": 96,
+      "attention_activation": "tanh",
+      "inference_forward_recovered": true,
+      "archived_parameter_count": 339777
+    },
+    "structural_vicreg_gat": {
+      "gat_heads_first": 4,
+      "gat_heads_second": 1,
+      "edge_feature_dim": 2,
+      "edge_dropout": 0.1,
+      "attention_hidden_dim": 96,
+      "attention_activation": "tanh",
+      "vicreg_weights": {
+        "invariance": 25.0,
+        "variance": 25.0,
+        "covariance": 1.0
+      },
+      "inference_forward_recovered": true,
+      "archived_parameter_count": 416385
+    }
+  },
+  "optimization": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size_documents": 256,
+    "initial_max_epochs": 15,
+    "minimum_epochs": 5,
+    "early_stopping_patience": 4,
+    "checkpoint_metric": "self_supervised_development_loss",
+    "extend_budget_if_best_epoch_is_maximum": true,
+    "test_metrics_forbidden_during_selection": true
+  },
+  "reconstruction_status": {
+    "original_training_source_found": false,
+    "gat_deterministic_inference_recovered": true,
+    "mlp_deterministic_inference_recovered": true,
+    "original_stochastic_view_generation_recovered": false,
+    "policy": "new stochastic training choices must be explicitly documented and must not be presented as exact recovery"
   }
 }

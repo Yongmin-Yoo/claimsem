@@ -237,3 +237,6 @@ experiments/learned_aggregation/artifacts/
 experiments/learned_aggregation/checkpoints/
 experiments/learned_aggregation/cache/
 experiments/learned_aggregation/predictions/
+
+# Local learned-aggregation reconstruction audits
+experiments/learned_aggregation/local_audits/

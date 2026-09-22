@@ -238,3 +238,21 @@ The original artifacts showed:
 
 The new experiment must recompute all primary methods in one
 consistent pipeline rather than mixing numbers from separate audits.
+
+
+## Recovered inference implementations
+
+The original learned-aggregation training source was not retained.
+Deterministic inference implementations were recovered from archived
+checkpoints and validated against saved development and test attention
+statistics:
+
+- `reconstructed_model.py`: Structural VICReg-GAT inference
+- `reconstructed_mlp.py`: SSL-MLP with attention inference
+- `RECOVERY_NOTES.md`: recovery evidence, limitations, and unresolved
+  stochastic training details
+
+These files must not be interpreted as proof that the unavailable
+original stochastic training implementation was recovered exactly.
+The new train-split training protocol defines and records its
+augmentation and optimization choices explicitly.
