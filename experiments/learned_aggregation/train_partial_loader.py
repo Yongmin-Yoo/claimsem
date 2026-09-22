@@ -421,6 +421,7 @@ class TrainPartialDataset:
 
         current_shard_index: Optional[int] = None
         current_npz = None
+        current_arrays = None
 
         docs_x: List[np.ndarray] = []
         docs_depth: List[np.ndarray] = []
@@ -552,14 +553,34 @@ class TrainPartialDataset:
                 if shard_index != current_shard_index:
                     if current_npz is not None:
                         current_npz.close()
+
                     current_npz = np.load(
                         self.shard_paths[shard_index],
                         allow_pickle=False,
                     )
+
+                    # PERF: eagerly decompress each required NPZ member once per shard
+                    current_arrays = {
+                        key: current_npz[key]
+                        for key in (
+                            "embeddings",
+                            "depths",
+                            "node_ptr",
+                            "edge_ptr",
+                            "edge_src",
+                            "edge_dst",
+                            "edge_type",
+                        )
+                    }
                     current_shard_index = shard_index
 
-                node_ptr = current_npz["node_ptr"]
-                edge_ptr = current_npz["edge_ptr"]
+                if current_arrays is None:
+                    raise RuntimeError(
+                        "Shard arrays were not initialized"
+                    )
+
+                node_ptr = current_arrays["node_ptr"]
+                edge_ptr = current_arrays["edge_ptr"]
 
                 node_start = int(node_ptr[document_index])
                 node_stop = int(node_ptr[document_index + 1])
@@ -567,19 +588,19 @@ class TrainPartialDataset:
                 edge_stop = int(edge_ptr[document_index + 1])
 
                 x_doc = np.asarray(
-                    current_npz["embeddings"][node_start:node_stop],
+                    current_arrays["embeddings"][node_start:node_stop],
                     dtype=np.float32,
                 )
                 depth_doc = np.asarray(
-                    current_npz["depths"][node_start:node_stop],
+                    current_arrays["depths"][node_start:node_stop],
                     dtype=np.int64,
                 )
 
                 src = np.asarray(
-                    current_npz["edge_src"][edge_start:edge_stop]
+                    current_arrays["edge_src"][edge_start:edge_stop]
                 )
                 dst = np.asarray(
-                    current_npz["edge_dst"][edge_start:edge_stop]
+                    current_arrays["edge_dst"][edge_start:edge_stop]
                 )
                 src, dst = self._localize_edges(
                     src,
@@ -589,7 +610,7 @@ class TrainPartialDataset:
                 )
 
                 edge_type = np.asarray(
-                    current_npz["edge_type"][edge_start:edge_stop],
+                    current_arrays["edge_type"][edge_start:edge_stop],
                     dtype=np.int64,
                 )
 
