@@ -1,0 +1,144 @@
+{
+  "baseline": "TF-IDF-50K + LSA-256 + spherical K-means",
+  "tfidf_vectorizer": "/content/drive/MyDrive/claimsem_artifacts/additional_clustering_baselines/tfidf_spherical_kmeans/tfidf_50k_vectorizer.joblib",
+  "lsa_model": {
+    "fit_split": "train",
+    "dimension": 256,
+    "random_state": 42,
+    "explained_variance_ratio_sum": 0.15683546662330627
+  },
+  "clustering": {
+    "algorithm": "spherical K-means",
+    "n_clusters": 30,
+    "seeds": [
+      17,
+      42,
+      73
+    ],
+    "max_iter": 100,
+    "tolerance": 1e-05
+  },
+  "runs": [
+    {
+      "seed": 17,
+      "converged": true,
+      "iterations": 42,
+      "active_clusters": 30,
+      "objective": 0.5609500408172607,
+      "mean_nmi": 0.30464139303531507,
+      "metrics": {
+        "section": {
+          "predicted_cluster_purity": 0.5475154336605607,
+          "inverse_label_purity": 0.15555105758526466,
+          "nmi": 0.21531471046963457
+        },
+        "class": {
+          "predicted_cluster_purity": 0.3480416961845967,
+          "inverse_label_purity": 0.2927841311608137,
+          "nmi": 0.3179901725008058
+        },
+        "subclass": {
+          "predicted_cluster_purity": 0.21829774314340653,
+          "inverse_label_purity": 0.4078534561279223,
+          "nmi": 0.38061929613550477
+        }
+      }
+    },
+    {
+      "seed": 42,
+      "converged": true,
+      "iterations": 48,
+      "active_clusters": 30,
+      "objective": 0.5606387853622437,
+      "mean_nmi": 0.30286721643875564,
+      "metrics": {
+        "section": {
+          "predicted_cluster_purity": 0.5342576662281145,
+          "inverse_label_purity": 0.15160408865499445,
+          "nmi": 0.21112489098735096
+        },
+        "class": {
+          "predicted_cluster_purity": 0.336706811051513,
+          "inverse_label_purity": 0.29126606618763284,
+          "nmi": 0.31581341200047613
+        },
+        "subclass": {
+          "predicted_cluster_purity": 0.2033195020746888,
+          "inverse_label_purity": 0.40835947778564924,
+          "nmi": 0.3816633463284398
+        }
+      }
+    },
+    {
+      "seed": 73,
+      "converged": true,
+      "iterations": 37,
+      "active_clusters": 30,
+      "objective": 0.5609961152076721,
+      "mean_nmi": 0.3038279180827515,
+      "metrics": {
+        "section": {
+          "predicted_cluster_purity": 0.5417467867624735,
+          "inverse_label_purity": 0.14290051614209087,
+          "nmi": 0.21165664811598156
+        },
+        "class": {
+          "predicted_cluster_purity": 0.3438923185912357,
+          "inverse_label_purity": 0.28802752757818034,
+          "nmi": 0.31885400233969824
+        },
+        "subclass": {
+          "predicted_cluster_purity": 0.20918935330432142,
+          "inverse_label_purity": 0.4098775427588301,
+          "nmi": 0.38097310379257476
+        }
+      }
+    }
+  ],
+  "summary": {
+    "section": {
+      "predicted_cluster_purity": {
+        "mean": 0.5411732955503828,
+        "population_std": 0.0054276310640380375
+      },
+      "inverse_label_purity": {
+        "mean": 0.15001855412745,
+        "population_std": 0.005284851906149065
+      },
+      "nmi": {
+        "mean": 0.21269874985765572,
+        "population_std": 0.0018624587429043066
+      }
+    },
+    "class": {
+      "predicted_cluster_purity": {
+        "mean": 0.3428802752757818,
+        "population_std": 0.004682455125203481
+      },
+      "inverse_label_purity": {
+        "mean": 0.2906925749755423,
+        "population_std": 0.001983765533581516
+      },
+      "nmi": {
+        "mean": 0.3175525289469934,
+        "population_std": 0.0012793087489963383
+      }
+    },
+    "subclass": {
+      "predicted_cluster_purity": {
+        "mean": 0.2102688661741389,
+        "population_std": 0.006162301377744725
+      },
+      "inverse_label_purity": {
+        "mean": 0.4086968255574672,
+        "population_std": 0.0008600714356834318
+      },
+      "nmi": {
+        "mean": 0.38108524875217314,
+        "population_std": 0.00043354551496115436
+      }
+    }
+  },
+  "overall_mean_nmi": 0.3037788425189407,
+  "overall_population_std": 0.0007251353699677086
+}

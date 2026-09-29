@@ -1,0 +1,42 @@
+{
+  "baseline": "PatentSBERTa-V2 uniform pooling + agglomerative clustering",
+  "representation": {
+    "source_path": "/content/drive/MyDrive/claimsem_artifacts/test_embedding_baselines/cache/patentsberta_uniform_pooling_pca128.npz",
+    "source_key": "features",
+    "shape": [
+      9881,
+      128
+    ],
+    "normalized": true,
+    "patent_order": "verified from stored patent IDs"
+  },
+  "clustering": {
+    "algorithm": "AgglomerativeClustering",
+    "n_clusters": 30,
+    "metric": "cosine",
+    "linkage": "average",
+    "deterministic": true,
+    "active_clusters": 30,
+    "cluster_size_min": 1,
+    "cluster_size_max": 3793,
+    "elapsed_seconds": 7.969151496887207
+  },
+  "metrics": {
+    "section": {
+      "predicted_cluster_purity": 0.402590830887562,
+      "inverse_label_purity": 0.5264649326991195,
+      "nmi": 0.204721855278453
+    },
+    "class": {
+      "predicted_cluster_purity": 0.2875215059204534,
+      "inverse_label_purity": 0.7052929865398239,
+      "nmi": 0.3038467451840508
+    },
+    "subclass": {
+      "predicted_cluster_purity": 0.15221131464426677,
+      "inverse_label_purity": 0.7684444894241473,
+      "nmi": 0.30125792196135537
+    }
+  },
+  "mean_nmi": 0.2699421741412864
+}

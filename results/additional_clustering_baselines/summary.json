@@ -1,0 +1,30 @@
+[
+  {
+    "method": "TF-IDF + spherical K-means",
+    "mean_nmi": 0.301134,
+    "section_nmi": 0.20889,
+    "class_nmi": 0.314162,
+    "subclass_nmi": 0.38035
+  },
+  {
+    "method": "TF-IDF + LSA-256 + spherical K-means",
+    "mean_nmi": 0.303779,
+    "section_nmi": 0.212699,
+    "class_nmi": 0.317553,
+    "subclass_nmi": 0.381085
+  },
+  {
+    "method": "PatentSBERTa-V2 + agglomerative",
+    "mean_nmi": 0.269942,
+    "section_nmi": 0.204722,
+    "class_nmi": 0.303847,
+    "subclass_nmi": 0.301258
+  },
+  {
+    "method": "MiniLM + agglomerative",
+    "mean_nmi": 0.219877,
+    "section_nmi": 0.218035,
+    "class_nmi": 0.215051,
+    "subclass_nmi": 0.226545
+  }
+]

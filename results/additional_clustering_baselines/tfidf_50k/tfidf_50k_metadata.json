@@ -1,0 +1,25 @@
+{
+  "baseline": "TF-IDF-50K + spherical K-means",
+  "fit_split": "train",
+  "train_documents": 49599,
+  "test_documents": 9881,
+  "shape": [
+    9881,
+    50000
+  ],
+  "dtype": "float32",
+  "nnz": 1437970,
+  "vocabulary_size": 50000,
+  "parameters": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 5,
+    "max_df": 0.5,
+    "max_features": 50000,
+    "sublinear_tf": true,
+    "norm": "l2",
+    "stop_words": "english"
+  }
+}

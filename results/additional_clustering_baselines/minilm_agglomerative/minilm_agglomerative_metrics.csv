@@ -1,0 +1,4 @@
+model,level,predicted_cluster_purity,inverse_label_purity,nmi
+MiniLM + agglomerative clustering,section,0.38791620281348044,0.7280639611375367,0.21803450744326316
+MiniLM + agglomerative clustering,class,0.20473636271632425,0.7582228519380629,0.21505055426738803
+MiniLM + agglomerative clustering,subclass,0.10555611780184192,0.812974395304119,0.22654493543974602

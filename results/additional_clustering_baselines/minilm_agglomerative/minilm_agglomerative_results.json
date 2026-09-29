@@ -1,0 +1,40 @@
+{
+  "baseline": "MiniLM document embeddings + agglomerative clustering",
+  "feature_path": "/content/drive/MyDrive/claimsem_artifacts/test_embedding_baselines/cache/bertopic_minilm_document_embeddings.npz",
+  "feature_key": "features",
+  "feature_shape": [
+    9881,
+    384
+  ],
+  "patent_order": "verified from stored patent IDs",
+  "clustering": {
+    "algorithm": "AgglomerativeClustering",
+    "metric": "cosine",
+    "linkage": "average",
+    "n_clusters": 30,
+    "active_clusters": 30,
+    "cluster_size_min": 1,
+    "cluster_size_max": 5636,
+    "max_cluster_share": 0.5703876125898188,
+    "deterministic": true,
+    "elapsed_seconds": 20.16714596748352
+  },
+  "metrics": {
+    "section": {
+      "predicted_cluster_purity": 0.38791620281348044,
+      "inverse_label_purity": 0.7280639611375367,
+      "nmi": 0.21803450744326316
+    },
+    "class": {
+      "predicted_cluster_purity": 0.20473636271632425,
+      "inverse_label_purity": 0.7582228519380629,
+      "nmi": 0.21505055426738803
+    },
+    "subclass": {
+      "predicted_cluster_purity": 0.10555611780184192,
+      "inverse_label_purity": 0.812974395304119,
+      "nmi": 0.22654493543974602
+    }
+  },
+  "mean_nmi": 0.21987666571679906
+}
