@@ -1,0 +1,4 @@
+model,level,predicted_cluster_purity,inverse_label_purity,nmi
+PatentSBERTa-V2 + agglomerative clustering,section,0.402590830887562,0.5264649326991195,0.204721855278453
+PatentSBERTa-V2 + agglomerative clustering,class,0.2875215059204534,0.7052929865398239,0.3038467451840508
+PatentSBERTa-V2 + agglomerative clustering,subclass,0.15221131464426677,0.7684444894241473,0.30125792196135537

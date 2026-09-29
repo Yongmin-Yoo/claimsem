@@ -1,0 +1,71 @@
+{
+  "experiment": "additional_clustering_baselines",
+  "dataset": "USPTO-70k processed split",
+  "counts": {
+    "train": 49599,
+    "dev": 9855,
+    "test": 9881
+  },
+  "cpc_categories": {
+    "section": 9,
+    "class": 121,
+    "subclass": 466
+  },
+  "cluster_count": 30,
+  "clustering_seeds": [
+    17,
+    42,
+    73
+  ],
+  "tfidf": {
+    "fit_split": "train",
+    "max_features": 50000,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 5,
+    "max_df": 0.5,
+    "sublinear_tf": true
+  },
+  "lsa": {
+    "fit_split": "train",
+    "dimensions": 256,
+    "random_state": 42,
+    "explained_variance": 0.156835
+  },
+  "agglomerative": {
+    "clusters": 30,
+    "metric": "cosine",
+    "linkage": "average",
+    "deterministic": true
+  },
+  "expected_results": {
+    "tfidf_50k": {
+      "mean_nmi": 0.301134,
+      "section_nmi": 0.20889,
+      "class_nmi": 0.314162,
+      "subclass_nmi": 0.38035
+    },
+    "tfidf_lsa256": {
+      "mean_nmi": 0.303779,
+      "section_nmi": 0.212699,
+      "class_nmi": 0.317553,
+      "subclass_nmi": 0.381085
+    },
+    "patentsberta_agglomerative": {
+      "mean_nmi": 0.269942,
+      "section_nmi": 0.204722,
+      "class_nmi": 0.303847,
+      "subclass_nmi": 0.301258
+    },
+    "minilm_agglomerative": {
+      "mean_nmi": 0.219877,
+      "section_nmi": 0.218035,
+      "class_nmi": 0.215051,
+      "subclass_nmi": 0.226545
+    }
+  },
+  "raw_records_uploaded": false,
+  "claim_text_uploaded": false
+}
