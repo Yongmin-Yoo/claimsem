@@ -1,5 +1,7 @@
 method,mean_nmi,section_nmi,class_nmi,subclass_nmi
-TF-IDF + spherical K-means,0.301134,0.20889,0.314162,0.38035
+TF-IDF + spherical K-means,0.301134,0.208890,0.314162,0.380350
 TF-IDF + LSA-256 + spherical K-means,0.303779,0.212699,0.317553,0.381085
 PatentSBERTa-V2 + agglomerative,0.269942,0.204722,0.303847,0.301258
 MiniLM + agglomerative,0.219877,0.218035,0.215051,0.226545
+SCCL + spherical K-means,0.338877,0.236261,0.355564,0.424804
+LeBoT-style (Qwen3-0.6B),0.089246,0.070954,0.092042,0.104744

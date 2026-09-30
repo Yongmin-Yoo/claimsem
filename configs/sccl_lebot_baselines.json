@@ -1,0 +1,58 @@
+{
+  "experiment": "sccl_lebot_document_clustering",
+  "dataset": "USPTO-70k processed TEST split",
+  "n_documents": 9881,
+  "cpc_cardinality": {
+    "section": 9,
+    "class": 121,
+    "subclass": 466
+  },
+  "n_clusters": 30,
+  "clustering_seeds": [
+    17,
+    42,
+    73
+  ],
+  "input_policy": {
+    "claim_order": "numeric claim-ID order",
+    "maximum_tokens": 512,
+    "labels_used_during_training": false
+  },
+  "sccl": {
+    "encoder": "sentence-transformers/all-MiniLM-L6-v2",
+    "adaptation": "modern document-level SCCL adaptation",
+    "native_mean_nmi": 0.28221234445840054,
+    "spherical_mean_nmi": 0.33887651643604216,
+    "native_level_nmi": {
+      "class": 0.2948268573146923,
+      "section": 0.19796715158069908,
+      "subclass": 0.35384302447981025
+    },
+    "spherical_level_nmi": {
+      "class": 0.3555639510087346,
+      "section": 0.2362611277737449,
+      "subclass": 0.4248044705256471
+    }
+  },
+  "lebot": {
+    "name": "LeBoT-style L4 adaptation",
+    "llm": "Qwen/Qwen3-0.6B",
+    "retriever": "sentence-transformers/all-MiniLM-L6-v2",
+    "bot_dimension": 1024,
+    "maximum_refinement_iterations": 2,
+    "mean_nmi": 0.08924646034448487,
+    "level_nmi": {
+      "class": 0.092041658396812,
+      "section": 0.07095353428736534,
+      "subclass": 0.1047441883492773
+    },
+    "exact_original_reproduction": false
+  },
+  "publication_policy": {
+    "raw_patent_records_uploaded": false,
+    "claim_text_uploaded": false,
+    "token_cache_uploaded": false,
+    "training_checkpoints_uploaded": false,
+    "large_reproducibility_artifacts": "https://huggingface.co/datasets/yongminyoo91/roots-additional-clustering-baselines/tree/main/sccl_lebot"
+  }
+}

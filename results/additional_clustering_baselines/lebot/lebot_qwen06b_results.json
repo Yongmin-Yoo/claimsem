@@ -1,0 +1,91 @@
+{
+  "protocol": {
+    "method": "LeBoT scalable L4 adaptation",
+    "official_repository": "https://github.com/tom192180/BoT_vector",
+    "paper": "LLMs Enable Bag-of-Texts Representations for Short-Text Clustering",
+    "split": "test",
+    "transductive_unsupervised_inference": true,
+    "labels_used_during_representation_construction": false,
+    "n_documents": 9881,
+    "n_clusters": 30,
+    "input_policy": "All claims were tokenized in claim-ID order; short leading snippets from the 512-token document input were used in LLM prompts.",
+    "embedder": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "llm": "Qwen/Qwen3-0.6B",
+    "llm_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "bot_dimension": 1024,
+    "candidate_count": 30,
+    "dense_candidate_pool": 64,
+    "maximum_refinement_iterations": 2,
+    "convergence_threshold": 0.99,
+    "representative_selection": "MiniBatchKMeans medoids; scalable replacement for O(N^2) agglomerative representative selection",
+    "none_policy": "During fixed-dimensional initialization, NONE falls back to the nearest representative instead of creating a new dimension.",
+    "evaluation_seeds": [
+      17,
+      42,
+      73
+    ],
+    "raw_text_saved": false
+  },
+  "summary": {
+    "section": {
+      "predicted_cluster_purity": {
+        "mean": 0.33997908443814734,
+        "std": 0.0044193845676312096
+      },
+      "inverse_label_purity": {
+        "mean": 0.8854366966906184,
+        "std": 0.00867567700504056
+      },
+      "nmi": {
+        "mean": 0.07095353428736538,
+        "std": 0.0013967148763094088
+      }
+    },
+    "class": {
+      "predicted_cluster_purity": {
+        "mean": 0.17036062476807343,
+        "std": 0.0035993600292410664
+      },
+      "inverse_label_purity": {
+        "mean": 0.885672840130891,
+        "std": 0.00865177014755251
+      },
+      "nmi": {
+        "mean": 0.09204165839681204,
+        "std": 0.0008494748887637937
+      }
+    },
+    "subclass": {
+      "predicted_cluster_purity": {
+        "mean": 0.09577303241912087,
+        "std": 0.0019101153954582284
+      },
+      "inverse_label_purity": {
+        "mean": 0.8874270485443443,
+        "std": 0.008330919168324279
+      },
+      "nmi": {
+        "mean": 0.10474418834927735,
+        "std": 0.001552258190680402
+      }
+    }
+  },
+  "mean_nmi_by_seed": {
+    "17": 0.08955541805502086,
+    "42": 0.0891961055567811,
+    "73": 0.08898785742165279
+  },
+  "overall_mean_nmi": 0.08924646034448491,
+  "overall_population_std_nmi": 0.0002344254986426954,
+  "remaining_active_documents": 0,
+  "latex_row": "LeBoT (Qwen3-0.6B; L4 adaptation) & 0.3400 & 0.8854 & 0.0710 & 0.1704 & 0.8857 & 0.0920 & 0.0958 & 0.8874 & 0.1047 \\\\",
+  "files": {
+    "metrics_csv": "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering/results/lebot_qwen06b_metrics.csv",
+    "results_json": "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering/results/lebot_qwen06b_results.json",
+    "predictions": "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering/results/lebot_qwen06b_predictions.npz",
+    "bot_vectors": "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering/results/lebot_qwen06b_bot_vectors.npy",
+    "latex": "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering/results/lebot_qwen06b_row.tex",
+    "protocol": "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering/protocol.json"
+  }
+}

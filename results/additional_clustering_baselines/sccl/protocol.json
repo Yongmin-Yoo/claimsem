@@ -1,0 +1,30 @@
+{
+  "method": "SCCL modern faithful adaptation",
+  "official_repository": "https://github.com/amazon-science/sccl",
+  "split": "test",
+  "transductive_unsupervised_training": true,
+  "labels_used_during_training": false,
+  "n_documents": 9881,
+  "n_clusters": 30,
+  "input": "all claims concatenated in claim-ID order",
+  "maximum_tokens": 512,
+  "encoder": "sentence-transformers/all-MiniLM-L6-v2",
+  "encoder_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "raw_text_saved": false,
+  "tokenization": {
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "n_documents": 9881,
+    "max_length": 512,
+    "padding": "max_length",
+    "truncation": true,
+    "token_length_min": 90,
+    "token_length_mean_after_truncation": 501.45673514826433,
+    "token_length_median_after_truncation": 512.0,
+    "token_length_max": 512,
+    "documents_at_512_token_limit": 9055,
+    "fraction_at_512_token_limit": 0.9164052221435077,
+    "cache_reused": false,
+    "elapsed_seconds": 42.93321418762207
+  }
+}

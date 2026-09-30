@@ -26,5 +26,19 @@
     "section_nmi": 0.218035,
     "class_nmi": 0.215051,
     "subclass_nmi": 0.226545
+  },
+  {
+    "method": "SCCL + spherical K-means",
+    "mean_nmi": 0.33887651643604216,
+    "section_nmi": 0.2362611277737449,
+    "class_nmi": 0.3555639510087346,
+    "subclass_nmi": 0.4248044705256471
+  },
+  {
+    "method": "LeBoT-style (Qwen3-0.6B)",
+    "mean_nmi": 0.08924646034448487,
+    "section_nmi": 0.07095353428736534,
+    "class_nmi": 0.092041658396812,
+    "subclass_nmi": 0.1047441883492773
   }
 ]
