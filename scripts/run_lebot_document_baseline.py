@@ -1,922 +1,1000 @@
 # ruff: noqa
 # Auto-exported from the executed Google Colab experiment.
-# Requires the processed USPTO records in the paths documented below.
+# Raw patent data and credentials are not included.
 
 # ============================================================
-# Publish SCCL + LeBoT results to GitHub and Hugging Face
+# LeBoT – L4-optimized single-cell pipeline
+# Runs automatically after the preceding SCCL cell finishes.
+#
+# Pipeline:
+#   MiniLM embeddings → representative BoT initialization
+#   → Qwen3-0.6B similarity selection
+#   → two iterative BoT refinements
+#   → K-means (K=30, seeds 17/42/73)
+#   → CPC purity/NMI evaluation
+#   → checkpoint/results/LaTeX saving
+#
+# Official implementation:
+# https://github.com/tom192180/BoT_vector
 # ============================================================
 
 import os
-import re
 import sys
+import gc
 import json
-import shutil
-import hashlib
-import getpass
+import time
+import pickle
+import random
 import subprocess
 from pathlib import Path
+from collections import Counter
 
-import numpy as np
-import pandas as pd
-import requests
-
-# ------------------------------------------------------------
-# 1. Configuration
-# ------------------------------------------------------------
-GITHUB_OWNER = "Yongmin-Yoo"
-GITHUB_REPO = "claimsem"
-BRANCH = "experiments/sccl-lebot-baselines"
-COMMIT_MESSAGE = "Add SCCL and LeBoT-style clustering baselines"
-
-HF_REPO_ID = "yongminyoo91/roots-additional-clustering-baselines"
-HF_PATH_IN_REPO = "sccl_lebot"
-
-DRIVE_ROOT = Path("/content/drive/MyDrive/claimsem_artifacts")
-
-SCCL_ROOT = DRIVE_ROOT / "sccl_document_clustering"
-SCCL_RESULTS = SCCL_ROOT / "results"
-SCCL_PROTOCOL = SCCL_ROOT / "protocol.json"
-
-LEBOT_ROOT = DRIVE_ROOT / "lebot_document_clustering"
-LEBOT_RESULTS = LEBOT_ROOT / "results"
-LEBOT_PROTOCOL = LEBOT_ROOT / "protocol.json"
-
-REPO_DIR = Path("/content/claimsem-sccl-lebot-publication")
-HF_BUNDLE = Path("/content/sccl-lebot-hf-bundle")
-
-RESULT_ROOT_REL = Path("results/additional_clustering_baselines")
-GITHUB_RESULT_ROOT = REPO_DIR / RESULT_ROOT_REL
-GITHUB_SCCL_DIR = GITHUB_RESULT_ROOT / "sccl"
-GITHUB_LEBOT_DIR = GITHUB_RESULT_ROOT / "lebot"
-SCRIPT_DIR = REPO_DIR / "scripts"
-CONFIG_DIR = REPO_DIR / "configs"
-DOC_DIR = REPO_DIR / "docs"
-TEST_DIR = REPO_DIR / "tests"
-
-EXPECTED = {
-    "sccl_native": 0.282212,
-    "sccl_spherical": 0.338877,
-    "lebot_qwen06b": 0.089246,
-}
-
-# GitHub에는 소형·텍스트 결과만 저장합니다.
-GITHUB_EXTENSIONS = {".csv", ".json", ".tex"}
-
-# Hugging Face에는 재현용 예측·표현도 포함합니다.
-HF_EXTENSIONS = {".csv", ".json", ".tex", ".npz", ".npy"}
-
-# 원문 또는 대형 체크포인트 관련 파일은 제외합니다.
-BLOCKED_NAME_PARTS = {
-    "checkpoint",
-    "input_ids",
-    "attention_mask",
-    "patent_snippets",
-    "records.pkl",
-    "train_records",
-    "dev_records",
-    "test_records",
-}
-
+os.environ["HF_HUB_DISABLE_XET"] = "1"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # ------------------------------------------------------------
-# 2. Helpers
+# 0. Install/verify packages
 # ------------------------------------------------------------
-def run(command, cwd=None, env=None, capture=False):
-    print("$", " ".join(map(str, command)))
-    result = subprocess.run(
-        list(map(str, command)),
-        cwd=cwd,
-        env=env,
-        text=True,
-        capture_output=capture,
-    )
-    if capture:
-        if result.stdout:
-            print(result.stdout)
-        if result.stderr and result.returncode != 0:
-            print(result.stderr)
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"Command failed with exit code {result.returncode}: "
-            + " ".join(map(str, command))
-        )
-    return result
-
-
-def sha256(path):
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
-
-
-def is_blocked(path):
-    lowered = path.as_posix().lower()
-    return any(part in lowered for part in BLOCKED_NAME_PARTS)
-
-
-def copy_selected(source_dir, destination_dir, extensions, max_bytes=None):
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    copied = []
-
-    for source in sorted(source_dir.rglob("*")):
-        if not source.is_file():
-            continue
-        if source.suffix.lower() not in extensions:
-            continue
-        if is_blocked(source):
-            continue
-        if max_bytes is not None and source.stat().st_size > max_bytes:
-            continue
-
-        relative = source.relative_to(source_dir)
-        destination = destination_dir / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, destination)
-        copied.append(destination)
-
-    return copied
-
-
-def mean_nmi_from_csv(path):
-    frame = pd.read_csv(path)
-    required = {"level", "nmi"}
-    assert required.issubset(frame.columns), (
-        f"Missing columns in {path}: {required - set(frame.columns)}"
-    )
-
-    level_means = frame.groupby("level")["nmi"].mean()
-    return float(level_means.mean()), {
-        str(level): float(value) for level, value in level_means.items()
-    }
-
-
-def find_result_file(root, exact_name):
-    matches = list(root.rglob(exact_name))
-    assert len(matches) == 1, (
-        f"Expected exactly one {exact_name} under {root}, found {matches}"
-    )
-    return matches[0]
-
-
-def normalize_text_files(root):
-    text_extensions = {
-        ".py",
-        ".json",
-        ".csv",
-        ".tex",
-        ".md",
-        ".txt",
-        ".sha256",
-        ".yml",
-        ".yaml",
-    }
-
-    for path in root.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in text_extensions:
-            continue
-
-        data = path.read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
-
-        # Remove trailing spaces without modifying intentional blank lines.
-        lines = [line.rstrip(b" \t") for line in data.split(b"\n")]
-        normalized = b"\n".join(lines)
-        if normalized and not normalized.endswith(b"\n"):
-            normalized += b"\n"
-        path.write_bytes(normalized)
-
-
-def check_for_secrets(root):
-    token_patterns = [
-        re.compile(rb"hf_[A-Za-z0-9]{20,}"),
-        re.compile(rb"ghp_[A-Za-z0-9]{20,}"),
-        re.compile(rb"github_pat_[A-Za-z0-9_]{20,}"),
-    ]
-
-    violations = []
-
-    for path in root.rglob("*"):
-        if not path.is_file():
-            continue
-        if path.stat().st_size > 10 * 1024 * 1024:
-            continue
-
-        try:
-            data = path.read_bytes()
-        except OSError:
-            continue
-
-        if any(pattern.search(data) for pattern in token_patterns):
-            violations.append(str(path))
-
-    assert not violations, f"Possible tokens found: {violations}"
-
-
-def write_checksums(root, output_name="checksums.sha256"):
-    output = root / output_name
-    lines = []
-
-    for path in sorted(root.rglob("*")):
-        if not path.is_file() or path == output:
-            continue
-        relative = path.relative_to(root).as_posix()
-        lines.append(f"{sha256(path)}  {relative}")
-
-    output.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return output
-
-
-# ------------------------------------------------------------
-# 3. Verify source artifacts
-# ------------------------------------------------------------
-required_files = [
-    SCCL_RESULTS / "sccl_native_metrics.csv",
-    SCCL_RESULTS / "sccl_spherical_metrics.csv",
-    SCCL_RESULTS / "sccl_results.json",
-    SCCL_RESULTS / "sccl_rows.tex",
-    SCCL_PROTOCOL,
-    LEBOT_RESULTS / "lebot_qwen06b_metrics.csv",
-    LEBOT_RESULTS / "lebot_qwen06b_results.json",
-    LEBOT_RESULTS / "lebot_qwen06b_predictions.npz",
-    LEBOT_RESULTS / "lebot_qwen06b_bot_vectors.npy",
-    LEBOT_RESULTS / "lebot_qwen06b_row.tex",
-    LEBOT_PROTOCOL,
-]
-
-missing = [str(path) for path in required_files if not path.exists()]
-assert not missing, "Missing source artifacts:\n" + "\n".join(missing)
-
-native_mean, native_levels = mean_nmi_from_csv(SCCL_RESULTS / "sccl_native_metrics.csv")
-spherical_mean, spherical_levels = mean_nmi_from_csv(
-    SCCL_RESULTS / "sccl_spherical_metrics.csv"
-)
-lebot_mean, lebot_levels = mean_nmi_from_csv(
-    LEBOT_RESULTS / "lebot_qwen06b_metrics.csv"
-)
-
-assert abs(native_mean - EXPECTED["sccl_native"]) < 5e-5, native_mean
-assert abs(spherical_mean - EXPECTED["sccl_spherical"]) < 5e-5, spherical_mean
-assert abs(lebot_mean - EXPECTED["lebot_qwen06b"]) < 5e-5, lebot_mean
-
-print("\nVerified mean NMI:")
-print(f"  SCCL native:    {native_mean:.6f}")
-print(f"  SCCL spherical: {spherical_mean:.6f}")
-print(f"  LeBoT-style:    {lebot_mean:.6f}")
-
-# ------------------------------------------------------------
-# 4. Recover executed notebook code from Colab history
-# ------------------------------------------------------------
-history = list(get_ipython().user_ns.get("In", []))
-
-
-def find_history_cell(marker):
-    candidates = [
-        source for source in history if isinstance(source, str) and marker in source
-    ]
-    return candidates[-1] if candidates else None
-
-
-source_cells = {
-    "prepare_sccl_corpus.py": find_history_cell("SCCL test corpus prepared"),
-    "tokenize_sccl_inputs.py": find_history_cell("SCCL token cache prepared"),
-    "run_sccl_document_baseline.py": find_history_cell("FINAL SCCL RESULTS"),
-    "run_lebot_document_baseline.py": find_history_cell("FINAL LEBOT RESULTS"),
-}
-
-assert source_cells["run_sccl_document_baseline.py"], (
-    "SCCL 실행 셀을 Colab 입력 기록에서 찾지 못했습니다."
-)
-assert source_cells["run_lebot_document_baseline.py"], (
-    "LeBoT 실행 셀을 Colab 입력 기록에서 찾지 못했습니다."
-)
-
-# ------------------------------------------------------------
-# 5. Clone current main and create publication branch
-# ------------------------------------------------------------
-if REPO_DIR.exists():
-    shutil.rmtree(REPO_DIR)
-
-run(
-    [
-        "git",
-        "clone",
-        f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}.git",
-        str(REPO_DIR),
-    ]
-)
-run(["git", "checkout", "-b", BRANCH], cwd=REPO_DIR)
-
-main_sha = run(
-    ["git", "rev-parse", "HEAD"],
-    cwd=REPO_DIR,
-    capture=True,
-).stdout.strip()
-
-print("Base main SHA:", main_sha)
-
-for directory in (
-    GITHUB_SCCL_DIR,
-    GITHUB_LEBOT_DIR,
-    SCRIPT_DIR,
-    CONFIG_DIR,
-    DOC_DIR,
-    TEST_DIR,
-):
-    directory.mkdir(parents=True, exist_ok=True)
-
-# ------------------------------------------------------------
-# 6. Copy small GitHub result artifacts
-# ------------------------------------------------------------
-github_sccl_files = copy_selected(
-    SCCL_RESULTS,
-    GITHUB_SCCL_DIR,
-    GITHUB_EXTENSIONS,
-    max_bytes=5 * 1024 * 1024,
-)
-github_lebot_files = copy_selected(
-    LEBOT_RESULTS,
-    GITHUB_LEBOT_DIR,
-    GITHUB_EXTENSIONS,
-    max_bytes=5 * 1024 * 1024,
-)
-
-shutil.copy2(SCCL_PROTOCOL, GITHUB_SCCL_DIR / "protocol.json")
-shutil.copy2(LEBOT_PROTOCOL, GITHUB_LEBOT_DIR / "protocol.json")
-
-# ------------------------------------------------------------
-# 7. Save notebook source snapshots
-# ------------------------------------------------------------
-for filename, source in source_cells.items():
-    if not source:
-        continue
-
-    output = SCRIPT_DIR / filename
-    output.write_text(
-        "# ruff: noqa\n"
-        "# Auto-exported from the executed Google Colab experiment.\n"
-        "# Requires the processed USPTO records in the paths documented below.\n\n"
-        + source.strip()
-        + "\n",
-        encoding="utf-8",
-    )
-
-# ------------------------------------------------------------
-# 8. Write configuration
-# ------------------------------------------------------------
-config = {
-    "experiment": "sccl_lebot_document_clustering",
-    "dataset": "USPTO-70k processed TEST split",
-    "n_documents": 9881,
-    "cpc_cardinality": {
-        "section": 9,
-        "class": 121,
-        "subclass": 466,
-    },
-    "n_clusters": 30,
-    "clustering_seeds": [17, 42, 73],
-    "input_policy": {
-        "claim_order": "numeric claim-ID order",
-        "maximum_tokens": 512,
-        "labels_used_during_training": False,
-    },
-    "sccl": {
-        "encoder": "sentence-transformers/all-MiniLM-L6-v2",
-        "adaptation": "modern document-level SCCL adaptation",
-        "native_mean_nmi": native_mean,
-        "spherical_mean_nmi": spherical_mean,
-        "native_level_nmi": native_levels,
-        "spherical_level_nmi": spherical_levels,
-    },
-    "lebot": {
-        "name": "LeBoT-style L4 adaptation",
-        "llm": "Qwen/Qwen3-0.6B",
-        "retriever": "sentence-transformers/all-MiniLM-L6-v2",
-        "bot_dimension": 1024,
-        "maximum_refinement_iterations": 2,
-        "mean_nmi": lebot_mean,
-        "level_nmi": lebot_levels,
-        "exact_original_reproduction": False,
-    },
-    "publication_policy": {
-        "raw_patent_records_uploaded": False,
-        "claim_text_uploaded": False,
-        "token_cache_uploaded": False,
-        "training_checkpoints_uploaded": False,
-        "large_reproducibility_artifacts": (
-            f"https://huggingface.co/datasets/{HF_REPO_ID}/tree/main/{HF_PATH_IN_REPO}"
-        ),
-    },
-}
-
-(CONFIG_DIR / "sccl_lebot_baselines.json").write_text(
-    json.dumps(config, indent=2) + "\n",
-    encoding="utf-8",
-)
-
-# ------------------------------------------------------------
-# 9. Write concise documentation
-# ------------------------------------------------------------
-documentation = f"""# SCCL and LeBoT-style clustering baselines
-
-This experiment evaluates document-level adaptations of SCCL and LeBoT on
-the fixed USPTO-70k TEST split containing 9,881 patents.
-
-## Results
-
-| Method | Mean TEST NMI |
-|---|---:|
-| SCCL native clustering head | {native_mean:.6f} |
-| SCCL representations + spherical K-means | {spherical_mean:.6f} |
-| LeBoT-style (Qwen3-0.6B) | {lebot_mean:.6f} |
-
-The main paper reports SCCL representations with spherical K-means because
-this produces exactly 30 clusters under the matched clustering protocol.
-The native SCCL result is retained for completeness.
-
-The LeBoT-style experiment is an L4-efficient patent adaptation using
-Qwen3-0.6B, 512-token truncation, MiniLM retrieval, and a 1,024-dimensional
-bag-of-texts representation. It is not an exact reproduction of the
-Gemma-2-9B configuration in the original paper.
-
-## Data policy
-
-Raw USPTO records, patent claim text, token caches, and training checkpoints
-are not redistributed. Large prediction and representation artifacts are
-stored in the associated Hugging Face dataset:
-
-https://huggingface.co/datasets/{HF_REPO_ID}/tree/main/{HF_PATH_IN_REPO}
-"""
-
-(DOC_DIR / "sccl_lebot_baselines.md").write_text(
-    documentation,
-    encoding="utf-8",
-)
-
-# ------------------------------------------------------------
-# 10. Update additional-baseline summaries
-# ------------------------------------------------------------
-summary_csv = GITHUB_RESULT_ROOT / "summary.csv"
-
-if summary_csv.exists():
-    summary_frame = pd.read_csv(summary_csv)
-else:
-    summary_frame = pd.DataFrame(
-        columns=[
-            "method",
-            "mean_nmi",
-            "section_nmi",
-            "class_nmi",
-            "subclass_nmi",
-        ]
-    )
-
-new_rows = pd.DataFrame(
-    [
-        {
-            "method": "SCCL + spherical K-means",
-            "mean_nmi": spherical_mean,
-            "section_nmi": spherical_levels["section"],
-            "class_nmi": spherical_levels["class"],
-            "subclass_nmi": spherical_levels["subclass"],
-        },
-        {
-            "method": "LeBoT-style (Qwen3-0.6B)",
-            "mean_nmi": lebot_mean,
-            "section_nmi": lebot_levels["section"],
-            "class_nmi": lebot_levels["class"],
-            "subclass_nmi": lebot_levels["subclass"],
-        },
-    ]
-)
-
-replace_methods = set(new_rows["method"])
-summary_frame = summary_frame[~summary_frame["method"].isin(replace_methods)]
-summary_frame = pd.concat(
-    [summary_frame, new_rows],
-    ignore_index=True,
-)
-
-summary_frame.to_csv(
-    summary_csv,
-    index=False,
-    lineterminator="\n",
-    float_format="%.6f",
-)
-
-summary_json = GITHUB_RESULT_ROOT / "summary.json"
-summary_json.write_text(
-    json.dumps(
-        summary_frame.to_dict(orient="records"),
-        indent=2,
-    )
-    + "\n",
-    encoding="utf-8",
-)
-
-# ------------------------------------------------------------
-# 11. Add automated result test
-# ------------------------------------------------------------
-test_source = f"""from pathlib import Path
-
-import pandas as pd
-
-
-ROOT = Path("results/additional_clustering_baselines")
-
-
-def read_mean_nmi(path: Path) -> float:
-    frame = pd.read_csv(path)
-    return float(frame.groupby("level")["nmi"].mean().mean())
-
-
-def test_sccl_and_lebot_results():
-    expected = {{
-        ROOT / "sccl/sccl_native_metrics.csv": {native_mean:.9f},
-        ROOT / "sccl/sccl_spherical_metrics.csv": {spherical_mean:.9f},
-        ROOT / "lebot/lebot_qwen06b_metrics.csv": {lebot_mean:.9f},
-    }}
-
-    for path, expected_value in expected.items():
-        assert path.exists(), path
-        observed = read_mean_nmi(path)
-        assert abs(observed - expected_value) < 1e-7
-"""
-
-(TEST_DIR / "test_sccl_lebot_baselines.py").write_text(
-    test_source,
-    encoding="utf-8",
-)
-
-# ------------------------------------------------------------
-# 12. Recompute GitHub result checksums
-# ------------------------------------------------------------
-write_checksums(GITHUB_RESULT_ROOT)
-
-normalize_text_files(REPO_DIR)
-check_for_secrets(REPO_DIR)
-
-# ------------------------------------------------------------
-# 13. Run local CI exactly before publication
-# ------------------------------------------------------------
-run(
-    [sys.executable, "-m", "pip", "install", "-q", "-e", ".[dev]"],
-    cwd=REPO_DIR,
-)
-
-# Format exported source files.
-run(
-    [sys.executable, "-m", "ruff", "format", "scripts"],
-    cwd=REPO_DIR,
-)
-run(
-    [sys.executable, "-m", "ruff", "check", "--fix", "."],
-    cwd=REPO_DIR,
-)
-run(
-    [sys.executable, "-m", "ruff", "format", "--check", "."],
-    cwd=REPO_DIR,
-)
-run(
-    [sys.executable, "-m", "pytest", "-q"],
-    cwd=REPO_DIR,
-)
-
-normalize_text_files(REPO_DIR)
-write_checksums(GITHUB_RESULT_ROOT)
-normalize_text_files(REPO_DIR)
-check_for_secrets(REPO_DIR)
-
-print("\nSUCCESS: local Ruff and pytest checks passed.")
-
-# ------------------------------------------------------------
-# 14. Build Hugging Face bundle
-# ------------------------------------------------------------
-if HF_BUNDLE.exists():
-    shutil.rmtree(HF_BUNDLE)
-
-(HF_BUNDLE / "results/sccl").mkdir(parents=True)
-(HF_BUNDLE / "results/lebot").mkdir(parents=True)
-(HF_BUNDLE / "code").mkdir(parents=True)
-(HF_BUNDLE / "config").mkdir(parents=True)
-
-hf_sccl_files = copy_selected(
-    SCCL_RESULTS,
-    HF_BUNDLE / "results/sccl",
-    HF_EXTENSIONS,
-)
-hf_lebot_files = copy_selected(
-    LEBOT_RESULTS,
-    HF_BUNDLE / "results/lebot",
-    HF_EXTENSIONS,
-)
-
-shutil.copy2(
-    SCCL_PROTOCOL,
-    HF_BUNDLE / "results/sccl/protocol.json",
-)
-shutil.copy2(
-    LEBOT_PROTOCOL,
-    HF_BUNDLE / "results/lebot/protocol.json",
-)
-shutil.copy2(
-    CONFIG_DIR / "sccl_lebot_baselines.json",
-    HF_BUNDLE / "config/sccl_lebot_baselines.json",
-)
-
-for source in sorted(SCRIPT_DIR.glob("*sccl*.py")):
-    shutil.copy2(source, HF_BUNDLE / "code" / source.name)
-
-for source in sorted(SCRIPT_DIR.glob("*lebot*.py")):
-    shutil.copy2(source, HF_BUNDLE / "code" / source.name)
-
-hf_readme = f"""# SCCL and LeBoT-style USPTO clustering artifacts
-
-This directory contains result files and reproducibility artifacts for the
-SCCL and LeBoT-style patent clustering baselines.
-
-- SCCL spherical mean NMI: {spherical_mean:.6f}
-- SCCL native mean NMI: {native_mean:.6f}
-- LeBoT-style mean NMI: {lebot_mean:.6f}
-
-The LeBoT-style result uses Qwen3-0.6B and is not an exact reproduction of
-the original Gemma-2-9B setting.
-
-Raw patent records, claim text, token caches, and checkpoints are excluded.
-"""
-
-(HF_BUNDLE / "README.md").write_text(
-    hf_readme,
-    encoding="utf-8",
-)
-
-normalize_text_files(HF_BUNDLE)
-write_checksums(HF_BUNDLE)
-check_for_secrets(HF_BUNDLE)
-
-print("\nHugging Face bundle files:")
-for path in sorted(HF_BUNDLE.rglob("*")):
-    if path.is_file():
-        print(f"  {path.relative_to(HF_BUNDLE)} ({path.stat().st_size / 2**20:.2f} MB)")
-
-# ------------------------------------------------------------
-# 15. Upload to Hugging Face
-# ------------------------------------------------------------
-run(
+subprocess.run(
     [
         sys.executable,
         "-m",
         "pip",
         "install",
         "-q",
-        "huggingface_hub>=0.36.0",
-    ]
-)
-
-from huggingface_hub import HfApi
-
-hf_token = getpass.getpass("Hugging Face token (hidden): ").strip()
-assert hf_token, "Hugging Face token is required."
-
-hf_api = HfApi(token=hf_token)
-hf_api.create_repo(
-    repo_id=HF_REPO_ID,
-    repo_type="dataset",
-    private=True,
-    exist_ok=True,
-)
-
-hf_commit = hf_api.upload_folder(
-    repo_id=HF_REPO_ID,
-    repo_type="dataset",
-    folder_path=str(HF_BUNDLE),
-    path_in_repo=HF_PATH_IN_REPO,
-    commit_message="Add SCCL and LeBoT-style clustering artifacts",
-)
-
-hf_files = hf_api.list_repo_files(
-    repo_id=HF_REPO_ID,
-    repo_type="dataset",
-)
-
-required_hf_paths = [
-    f"{HF_PATH_IN_REPO}/results/sccl/sccl_spherical_metrics.csv",
-    f"{HF_PATH_IN_REPO}/results/lebot/lebot_qwen06b_metrics.csv",
-    f"{HF_PATH_IN_REPO}/results/lebot/lebot_qwen06b_predictions.npz",
-    f"{HF_PATH_IN_REPO}/results/lebot/lebot_qwen06b_bot_vectors.npy",
-    f"{HF_PATH_IN_REPO}/checksums.sha256",
-]
-
-for required_path in required_hf_paths:
-    assert required_path in hf_files, f"Missing from HF: {required_path}"
-
-print("SUCCESS: Hugging Face synchronization completed.")
-
-# Remove token from memory as soon as possible.
-del hf_token
-
-# ------------------------------------------------------------
-# 16. Stage, verify and commit GitHub files
-# ------------------------------------------------------------
-normalize_text_files(REPO_DIR)
-write_checksums(GITHUB_RESULT_ROOT)
-normalize_text_files(REPO_DIR)
-
-run(["git", "config", "user.name", "Yongmin Yoo"], cwd=REPO_DIR)
-run(
-    [
-        "git",
-        "config",
-        "user.email",
-        "59948809+Yongmin-Yoo@users.noreply.github.com",
+        "transformers==4.57.1",
+        "accelerate>=1.10.0",
+        "scikit-learn>=1.7.0",
+        "pandas>=2.2",
+        "tqdm>=4.66",
+        "safetensors>=0.4.5",
     ],
-    cwd=REPO_DIR,
+    check=True,
 )
 
-run(
-    [
-        "git",
-        "add",
-        "configs/sccl_lebot_baselines.json",
-        "docs/sccl_lebot_baselines.md",
-        "results/additional_clustering_baselines",
-        "scripts",
-        "tests/test_sccl_lebot_baselines.py",
-    ],
-    cwd=REPO_DIR,
-)
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn.functional as F
 
-diff_check = subprocess.run(
-    ["git", "diff", "--cached", "--check"],
-    cwd=REPO_DIR,
-    text=True,
-    capture_output=True,
-)
-print(diff_check.stdout)
-print(diff_check.stderr)
-assert diff_check.returncode == 0, "git diff --cached --check failed"
+from tqdm.auto import tqdm
+from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
+from sklearn.cluster import MiniBatchKMeans, KMeans
+from sklearn.metrics import normalized_mutual_info_score
+from sklearn.preprocessing import normalize
 
-staged = run(
-    ["git", "diff", "--cached", "--name-only"],
-    cwd=REPO_DIR,
-    capture=True,
-).stdout.strip()
+assert torch.cuda.is_available(), "GPU가 없습니다. Colab L4 GPU를 선택하세요."
+DEVICE = torch.device("cuda")
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
 
-assert staged, "No staged files found."
-print("Staged files:\n", staged)
+print("=" * 80)
+print("LEBOT L4 PIPELINE")
+print("=" * 80)
+print("GPU:", torch.cuda.get_device_name(0))
+print("PyTorch:", torch.__version__)
 
-run(
-    ["git", "commit", "-m", COMMIT_MESSAGE],
-    cwd=REPO_DIR,
-)
+# Release SCCL model memory while preserving ordinary variables.
+for _name in list(globals()):
+    try:
+        _obj = globals()[_name]
+        if isinstance(_obj, torch.nn.Module):
+            del globals()[_name]
+    except Exception:
+        pass
 
-commit_sha = run(
-    ["git", "rev-parse", "HEAD"],
-    cwd=REPO_DIR,
-    capture=True,
-).stdout.strip()
+gc.collect()
+torch.cuda.empty_cache()
 
 # ------------------------------------------------------------
-# 17. Push branch securely
+# 1. Configuration
 # ------------------------------------------------------------
-github_token = getpass.getpass("GitHub token (hidden): ").strip()
-assert github_token, "GitHub token is required."
+N_DOCUMENTS = 9_881
+N_CLUSTERS = 30
+CLUSTER_SEEDS = [17, 42, 73]
+GLOBAL_SEED = 42
 
-askpass_path = Path("/tmp/claimsem_git_askpass.sh")
-askpass_path.write_text(
-    "#!/bin/sh\n"
-    'case "$1" in\n'
-    '  *Username*) echo "x-access-token" ;;\n'
-    '  *Password*) echo "$GITHUB_TOKEN" ;;\n'
-    "esac\n",
-    encoding="utf-8",
+EMBEDDER_ID = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDER_REVISION = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+
+LLM_ID = "Qwen/Qwen3-0.6B"
+LLM_REVISION = "c1899de289a04d12100db370d81485cdf75e47ca"
+
+BOT_DIM = 1_024
+CANDIDATE_COUNT = 30
+DENSE_POOL_SIZE = 64
+MAX_REFINEMENT_ITERS = 2
+CONVERGENCE_THRESHOLD = 0.99
+
+EMBED_BATCH_SIZE = 256
+LLM_BATCH_SIZE = 24
+MAX_PROMPT_TOKENS = 1_536
+MAX_NEW_TOKENS = 24
+CHECKPOINT_EVERY_BATCHES = 20
+
+TEST_RECORDS_PATH = Path(
+    "/content/drive/MyDrive/depth_ot_patent/data/processed/test_records.pkl"
 )
-askpass_path.chmod(0o700)
-
-push_env = os.environ.copy()
-push_env["GIT_ASKPASS"] = str(askpass_path)
-push_env["GIT_TERMINAL_PROMPT"] = "0"
-push_env["GITHUB_TOKEN"] = github_token
-
-run(
-    ["git", "push", "-u", "origin", BRANCH],
-    cwd=REPO_DIR,
-    env=push_env,
+SCCL_CACHE_DIR = Path(
+    "/content/drive/MyDrive/claimsem_artifacts/sccl_document_clustering/cache"
 )
+INPUT_IDS_PATH = SCCL_CACHE_DIR / "sccl_input_ids_512.npy"
+ATTENTION_MASK_PATH = SCCL_CACHE_DIR / "sccl_attention_mask_512.npy"
 
-remote_sha = run(
-    ["git", "ls-remote", "origin", f"refs/heads/{BRANCH}"],
-    cwd=REPO_DIR,
-    capture=True,
-).stdout.split()[0]
-
-assert remote_sha == commit_sha, (
-    f"Remote SHA mismatch: local={commit_sha}, remote={remote_sha}"
+OUTPUT_ROOT = Path(
+    "/content/drive/MyDrive/claimsem_artifacts/lebot_document_clustering"
 )
+CACHE_DIR = OUTPUT_ROOT / "cache"
+CHECKPOINT_DIR = OUTPUT_ROOT / "checkpoints"
+RESULT_DIR = OUTPUT_ROOT / "results"
+
+for directory in (OUTPUT_ROOT, CACHE_DIR, CHECKPOINT_DIR, RESULT_DIR):
+    directory.mkdir(parents=True, exist_ok=True)
+
+EMBEDDING_PATH = CACHE_DIR / "minilm_embeddings.npy"
+SNIPPET_PATH = CACHE_DIR / "patent_snippets.json"
+REPRESENTATIVE_PATH = CACHE_DIR / "representative_indices.npy"
+INITIAL_CANDIDATES_PATH = CACHE_DIR / "initial_representative_candidates.npy"
+DENSE_NEIGHBORS_PATH = CACHE_DIR / "dense_neighbors.npy"
+
+INITIAL_BOT_PATH = CHECKPOINT_DIR / "initial_bot.npy"
+INITIAL_STATE_PATH = CHECKPOINT_DIR / "initial_state.json"
+ACTIVE_PATH = CHECKPOINT_DIR / "active_mask.npy"
+
+RESULT_CSV = RESULT_DIR / "lebot_qwen06b_metrics.csv"
+RESULT_JSON = RESULT_DIR / "lebot_qwen06b_results.json"
+PREDICTIONS_PATH = RESULT_DIR / "lebot_qwen06b_predictions.npz"
+LATEX_PATH = RESULT_DIR / "lebot_qwen06b_row.tex"
+PROTOCOL_PATH = OUTPUT_ROOT / "protocol.json"
+
+random.seed(GLOBAL_SEED)
+np.random.seed(GLOBAL_SEED)
+torch.manual_seed(GLOBAL_SEED)
+torch.cuda.manual_seed_all(GLOBAL_SEED)
 
 # ------------------------------------------------------------
-# 18. Create or find draft PR
+# 2. Load records, labels and SCCL token cache
 # ------------------------------------------------------------
-headers = {
-    "Authorization": f"Bearer {github_token}",
-    "Accept": "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
+assert TEST_RECORDS_PATH.exists(), TEST_RECORDS_PATH
+assert INPUT_IDS_PATH.exists(), INPUT_IDS_PATH
+assert ATTENTION_MASK_PATH.exists(), ATTENTION_MASK_PATH
+
+with TEST_RECORDS_PATH.open("rb") as f:
+    test_records = pickle.load(f)
+
+assert len(test_records) == N_DOCUMENTS
+
+patent_ids = np.asarray(
+    [str(record["patent_id"]) for record in test_records],
+    dtype=str,
+)
+labels = {
+    "section": np.asarray(
+        [str(record["section"]) for record in test_records], dtype=str
+    ),
+    "class": np.asarray([str(record["class"]) for record in test_records], dtype=str),
+    "subclass": np.asarray(
+        [str(record["subclass"]) for record in test_records], dtype=str
+    ),
 }
 
-pr_api = f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}/pulls"
+input_ids = np.load(INPUT_IDS_PATH, mmap_mode="r")
+attention_mask = np.load(ATTENTION_MASK_PATH, mmap_mode="r")
 
-existing_response = requests.get(
-    pr_api,
-    headers=headers,
-    params={
-        "state": "open",
-        "head": f"{GITHUB_OWNER}:{BRANCH}",
-    },
-    timeout=60,
+assert input_ids.shape == (N_DOCUMENTS, 512)
+assert attention_mask.shape == (N_DOCUMENTS, 512)
+
+print("\nRecords:", len(test_records))
+print(
+    "CPC categories:",
+    len(np.unique(labels["section"])),
+    len(np.unique(labels["class"])),
+    len(np.unique(labels["subclass"])),
 )
-existing_response.raise_for_status()
-existing_prs = existing_response.json()
 
-pr_body = f"""## Summary
+# ------------------------------------------------------------
+# 3. Create short prompt snippets
+# ------------------------------------------------------------
+embed_tokenizer = AutoTokenizer.from_pretrained(
+    EMBEDDER_ID,
+    revision=EMBEDDER_REVISION,
+    use_fast=True,
+)
 
-- adds the SCCL native-head and spherical K-means results;
-- adds the Qwen3-0.6B LeBoT-style patent adaptation;
-- records protocols, metrics, LaTeX rows, checksums, and regression tests;
-- stores large predictions and representations on Hugging Face.
-
-## Mean TEST NMI
-
-- SCCL native head: {native_mean:.6f}
-- SCCL + spherical K-means: {spherical_mean:.6f}
-- LeBoT-style (Qwen3-0.6B): {lebot_mean:.6f}
-
-## Artifacts
-
-https://huggingface.co/datasets/{HF_REPO_ID}/tree/main/{HF_PATH_IN_REPO}
-
-Raw USPTO records, claim text, token caches, and training checkpoints are
-not redistributed.
-"""
-
-if existing_prs:
-    pr = existing_prs[0]
+if SNIPPET_PATH.exists():
+    snippets = json.loads(SNIPPET_PATH.read_text(encoding="utf-8"))
+    assert len(snippets) == N_DOCUMENTS
+    print("Reused snippets:", SNIPPET_PATH)
 else:
-    create_response = requests.post(
-        pr_api,
-        headers=headers,
-        json={
-            "title": "Add SCCL and LeBoT-style clustering baselines",
-            "head": BRANCH,
-            "base": "main",
-            "body": pr_body,
-            "draft": True,
-        },
-        timeout=60,
+    snippets = []
+    for start in tqdm(
+        range(0, N_DOCUMENTS, 512),
+        desc="Decoding patent snippets",
+    ):
+        end = min(start + 512, N_DOCUMENTS)
+
+        # Approximately the beginning of the first independent claim.
+        short_ids = []
+        for row, mask in zip(
+            input_ids[start:end],
+            attention_mask[start:end],
+        ):
+            valid = row[np.asarray(mask).astype(bool)]
+            short_ids.append(valid[:96].tolist())
+
+        decoded = embed_tokenizer.batch_decode(
+            short_ids,
+            skip_special_tokens=True,
+            clean_up_tokenization_spaces=True,
+        )
+        snippets.extend([" ".join(text.split()) for text in decoded])
+
+    SNIPPET_PATH.write_text(
+        json.dumps(snippets, ensure_ascii=False),
+        encoding="utf-8",
     )
-    create_response.raise_for_status()
-    pr = create_response.json()
+    print("Saved snippets:", SNIPPET_PATH)
 
-assert pr["head"]["sha"] == commit_sha, (
-    f"PR head mismatch: {pr['head']['sha']} != {commit_sha}"
+assert len(snippets) == N_DOCUMENTS
+assert all(snippets)
+
+# ------------------------------------------------------------
+# 4. Generate or load frozen MiniLM embeddings
+# ------------------------------------------------------------
+if EMBEDDING_PATH.exists():
+    embeddings = np.load(EMBEDDING_PATH)
+    assert embeddings.shape == (N_DOCUMENTS, 384)
+    embeddings = normalize(embeddings.astype(np.float32), axis=1)
+    print("Reused MiniLM embeddings:", EMBEDDING_PATH)
+else:
+    print("\nLoading MiniLM encoder...")
+    encoder = AutoModel.from_pretrained(
+        EMBEDDER_ID,
+        revision=EMBEDDER_REVISION,
+        torch_dtype=torch.bfloat16,
+    ).to(DEVICE)
+    encoder.eval()
+
+    all_embeddings = []
+
+    with torch.inference_mode():
+        for start in tqdm(
+            range(0, N_DOCUMENTS, EMBED_BATCH_SIZE),
+            desc="MiniLM encoding",
+        ):
+            end = min(start + EMBED_BATCH_SIZE, N_DOCUMENTS)
+
+            ids = torch.as_tensor(
+                np.asarray(input_ids[start:end], dtype=np.int64),
+                device=DEVICE,
+            )
+            mask = torch.as_tensor(
+                np.asarray(attention_mask[start:end], dtype=np.int64),
+                device=DEVICE,
+            )
+
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                hidden = encoder(
+                    input_ids=ids,
+                    attention_mask=mask,
+                    return_dict=True,
+                ).last_hidden_state
+
+                expanded_mask = mask.unsqueeze(-1).to(hidden.dtype)
+                pooled = (hidden * expanded_mask).sum(dim=1) / expanded_mask.sum(
+                    dim=1
+                ).clamp_min(1.0)
+                pooled = F.normalize(pooled.float(), dim=1)
+
+            all_embeddings.append(pooled.cpu().numpy())
+
+    embeddings = np.concatenate(all_embeddings, axis=0).astype(np.float32)
+    np.save(EMBEDDING_PATH, embeddings)
+
+    del encoder, all_embeddings
+    gc.collect()
+    torch.cuda.empty_cache()
+
+    print("Saved MiniLM embeddings:", EMBEDDING_PATH)
+
+assert embeddings.shape == (N_DOCUMENTS, 384)
+assert np.isfinite(embeddings).all()
+
+# ------------------------------------------------------------
+# 5. Select 1,024 representative patents
+#    MiniBatchKMeans is used instead of O(N²) agglomerative
+#    selection to optimize the 9,881-document L4 experiment.
+# ------------------------------------------------------------
+if REPRESENTATIVE_PATH.exists():
+    representative_indices = np.load(REPRESENTATIVE_PATH)
+    assert representative_indices.shape == (BOT_DIM,)
+    print("Reused representatives:", REPRESENTATIVE_PATH)
+else:
+    print("\nSelecting representative patents...")
+    representative_model = MiniBatchKMeans(
+        n_clusters=BOT_DIM,
+        random_state=GLOBAL_SEED,
+        batch_size=2_048,
+        n_init=3,
+        max_iter=200,
+        reassignment_ratio=0.01,
+    )
+    representative_labels = representative_model.fit_predict(embeddings)
+    centers = normalize(
+        representative_model.cluster_centers_.astype(np.float32),
+        axis=1,
+    )
+
+    representative_indices = np.empty(BOT_DIM, dtype=np.int32)
+
+    for cluster_id in range(BOT_DIM):
+        members = np.flatnonzero(representative_labels == cluster_id)
+
+        if len(members) == 0:
+            used = set(representative_indices[:cluster_id].tolist())
+            available = np.asarray(
+                [i for i in range(N_DOCUMENTS) if i not in used],
+                dtype=np.int32,
+            )
+            scores = embeddings[available] @ centers[cluster_id]
+            representative_indices[cluster_id] = available[np.argmax(scores)]
+        else:
+            scores = embeddings[members] @ centers[cluster_id]
+            representative_indices[cluster_id] = members[np.argmax(scores)]
+
+    assert len(np.unique(representative_indices)) == BOT_DIM
+    np.save(REPRESENTATIVE_PATH, representative_indices)
+    print("Saved representatives:", REPRESENTATIVE_PATH)
+
+representative_mask = np.zeros(N_DOCUMENTS, dtype=bool)
+representative_mask[representative_indices] = True
+
+# ------------------------------------------------------------
+# 6. Initial representative candidates
+# ------------------------------------------------------------
+if INITIAL_CANDIDATES_PATH.exists():
+    initial_candidates = np.load(INITIAL_CANDIDATES_PATH)
+    assert initial_candidates.shape == (N_DOCUMENTS, CANDIDATE_COUNT)
+    print("Reused initial candidates:", INITIAL_CANDIDATES_PATH)
+else:
+    representative_embeddings = embeddings[representative_indices]
+    initial_candidates = np.empty(
+        (N_DOCUMENTS, CANDIDATE_COUNT),
+        dtype=np.int32,
+    )
+
+    emb_gpu = torch.from_numpy(embeddings).to(DEVICE)
+    rep_gpu = torch.from_numpy(representative_embeddings).to(DEVICE)
+
+    for start in tqdm(
+        range(0, N_DOCUMENTS, 512),
+        desc="Retrieving representative candidates",
+    ):
+        end = min(start + 512, N_DOCUMENTS)
+        similarities = emb_gpu[start:end] @ rep_gpu.T
+        local = torch.topk(
+            similarities,
+            k=CANDIDATE_COUNT,
+            dim=1,
+        ).indices
+        initial_candidates[start:end] = representative_indices[local.cpu().numpy()]
+
+    del emb_gpu, rep_gpu, similarities
+    torch.cuda.empty_cache()
+
+    np.save(INITIAL_CANDIDATES_PATH, initial_candidates)
+    print("Saved initial candidates:", INITIAL_CANDIDATES_PATH)
+
+# ------------------------------------------------------------
+# 7. Dense neighbour pool for iterative refinement
+# ------------------------------------------------------------
+if DENSE_NEIGHBORS_PATH.exists():
+    dense_neighbors = np.load(DENSE_NEIGHBORS_PATH)
+    assert dense_neighbors.shape == (N_DOCUMENTS, DENSE_POOL_SIZE)
+    print("Reused dense neighbours:", DENSE_NEIGHBORS_PATH)
+else:
+    dense_neighbors = np.empty(
+        (N_DOCUMENTS, DENSE_POOL_SIZE),
+        dtype=np.int32,
+    )
+    all_gpu = torch.from_numpy(embeddings).to(DEVICE)
+
+    for start in tqdm(
+        range(0, N_DOCUMENTS, 256),
+        desc="Retrieving dense neighbour pool",
+    ):
+        end = min(start + 256, N_DOCUMENTS)
+        similarities = all_gpu[start:end] @ all_gpu.T
+
+        rows = torch.arange(end - start, device=DEVICE)
+        columns = torch.arange(start, end, device=DEVICE)
+        similarities[rows, columns] = -float("inf")
+
+        nearest = torch.topk(
+            similarities,
+            k=DENSE_POOL_SIZE,
+            dim=1,
+        ).indices
+
+        dense_neighbors[start:end] = nearest.cpu().numpy()
+
+    del all_gpu, similarities
+    torch.cuda.empty_cache()
+
+    np.save(DENSE_NEIGHBORS_PATH, dense_neighbors)
+    print("Saved dense neighbours:", DENSE_NEIGHBORS_PATH)
+
+# ------------------------------------------------------------
+# 8. Load Qwen3-0.6B
+# ------------------------------------------------------------
+print("\nLoading Qwen3-0.6B...")
+llm_tokenizer = AutoTokenizer.from_pretrained(
+    LLM_ID,
+    revision=LLM_REVISION,
+    use_fast=True,
+    padding_side="left",
+)
+if llm_tokenizer.pad_token_id is None:
+    llm_tokenizer.pad_token_id = llm_tokenizer.eos_token_id
+
+llm = AutoModelForCausalLM.from_pretrained(
+    LLM_ID,
+    revision=LLM_REVISION,
+    torch_dtype=torch.bfloat16,
+    attn_implementation="sdpa",
+).to(DEVICE)
+llm.eval()
+
+print(
+    "Qwen memory allocated:",
+    f"{torch.cuda.memory_allocated() / 2**30:.2f} GB",
+)
+
+
+# ------------------------------------------------------------
+# 9. Prompt/generation helpers
+# ------------------------------------------------------------
+def compact_text(text, max_words):
+    words = " ".join(str(text).split()).split()
+    return " ".join(words[:max_words])
+
+
+def build_prompt(target_index, candidate_indices):
+    target = compact_text(snippets[target_index], 64)
+
+    candidate_lines = []
+    for number, candidate_index in enumerate(candidate_indices, start=1):
+        candidate = compact_text(snippets[int(candidate_index)], 24)
+        candidate_lines.append(f"{number}. {candidate}")
+
+    candidates = "\n".join(candidate_lines)
+
+    instruction = f"""Determine which candidate patent claims concern the same technical topic as the target patent claim.
+
+Target:
+{target}
+
+Candidates:
+{candidates}
+
+Return only candidate numbers separated by commas.
+Return NONE if no candidate concerns the same technical topic.
+Answer:"""
+
+    messages = [{"role": "user", "content": instruction}]
+
+    return llm_tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False,
+    )
+
+
+def parse_selection(text, candidate_count):
+    import re
+
+    cleaned = text.strip().lower()
+
+    if "none" in cleaned:
+        return []
+
+    numbers = []
+    for match in re.findall(r"\d+", cleaned):
+        value = int(match)
+        if 1 <= value <= candidate_count:
+            index = value - 1
+            if index not in numbers:
+                numbers.append(index)
+
+    return numbers
+
+
+@torch.inference_mode()
+def generate_selections(target_indices, candidate_matrix):
+    prompts = [
+        build_prompt(int(target), candidate_matrix[row])
+        for row, target in enumerate(target_indices)
+    ]
+
+    encoded = llm_tokenizer(
+        prompts,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=MAX_PROMPT_TOKENS,
+    )
+    encoded = {key: value.to(DEVICE) for key, value in encoded.items()}
+
+    input_length = encoded["input_ids"].shape[1]
+
+    generated = llm.generate(
+        **encoded,
+        max_new_tokens=MAX_NEW_TOKENS,
+        do_sample=False,
+        use_cache=True,
+        pad_token_id=llm_tokenizer.pad_token_id,
+        eos_token_id=llm_tokenizer.eos_token_id,
+    )
+
+    continuations = generated[:, input_length:]
+    decoded = llm_tokenizer.batch_decode(
+        continuations,
+        skip_special_tokens=True,
+    )
+
+    return [parse_selection(text, candidate_matrix.shape[1]) for text in decoded]
+
+
+def save_state(path, payload):
+    path.write_text(
+        json.dumps(payload, indent=2),
+        encoding="utf-8",
+    )
+
+
+# ------------------------------------------------------------
+# 10. Initial LeBoT construction with resume
+# ------------------------------------------------------------
+if INITIAL_BOT_PATH.exists() and INITIAL_STATE_PATH.exists():
+    bot_vectors = np.load(INITIAL_BOT_PATH)
+    initial_state = json.loads(INITIAL_STATE_PATH.read_text(encoding="utf-8"))
+    initial_start = int(initial_state.get("next_position", 0))
+    print("\nResuming initial BoT construction at:", initial_start)
+else:
+    bot_vectors = np.zeros(
+        (N_DOCUMENTS, BOT_DIM),
+        dtype=np.float32,
+    )
+    bot_vectors[
+        representative_indices,
+        np.arange(BOT_DIM),
+    ] = 1.0
+
+    initial_start = 0
+    np.save(INITIAL_BOT_PATH, bot_vectors)
+    save_state(
+        INITIAL_STATE_PATH,
+        {"next_position": 0, "complete": False},
+    )
+
+non_representatives = np.flatnonzero(~representative_mask)
+
+if initial_start < len(non_representatives):
+    print("\nInitial LeBoT construction...")
+
+    batch_counter = 0
+
+    for position in tqdm(
+        range(initial_start, len(non_representatives), LLM_BATCH_SIZE),
+        desc="LeBoT initial pass",
+    ):
+        target_indices = non_representatives[position : position + LLM_BATCH_SIZE]
+        candidate_matrix = initial_candidates[target_indices]
+        selections = generate_selections(target_indices, candidate_matrix)
+
+        for row, target_index in enumerate(target_indices):
+            selected_positions = selections[row]
+
+            # Fixed-dimensional scalable adaptation:
+            # if Qwen returns NONE, use the closest representative.
+            if not selected_positions:
+                selected_positions = [0]
+
+            selected_patents = candidate_matrix[row, selected_positions]
+            selected_columns = [
+                int(np.where(representative_indices == patent)[0][0])
+                for patent in selected_patents
+            ]
+
+            vector = np.zeros(BOT_DIM, dtype=np.float32)
+            vector[selected_columns] = 1.0
+            vector /= np.linalg.norm(vector).clip(min=1e-12)
+            bot_vectors[int(target_index)] = vector
+
+        batch_counter += 1
+        next_position = min(
+            position + len(target_indices),
+            len(non_representatives),
+        )
+
+        if batch_counter % CHECKPOINT_EVERY_BATCHES == 0 or next_position == len(
+            non_representatives
+        ):
+            np.save(INITIAL_BOT_PATH, bot_vectors)
+            save_state(
+                INITIAL_STATE_PATH,
+                {
+                    "next_position": next_position,
+                    "complete": next_position == len(non_representatives),
+                },
+            )
+
+    print("Initial BoT construction completed.")
+else:
+    print("\nInitial BoT construction already completed.")
+
+bot_vectors = normalize(bot_vectors, axis=1).astype(np.float32)
+
+# ------------------------------------------------------------
+# 11. Iterative refinement with per-iteration resume
+# ------------------------------------------------------------
+if ACTIVE_PATH.exists():
+    active_mask = np.load(ACTIVE_PATH).astype(bool)
+else:
+    active_mask = np.ones(N_DOCUMENTS, dtype=bool)
+
+for iteration in range(1, MAX_REFINEMENT_ITERS + 1):
+    completed_path = CHECKPOINT_DIR / f"refinement_{iteration}_complete.npy"
+    work_path = CHECKPOINT_DIR / f"refinement_{iteration}_work.npy"
+    state_path = CHECKPOINT_DIR / f"refinement_{iteration}_state.json"
+
+    if completed_path.exists():
+        bot_vectors = np.load(completed_path).astype(np.float32)
+        print(f"Reused completed refinement {iteration}.")
+        continue
+
+    old_vectors = bot_vectors.copy()
+
+    # Retrieve 30 candidates by reranking the 64 dense neighbours
+    # using dense similarity + current BoT similarity.
+    candidate_matrix = np.empty(
+        (N_DOCUMENTS, CANDIDATE_COUNT),
+        dtype=np.int32,
+    )
+
+    for start in tqdm(
+        range(0, N_DOCUMENTS, 256),
+        desc=f"Reranking candidates iter {iteration}",
+    ):
+        end = min(start + 256, N_DOCUMENTS)
+        rows = np.arange(start, end)
+        pool = dense_neighbors[start:end]
+
+        dense_scores = np.einsum(
+            "bd,bkd->bk",
+            embeddings[start:end],
+            embeddings[pool],
+            optimize=True,
+        )
+        bot_scores = np.einsum(
+            "bd,bkd->bk",
+            old_vectors[start:end],
+            old_vectors[pool],
+            optimize=True,
+        )
+        combined = 0.5 * dense_scores + 0.5 * bot_scores
+
+        local = np.argpartition(
+            -combined,
+            kth=CANDIDATE_COUNT - 1,
+            axis=1,
+        )[:, :CANDIDATE_COUNT]
+
+        local_scores = np.take_along_axis(combined, local, axis=1)
+        order = np.argsort(-local_scores, axis=1)
+        local = np.take_along_axis(local, order, axis=1)
+        candidate_matrix[start:end] = np.take_along_axis(pool, local, axis=1)
+
+    active_indices = np.flatnonzero(active_mask)
+
+    if work_path.exists() and state_path.exists():
+        new_vectors = np.load(work_path).astype(np.float32)
+        refine_state = json.loads(state_path.read_text(encoding="utf-8"))
+        refine_start = int(refine_state.get("next_position", 0))
+        print(
+            f"Resuming refinement {iteration} at {refine_start}/{len(active_indices)}"
+        )
+    else:
+        new_vectors = old_vectors.copy()
+        refine_start = 0
+
+    batch_counter = 0
+
+    for position in tqdm(
+        range(refine_start, len(active_indices), LLM_BATCH_SIZE),
+        desc=f"LeBoT refinement {iteration}",
+    ):
+        target_indices = active_indices[position : position + LLM_BATCH_SIZE]
+        candidates = candidate_matrix[target_indices]
+        selections = generate_selections(target_indices, candidates)
+
+        for row, target_index in enumerate(target_indices):
+            selected_positions = selections[row]
+
+            if selected_positions:
+                selected_indices = candidates[row, selected_positions]
+                vectors_to_average = np.vstack(
+                    [
+                        old_vectors[int(target_index)][None, :],
+                        old_vectors[selected_indices],
+                    ]
+                )
+                updated = vectors_to_average.mean(axis=0)
+                norm = np.linalg.norm(updated)
+
+                if norm > 0:
+                    updated /= norm
+
+                new_vectors[int(target_index)] = updated
+            else:
+                new_vectors[int(target_index)] = old_vectors[int(target_index)]
+
+        batch_counter += 1
+        next_position = min(
+            position + len(target_indices),
+            len(active_indices),
+        )
+
+        if batch_counter % CHECKPOINT_EVERY_BATCHES == 0 or next_position == len(
+            active_indices
+        ):
+            np.save(work_path, new_vectors)
+            save_state(
+                state_path,
+                {
+                    "iteration": iteration,
+                    "next_position": next_position,
+                    "active_at_start": int(len(active_indices)),
+                },
+            )
+
+    new_vectors = normalize(new_vectors, axis=1).astype(np.float32)
+
+    cosine_changes = np.sum(old_vectors * new_vectors, axis=1)
+    active_mask = cosine_changes <= CONVERGENCE_THRESHOLD
+    bot_vectors = new_vectors
+
+    np.save(completed_path, bot_vectors)
+    np.save(ACTIVE_PATH, active_mask)
+
+    if work_path.exists():
+        work_path.unlink()
+    if state_path.exists():
+        state_path.unlink()
+
+    print(
+        f"Refinement {iteration}: "
+        f"{np.sum(~active_mask):,} converged, "
+        f"{np.sum(active_mask):,} still active"
+    )
+
+    if not active_mask.any():
+        print("All documents converged.")
+        break
+
+FINAL_EMBEDDINGS_PATH = RESULT_DIR / "lebot_qwen06b_bot_vectors.npy"
+np.save(FINAL_EMBEDDINGS_PATH, bot_vectors.astype(np.float32))
+
+# Release LLM before clustering.
+del llm
+gc.collect()
+torch.cuda.empty_cache()
+
+
+# ------------------------------------------------------------
+# 12. Evaluation helpers
+# ------------------------------------------------------------
+def predicted_cluster_purity(y_true, y_pred):
+    total = 0
+
+    for cluster_id in np.unique(y_pred):
+        values = y_true[y_pred == cluster_id]
+        total += Counter(values.tolist()).most_common(1)[0][1]
+
+    return total / len(y_true)
+
+
+def inverse_label_purity(y_true, y_pred):
+    total = 0
+
+    for label in np.unique(y_true):
+        values = y_pred[y_true == label]
+        total += Counter(values.tolist()).most_common(1)[0][1]
+
+    return total / len(y_true)
+
+
+def evaluate_partition(y_true, y_pred):
+    return {
+        "predicted_cluster_purity": float(predicted_cluster_purity(y_true, y_pred)),
+        "inverse_label_purity": float(inverse_label_purity(y_true, y_pred)),
+        "nmi": float(normalized_mutual_info_score(y_true, y_pred)),
+    }
+
+
+# ------------------------------------------------------------
+# 13. K-means evaluation
+# ------------------------------------------------------------
+metric_rows = []
+prediction_arrays = {}
+
+print("\nRunning K-means evaluation...")
+
+for seed in CLUSTER_SEEDS:
+    clusterer = KMeans(
+        n_clusters=N_CLUSTERS,
+        random_state=seed,
+        n_init=10,
+        max_iter=300,
+        tol=1e-4,
+        algorithm="lloyd",
+    )
+    predictions = clusterer.fit_predict(bot_vectors).astype(np.int32)
+    prediction_arrays[f"seed_{seed}"] = predictions
+
+    assert len(np.unique(predictions)) == N_CLUSTERS
+
+    for level in ("section", "class", "subclass"):
+        scores = evaluate_partition(labels[level], predictions)
+        metric_rows.append(
+            {
+                "seed": seed,
+                "level": level,
+                **scores,
+            }
+        )
+
+metrics_df = pd.DataFrame(metric_rows)
+metrics_df.to_csv(RESULT_CSV, index=False, lineterminator="\n")
+np.savez_compressed(PREDICTIONS_PATH, **prediction_arrays)
+
+summary = {}
+
+for level in ("section", "class", "subclass"):
+    subset = metrics_df[metrics_df["level"] == level]
+    summary[level] = {}
+
+    for metric in (
+        "predicted_cluster_purity",
+        "inverse_label_purity",
+        "nmi",
+    ):
+        summary[level][metric] = {
+            "mean": float(subset[metric].mean()),
+            "std": float(subset[metric].std(ddof=0)),
+        }
+
+mean_nmi_by_seed = metrics_df.groupby("seed")["nmi"].mean().to_dict()
+overall_mean_nmi = float(np.mean(list(mean_nmi_by_seed.values())))
+overall_std_nmi = float(np.std(list(mean_nmi_by_seed.values()), ddof=0))
+
+latex_row = (
+    "LeBoT (Qwen3-0.6B; L4 adaptation)"
+    f" & {summary['section']['predicted_cluster_purity']['mean']:.4f}"
+    f" & {summary['section']['inverse_label_purity']['mean']:.4f}"
+    f" & {summary['section']['nmi']['mean']:.4f}"
+    f" & {summary['class']['predicted_cluster_purity']['mean']:.4f}"
+    f" & {summary['class']['inverse_label_purity']['mean']:.4f}"
+    f" & {summary['class']['nmi']['mean']:.4f}"
+    f" & {summary['subclass']['predicted_cluster_purity']['mean']:.4f}"
+    f" & {summary['subclass']['inverse_label_purity']['mean']:.4f}"
+    f" & {summary['subclass']['nmi']['mean']:.4f}"
+    r" \\"
+)
+
+LATEX_PATH.write_text(latex_row + "\n", encoding="utf-8")
+
+protocol = {
+    "method": "LeBoT scalable L4 adaptation",
+    "official_repository": "https://github.com/tom192180/BoT_vector",
+    "paper": "LLMs Enable Bag-of-Texts Representations for Short-Text Clustering",
+    "split": "test",
+    "transductive_unsupervised_inference": True,
+    "labels_used_during_representation_construction": False,
+    "n_documents": N_DOCUMENTS,
+    "n_clusters": N_CLUSTERS,
+    "input_policy": (
+        "All claims were tokenized in claim-ID order; short leading snippets "
+        "from the 512-token document input were used in LLM prompts."
+    ),
+    "embedder": EMBEDDER_ID,
+    "embedder_revision": EMBEDDER_REVISION,
+    "llm": LLM_ID,
+    "llm_revision": LLM_REVISION,
+    "bot_dimension": BOT_DIM,
+    "candidate_count": CANDIDATE_COUNT,
+    "dense_candidate_pool": DENSE_POOL_SIZE,
+    "maximum_refinement_iterations": MAX_REFINEMENT_ITERS,
+    "convergence_threshold": CONVERGENCE_THRESHOLD,
+    "representative_selection": (
+        "MiniBatchKMeans medoids; scalable replacement for O(N^2) "
+        "agglomerative representative selection"
+    ),
+    "none_policy": (
+        "During fixed-dimensional initialization, NONE falls back to the "
+        "nearest representative instead of creating a new dimension."
+    ),
+    "evaluation_seeds": CLUSTER_SEEDS,
+    "raw_text_saved": False,
+}
+
+PROTOCOL_PATH.write_text(
+    json.dumps(protocol, indent=2),
+    encoding="utf-8",
+)
+
+result_payload = {
+    "protocol": protocol,
+    "summary": summary,
+    "mean_nmi_by_seed": {
+        str(key): float(value) for key, value in mean_nmi_by_seed.items()
+    },
+    "overall_mean_nmi": overall_mean_nmi,
+    "overall_population_std_nmi": overall_std_nmi,
+    "remaining_active_documents": int(active_mask.sum()),
+    "latex_row": latex_row,
+    "files": {
+        "metrics_csv": str(RESULT_CSV),
+        "results_json": str(RESULT_JSON),
+        "predictions": str(PREDICTIONS_PATH),
+        "bot_vectors": str(FINAL_EMBEDDINGS_PATH),
+        "latex": str(LATEX_PATH),
+        "protocol": str(PROTOCOL_PATH),
+    },
+}
+
+RESULT_JSON.write_text(
+    json.dumps(result_payload, indent=2),
+    encoding="utf-8",
 )
 
 # ------------------------------------------------------------
-# 19. Final verification
+# 14. Final report
 # ------------------------------------------------------------
-status = run(
-    ["git", "status", "--porcelain"],
-    cwd=REPO_DIR,
-    capture=True,
-).stdout.strip()
-
-assert not status, f"Repository is not clean:\n{status}"
-
-askpass_path.unlink(missing_ok=True)
-del github_token
-
-hf_commit_id = getattr(hf_commit, "oid", None) or str(hf_commit)
-
 print("\n" + "=" * 80)
-print("PUBLICATION SUCCESS")
+print("FINAL LEBOT RESULTS")
 print("=" * 80)
-print("Base main SHA :", main_sha)
-print("Commit SHA    :", commit_sha)
-print(
-    "Commit URL    :",
-    f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}/commit/{commit_sha}",
-)
-print("PR URL        :", pr["html_url"])
-print("PR draft      :", pr["draft"])
-print(
-    "HF dataset    :",
-    f"https://huggingface.co/datasets/{HF_REPO_ID}/tree/main/{HF_PATH_IN_REPO}",
-)
-print("HF commit     :", hf_commit_id)
-print("HF files      :", len(hf_files))
-print("SCCL mean NMI :", f"{spherical_mean:.6f}")
-print("LeBoT mean NMI:", f"{lebot_mean:.6f}")
-print("Raw records   : NOT uploaded")
-print("Claim text    : NOT uploaded")
-print("Token caches  : NOT uploaded")
-print("Checkpoints   : NOT uploaded")
-print("\nNext: GitHub CI가 통과하면 PR을 Ready for review로 전환하고 병합하세요.")
+
+for level in ("section", "class", "subclass"):
+    values = summary[level]
+    print(
+        f"{level.capitalize():8s}: "
+        f"Pur_p={values['predicted_cluster_purity']['mean']:.4f}"
+        f" ± {values['predicted_cluster_purity']['std']:.4f}, "
+        f"Pur_a={values['inverse_label_purity']['mean']:.4f}"
+        f" ± {values['inverse_label_purity']['std']:.4f}, "
+        f"NMI={values['nmi']['mean']:.4f}"
+        f" ± {values['nmi']['std']:.4f}"
+    )
+
+print("\nMean NMI by seed:")
+for seed, value in mean_nmi_by_seed.items():
+    print(f"  {seed}: {value:.6f}")
+
+print(f"Overall mean NMI: {overall_mean_nmi:.6f}")
+print(f"Population SD:    {overall_std_nmi:.6f}")
+print(f"Remaining active: {int(active_mask.sum()):,}")
+
+print("\nLaTeX row:")
+print(latex_row)
+
+print("\nFiles:")
+print("Metrics:     ", RESULT_CSV)
+print("Results:     ", RESULT_JSON)
+print("Predictions: ", PREDICTIONS_PATH)
+print("BoT vectors: ", FINAL_EMBEDDINGS_PATH)
+print("LaTeX:       ", LATEX_PATH)
+print("Protocol:    ", PROTOCOL_PATH)
+print("Checkpoints: ", CHECKPOINT_DIR)
+print("\nSUCCESS: LeBoT L4 adaptation completed.")
