@@ -1,0 +1,434 @@
+{
+  "method": "SCCL modern faithful adaptation",
+  "official_repository": "https://github.com/amazon-science/sccl",
+  "input": {
+    "documents": 9881,
+    "serialization": "all claims concatenated in claim-ID order",
+    "max_length": 512,
+    "fraction_at_token_limit": 0.9164052221435077
+  },
+  "encoder": {
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "hidden_size": 384
+  },
+  "training": {
+    "transductive": true,
+    "labels_used": false,
+    "training_seeds": [
+      17,
+      42,
+      73
+    ],
+    "steps_per_seed": 1000,
+    "batch_size": 64,
+    "encoder_lr": 1e-05,
+    "head_lr": 0.001,
+    "temperature": 0.5,
+    "eta": 10.0,
+    "cluster_loss_weight": 0.5,
+    "alpha": 1.0,
+    "mixed_precision": "torch.bfloat16"
+  },
+  "native_sccl": {
+    "runs": [
+      {
+        "training_seed": 17,
+        "active_clusters": 27,
+        "mean_nmi": 0.28635929266649635,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5133083695982188,
+            "inverse_label_purity": 0.2931889484869952,
+            "nmi": 0.19968603369475388
+          },
+          "class": {
+            "predicted_cluster_purity": 0.33620078939378606,
+            "inverse_label_purity": 0.4140269203521911,
+            "nmi": 0.3004906135935369
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.18975812164760653,
+            "inverse_label_purity": 0.5168505212023075,
+            "nmi": 0.3589012307111983
+          }
+        }
+      },
+      {
+        "training_seed": 42,
+        "active_clusters": 28,
+        "mean_nmi": 0.2804533361376847,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5218095334480316,
+            "inverse_label_purity": 0.279121546402186,
+            "nmi": 0.1997369529620851
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3352899504098775,
+            "inverse_label_purity": 0.38558850318793647,
+            "nmi": 0.2908837724268774
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.1909725736261512,
+            "inverse_label_purity": 0.4898289646796883,
+            "nmi": 0.35073928302409163
+          }
+        }
+      },
+      {
+        "training_seed": 73,
+        "active_clusters": 29,
+        "mean_nmi": 0.2798244045710206,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5062240663900415,
+            "inverse_label_purity": 0.25796984110919946,
+            "nmi": 0.19447846808525834
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3340754984313329,
+            "inverse_label_purity": 0.37506325270721586,
+            "nmi": 0.2931061859236626
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.1921870256046959,
+            "inverse_label_purity": 0.480416961845967,
+            "nmi": 0.3518885597041409
+          }
+        }
+      }
+    ],
+    "summary": {
+      "section": {
+        "predicted_cluster_purity": {
+          "mean": 0.5137806564787639,
+          "population_std": 0.006371498359992214
+        },
+        "inverse_label_purity": {
+          "mean": 0.27676011199946027,
+          "population_std": 0.014474774850314821
+        },
+        "nmi": {
+          "mean": 0.1979671515806991,
+          "population_std": 0.0024669593418439875
+        }
+      },
+      "class": {
+        "predicted_cluster_purity": {
+          "mean": 0.3351887460783322,
+          "population_std": 0.00087059257838706
+        },
+        "inverse_label_purity": {
+          "mean": 0.3915595587491145,
+          "population_std": 0.016457662399280325
+        },
+        "nmi": {
+          "mean": 0.2948268573146923,
+          "population_std": 0.004106367561668662
+        }
+      },
+      "subclass": {
+        "predicted_cluster_purity": {
+          "mean": 0.1909725736261512,
+          "population_std": 0.0009915958881826442
+        },
+        "inverse_label_purity": {
+          "mean": 0.4956988159093209,
+          "population_std": 0.015442202496978006
+        },
+        "nmi": {
+          "mean": 0.35384302447981025,
+          "population_std": 0.0036073348362529035
+        }
+      }
+    },
+    "overall_mean_nmi": 0.28221234445840054,
+    "overall_population_std": 0.0029435549153315034
+  },
+  "matched_spherical_kmeans": {
+    "runs": [
+      {
+        "training_seed": 17,
+        "clustering_seed": 17,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 28,
+        "objective": 0.6726857423782349,
+        "mean_nmi": 0.335176755580721,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5649225786863677,
+            "inverse_label_purity": 0.17204736362716325,
+            "nmi": 0.23317552413310452
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3838680295516648,
+            "inverse_label_purity": 0.33022973383260806,
+            "nmi": 0.3520761489229653
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.24116992207266472,
+            "inverse_label_purity": 0.46857605505515637,
+            "nmi": 0.42027859368609316
+          }
+        }
+      },
+      {
+        "training_seed": 17,
+        "clustering_seed": 42,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 34,
+        "objective": 0.6725785136222839,
+        "mean_nmi": 0.34199768522911095,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5747393988462706,
+            "inverse_label_purity": 0.16071247849407955,
+            "nmi": 0.23887786195259014
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3843740512093918,
+            "inverse_label_purity": 0.33356947677360593,
+            "nmi": 0.3587583415825305
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.23843740512093917,
+            "inverse_label_purity": 0.47576156259487906,
+            "nmi": 0.4283568521522123
+          }
+        }
+      },
+      {
+        "training_seed": 17,
+        "clustering_seed": 73,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 42,
+        "objective": 0.6725464463233948,
+        "mean_nmi": 0.3406728103257251,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5784839591134501,
+            "inverse_label_purity": 0.1734642242687987,
+            "nmi": 0.23862243096880179
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3817427385892116,
+            "inverse_label_purity": 0.33174779880578886,
+            "nmi": 0.3565180185564887
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.2382349964578484,
+            "inverse_label_purity": 0.48810849104341664,
+            "nmi": 0.4268779814518849
+          }
+        }
+      },
+      {
+        "training_seed": 42,
+        "clustering_seed": 17,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 27,
+        "objective": 0.6690911650657654,
+        "mean_nmi": 0.34322751816267916,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.568363525958911,
+            "inverse_label_purity": 0.17427385892116182,
+            "nmi": 0.23797604505885026
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3914583544175691,
+            "inverse_label_purity": 0.33731403704078533,
+            "nmi": 0.36152842166553223
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.24714097763384274,
+            "inverse_label_purity": 0.4942819552676855,
+            "nmi": 0.43017808776365507
+          }
+        }
+      },
+      {
+        "training_seed": 42,
+        "clustering_seed": 42,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 28,
+        "objective": 0.6695754528045654,
+        "mean_nmi": 0.3363287884079436,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5657322133387309,
+            "inverse_label_purity": 0.16759437303916608,
+            "nmi": 0.2285477345894091
+          },
+          "class": {
+            "predicted_cluster_purity": 0.38133792126303007,
+            "inverse_label_purity": 0.3256755389130655,
+            "nmi": 0.353519642169552
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.24582532132375265,
+            "inverse_label_purity": 0.47596397125796985,
+            "nmi": 0.4269189884648697
+          }
+        }
+      },
+      {
+        "training_seed": 42,
+        "clustering_seed": 73,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 30,
+        "objective": 0.6702491044998169,
+        "mean_nmi": 0.34027286480745816,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5694767736059103,
+            "inverse_label_purity": 0.1766015585467058,
+            "nmi": 0.23800231401669464
+          },
+          "class": {
+            "predicted_cluster_purity": 0.38133792126303007,
+            "inverse_label_purity": 0.3347839287521506,
+            "nmi": 0.356813145707405
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.23955065276793847,
+            "inverse_label_purity": 0.47910130553587693,
+            "nmi": 0.42600313469827483
+          }
+        }
+      },
+      {
+        "training_seed": 73,
+        "clustering_seed": 17,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 32,
+        "objective": 0.6695759892463684,
+        "mean_nmi": 0.3393500766275823,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5707924299160004,
+            "inverse_label_purity": 0.18874607833215262,
+            "nmi": 0.23818403296061505
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3866005465033903,
+            "inverse_label_purity": 0.34318388827041796,
+            "nmi": 0.35740438545638276
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.2331747798805789,
+            "inverse_label_purity": 0.4918530513105961,
+            "nmi": 0.4224618114657491
+          }
+        }
+      },
+      {
+        "training_seed": 73,
+        "clustering_seed": 42,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 31,
+        "objective": 0.6711772680282593,
+        "mean_nmi": 0.3405391430875173,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5705900212529096,
+            "inverse_label_purity": 0.17002327699625544,
+            "nmi": 0.24064301404660887
+          },
+          "class": {
+            "predicted_cluster_purity": 0.38265357757312013,
+            "inverse_label_purity": 0.3285092601963364,
+            "nmi": 0.35682388199920584
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.2373241574739399,
+            "inverse_label_purity": 0.4716121850015181,
+            "nmi": 0.4241505332167373
+          }
+        }
+      },
+      {
+        "training_seed": 73,
+        "clustering_seed": 73,
+        "active_clusters": 30,
+        "converged": true,
+        "iterations": 36,
+        "objective": 0.6696640253067017,
+        "mean_nmi": 0.3323230056956424,
+        "metrics": {
+          "section": {
+            "predicted_cluster_purity": 0.5622912660661876,
+            "inverse_label_purity": 0.1808521404716122,
+            "nmi": 0.23232119223703016
+          },
+          "class": {
+            "predicted_cluster_purity": 0.3595789899807712,
+            "inverse_label_purity": 0.32395506527679385,
+            "nmi": 0.3466335730185491
+          },
+          "subclass": {
+            "predicted_cluster_purity": 0.23661572715312215,
+            "inverse_label_purity": 0.47991094018824004,
+            "nmi": 0.4180142518313479
+          }
+        }
+      }
+    ],
+    "summary": {
+      "section": {
+        "predicted_cluster_purity": {
+          "mean": 0.5694880185316377,
+          "population_std": 0.004707287622978698
+        },
+        "inverse_label_purity": {
+          "mean": 0.17381281696634393,
+          "population_std": 0.007516137292721634
+        },
+        "nmi": {
+          "mean": 0.23626112777374494,
+          "population_std": 0.003739202073406064
+        }
+      },
+      "class": {
+        "predicted_cluster_purity": {
+          "mean": 0.38143912559457543,
+          "population_std": 0.008306568103674146
+        },
+        "inverse_label_purity": {
+          "mean": 0.3321076364290614,
+          "population_std": 0.005612783896424624
+        },
+        "nmi": {
+          "mean": 0.3555639510087346,
+          "population_std": 0.004073218925814303
+        }
+      },
+      "subclass": {
+        "predicted_cluster_purity": {
+          "mean": 0.23971932665384743,
+          "population_std": 0.0041705790805318214
+        },
+        "inverse_label_purity": {
+          "mean": 0.4805743908061488,
+          "population_std": 0.008453656651561312
+        },
+        "nmi": {
+          "mean": 0.4248044705256471,
+          "population_std": 0.0037149685728409755
+        }
+      }
+    },
+    "overall_mean_nmi": 0.33887651643604216,
+    "overall_population_std": 0.0033327601061442693
+  },
+  "elapsed_seconds": 1306.5915672779083
+}
